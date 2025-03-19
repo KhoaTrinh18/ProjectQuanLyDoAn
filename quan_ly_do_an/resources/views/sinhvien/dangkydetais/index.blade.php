@@ -10,7 +10,7 @@
                         <h2 style="font-weight: bold">Danh sách đề tài</h2>
                     </div>
                     <div class="card-body">
-                        @include('dangkydetais.pageAjax', ['deTais' => $deTais])
+                        @include('sinhvien.dangkydetais.pageAjax', ['deTais' => $deTais])
                     </div>
                 </div>
             </div>
@@ -21,7 +21,7 @@
 @section('scripts')
     <script>
         $(document).ready(function() {
-            let baseUrl = @json(route('dang_ky_de_tai.pageAjax'));
+            let baseUrl = @json(route('dang_ky_de_tai.page_ajax'));
             let isLoading = false;
 
             function showTableLoading() {

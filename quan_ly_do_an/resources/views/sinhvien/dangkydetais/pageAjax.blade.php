@@ -39,7 +39,7 @@
 
 <div id="data-container">
     <table class="table table-bordered table-striped table-hover">
-        <thead style="background-color: #222e3c;">
+        <thead style="background: #222e3c;">
             <tr>
                 <th scope="col" class="text-white">#</th>
                 <th scope="col" class="text-white">Tên đề tài</th>
@@ -56,7 +56,7 @@
                     <td>{{ $deTai->linhVuc->ten_linh_vuc ?? 'Chưa có' }}</td>
                     <td>{{ $deTai->giang_vien }}</td>
                     <td class="text-center">
-                        <a href="#" class="btn btn-primary btn-sm">Đăng ký</a>
+                        <a href="{{ route('dang_ky_de_tai.dang_ky', ['ma_de_tai' => $deTai->ma_de_tai]) }}" class="btn btn-primary btn-sm">Đăng ký</a>
                     </td>
                 </tr>
             @endforeach

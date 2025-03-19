@@ -10,6 +10,6 @@ class LinhVuc extends Model
     use HasFactory;
 
     protected $table = 'linh_vuc';
-
+    protected $primaryKey = 'ma_linh_vuc';
     public $timestamps = false;
 }

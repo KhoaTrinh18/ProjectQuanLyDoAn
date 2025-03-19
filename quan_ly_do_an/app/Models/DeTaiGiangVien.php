@@ -10,7 +10,7 @@ class DeTaiGiangVien extends Model
     use HasFactory;
 
     protected $table = 'de_tai_gv';
-
+    protected $primaryKey = 'ma_de_tai';
     public $timestamps = false;
 
     public function linhVuc()
