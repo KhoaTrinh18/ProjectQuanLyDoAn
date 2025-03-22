@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\DeTaiGiangVien;
 
-class DangKyDeTaisController extends Controller
+class DangKyDeTaiController extends Controller
 {   
     public function index(Request $request)
     {
