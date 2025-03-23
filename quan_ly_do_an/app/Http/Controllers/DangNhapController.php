@@ -36,7 +36,8 @@ class DangNhapController extends Controller
         $route = '/';
         if ($taiKhoan->loai_tk === 'sinh_vien') {
             $sinhVien = SinhVien::where('ma_tk', $taiKhoan->ma_tk)->first();
-            Session::put('ten_sinh_vien', $sinhVien ? $sinhVien->ho_ten : null);
+            Session::put('co_de_tai', ($sinhVien->ma_de_tai_sv == null && $sinhVien->ma_de_tai_gv == null) ? 0 : 1);
+            Session::put('ten_sinh_vien', $sinhVien->ho_ten);
             $route = route('dang_ky_de_tai.index');
         }
 

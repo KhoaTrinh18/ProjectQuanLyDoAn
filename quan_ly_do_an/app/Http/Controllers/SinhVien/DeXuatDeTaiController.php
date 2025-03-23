@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
 use App\Models\{
     DeTaiSinhVien,
     LinhVuc,
@@ -22,6 +23,10 @@ class DeXuatDeTaiController extends Controller
 
     public function xacNhanDeXuat(Request $request)
     {
+        if (!$request->isMethod('post')) {
+            return redirect()->back()->with('error', 'Bạn không thể truy cập trực tiếp trang này!');
+        }
+
         $data = $request->input('DeTai', []);
 
         $validator = Validator::make($data, [
@@ -54,16 +59,16 @@ class DeXuatDeTaiController extends Controller
 
             'ma_linh_vuc.required' => 'Lĩnh vực không được để trống.',
         ]);
-        
+
         $validator->after(function ($validator) use ($request) {
             $mssvList = array_filter($request->input('DeTai', [])['mssv'], function ($value) {
                 return trim(strip_tags($value)) !== "";
             });
-        
+
             foreach ($mssvList as $index => $mssv) {
                 if (!preg_match('/^\d+$/', $mssv)) {
                     $validator->errors()->add("mssv.$index", "MSSV chỉ được chứa số.");
-                    continue; 
+                    continue;
                 }
 
                 $sinhVien = SinhVien::where('mssv', $mssv)->first();
@@ -95,8 +100,11 @@ class DeXuatDeTaiController extends Controller
             $maTaiKhoan = session()->get('ma_tai_khoan');
             $sinhVien = SinhVien::where('ma_tk', $maTaiKhoan)->first();
             $mssvList[] = $sinhVien->mssv;
-            SinhVien::whereIn('mssv', $mssvList)->update(['ma_de_tai_sv' => $deTaiSV->ma_de_tai, 'loai_sv' => 1]);
-
+            SinhVien::whereIn('mssv', $mssvList)->update([
+                'ma_de_tai_sv' => $deTaiSV->ma_de_tai,
+                'loai_sv' => 1,
+                'ngay' => Carbon::now()
+            ]);
             return response()->json([
                 'success' => true,
                 'errors' => [],

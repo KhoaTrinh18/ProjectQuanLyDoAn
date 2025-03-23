@@ -7,7 +7,7 @@
         </select>
         <p class="my-2">
             Hiển thị <span id="recordCount">{{ $deTais->count() }}</span> trên tổng
-            <span id="totalRecords">{{ $deTais->total() }}</span> 
+            <span id="totalRecords">{{ $deTais->total() }}</span>
         </p>
     </div>
     <div id="pagination-container">
@@ -22,7 +22,8 @@
                     </li>
                     @for ($page = 1; $page <= $deTais->lastPage(); $page++)
                         <li class="page-item {{ $page == $deTais->currentPage() ? 'active' : '' }}">
-                            <a class="page-link pagination-link" data-page="{{ $page }}">{{ $page }}</a>
+                            <a class="page-link pagination-link"
+                                data-page="{{ $page }}">{{ $page }}</a>
                         </li>
                     @endfor
                     <li class="page-item {{ $deTais->hasMorePages() ? '' : 'disabled' }}">
@@ -42,21 +43,40 @@
         <thead style="background: #222e3c;">
             <tr>
                 <th scope="col" class="text-white">#</th>
-                <th scope="col" class="text-white">Tên đề tài</th>
+                <th scope="col" class="text-white" style="width: 40%;">Tên đề tài</th>
                 <th scope="col" class="text-white">Lĩnh vực</th>
                 <th scope="col" class="text-white">Giảng viên</th>
+                <th scope="col" class="text-white">Trạng thái</th>
                 <th scope="col" class="text-white"></th>
             </tr>
         </thead>
         <tbody id="table-body">
             @foreach ($deTais as $key => $deTai)
                 <tr>
-                    <th scope="row">{{ ($deTais->currentPage() - 1) * $deTais->perPage() + $key + 1 }}</th>
-                    <td>{{ $deTai->ten_de_tai }}</td>
+                    <td scope="row">{{ ($deTais->currentPage() - 1) * $deTais->perPage() + $key + 1 }}</td>
+                    <td
+                        style="width: 40%; word-wrap: break-word; overflow-wrap: break-word; white-space: normal; word-break: break-word;">
+                        {{ $deTai->ten_de_tai }}
+                    </td>
                     <td>{{ $deTai->linhVuc->ten_linh_vuc ?? 'Chưa có' }}</td>
-                    <td>{{ $deTai->giang_vien }}</td>
+                    <td>
+                        {!! $deTai->giangViens->pluck('ho_ten')->implode('<br>') !!}
+                    </td>
                     <td class="text-center">
-                        <a href="{{ route('dang_ky_de_tai.dang_ky', ['ma_de_tai' => $deTai->ma_de_tai]) }}" class="btn btn-primary btn-sm">Đăng ký</a>
+                        @if ($deTai->da_dang_ky == 0)
+                            <span class="text-danger">Chưa đăng ký</span>
+                        @else
+                            <span class="text-success">Đã đăng ký</span>
+                        @endif
+                    </td>
+                    <td class="text-center">
+                        @if ($deTai->da_dang_ky == 0 && session('co_de_tai') == 0)
+                            <a href="{{ route('dang_ky_de_tai.dang_ky', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
+                                class="btn btn-primary btn-sm">Đăng ký</a>
+                        @else
+                            <a href="{{ route('dang_ky_de_tai.dang_ky', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
+                                class="btn btn-secondary btn-sm">Xem</a>
+                        @endif
                     </td>
                 </tr>
             @endforeach
