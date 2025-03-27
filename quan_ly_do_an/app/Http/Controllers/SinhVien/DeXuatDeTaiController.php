@@ -18,7 +18,7 @@ class DeXuatDeTaiController extends Controller
     public function deXuat()
     {
         $linhVucs = LinhVuc::orderBy('ma_linh_vuc', 'desc')->get();
-        return view('sinhvien.dexuatdetais.deXuat', compact('linhVucs'));
+        return view('sinhvien.dexuatdetai.deXuat', compact('linhVucs'));
     }
 
     public function xacNhanDeXuat(Request $request)
@@ -59,7 +59,6 @@ class DeXuatDeTaiController extends Controller
 
             'ma_linh_vuc.required' => 'Lĩnh vực không được để trống.',
         ]);
-
         $validator->after(function ($validator) use ($request) {
             $mssvList = array_filter($request->input('DeTai', [])['mssv'], function ($value) {
                 return trim(strip_tags($value)) !== "";
@@ -105,6 +104,9 @@ class DeXuatDeTaiController extends Controller
                 'loai_sv' => 1,
                 'ngay' => Carbon::now()
             ]);
+            
+            session(['co_de_tai' => 1]);
+
             return response()->json([
                 'success' => true,
                 'errors' => [],

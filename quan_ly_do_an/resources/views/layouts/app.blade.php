@@ -48,10 +48,19 @@
                     <li class="sidebar-header">
                         Thông tin
                     </li>
-                    <li class="sidebar-item {{ request()->is('thong-tin-de-tai*') ? 'active' : '' }}">
+                    <li
+                        class="sidebar-item {{ request()->is('thong-tin-de-tai/thong-tin') || request()->is('thong-tin-de-tai/chi-tiet') ? 'active' : '' }}">
                         <a class="sidebar-link" href="{{ route('thong_tin_de_tai.thong_tin') }}">
                             <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Đề tài
                                 của tôi</span>
+                        </a>
+
+                    </li>
+                    <li
+                        class="sidebar-item {{ request()->is('thong-tin-de-tai/danh-sach-de-tai-huy') || request()->is('thong-tin-de-tai/chi-tiet-de-tai-huy*')? 'active' : '' }}">
+                        <a class="sidebar-link" href="{{ route('thong_tin_de_tai.danh_sach_de_tai_huy') }}">
+                            <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Đề tài
+                                đã hủy</span>
                         </a>
                     </li>
                 </ul>
