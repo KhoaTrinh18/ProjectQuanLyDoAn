@@ -22,11 +22,13 @@ class ThongTinDeTaiController extends Controller
         if ($sinhVien->loai_sv == 1) {
             $deTai = DeTaiSinhVien::where('ma_de_tai', $sinhVien->ma_de_tai_sv)->first();
             $sinhViens = SinhVien::where('ma_de_tai_sv', $sinhVien->ma_de_tai_sv)->get();
+            $loaiDeTai = 'de_tai_sv';
         } else {
             $deTai = DeTaiGiangVien::where('ma_de_tai', $sinhVien->ma_de_tai_gv)->first();
             $sinhViens = SinhVien::where('ma_de_tai_gv', $sinhVien->ma_de_tai_gv)->get();
+            $loaiDeTai = 'de_tai_gv';
         }
-        return view('sinhvien.thongtindetai.thongTin', compact('deTai', 'sinhViens'));
+        return view('sinhvien.thongtindetai.thongTin', compact('deTai', 'sinhViens', 'loaiDeTai'));
     }
 
     public function chiTiet()

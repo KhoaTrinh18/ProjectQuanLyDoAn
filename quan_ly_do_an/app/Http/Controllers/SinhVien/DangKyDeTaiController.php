@@ -56,8 +56,9 @@ class DangKyDeTaiController extends Controller
 
     public function dangKy($ma_de_tai)
     {
+        $sinhViens = SinhVien::where('ma_de_tai_gv', $ma_de_tai)->get();
         $deTai = DeTaiGiangVien::with(['linhVuc', 'giangViens'])->where('ma_de_tai', $ma_de_tai)->firstOrFail();
-        return view('sinhvien.dangkydetai.dangKy', compact('deTai'));
+        return view('sinhvien.dangkydetai.dangKy', compact('deTai', 'sinhViens'));
     }
 
     public function xacNhanDangKy(Request $request)
@@ -67,47 +68,9 @@ class DangKyDeTaiController extends Controller
         }
 
         $data = $request->input('DeTai', []);
-        $validator = Validator::make($data, [
-            'mssv.*' => [
-                'sometimes',
-                'nullable',
-            ]
-        ]);
-        $mssvList = [];
-        
-        $validator->after(function ($validator) use ($request, &$mssvList) {
-            $mssvList = array_filter($request->input('DeTai', [])['mssv'], function ($value) {
-                return trim(strip_tags($value)) !== "";
-            });
-
-            foreach ($mssvList as $index => $mssv) {
-                if (!preg_match('/^\d+$/', $mssv)) {
-                    $validator->errors()->add("mssv.$index", "MSSV chỉ được chứa số.");
-                    continue;
-                }
-
-                $sinhVien = SinhVien::where('mssv', $mssv)->first();
-                if (!$sinhVien) {
-                    $validator->errors()->add("mssv.$index", "MSSV không tồn tại.");
-                    continue;
-                }
-
-                if (!empty($sinhVien->ma_de_tai_sv) || !empty($sinhVien->ma_de_tai_gv)) {
-                    $validator->errors()->add("mssv.$index", "MSSV đã đăng ký hoặc đề xuất đề tài.");
-                }
-            }
-        });
-
-         if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'errors' => $validator->errors()->toArray()
-            ]);
-        }
 
         $deTai = DeTaiGiangVien::where('ma_de_tai', $data['ma_de_tai'])->first();
-        $deTai->da_dang_ky = 1;
-        $deTai->trang_thai = 1;
+        $deTai->so_luong_sv += 1;
         $deTai->save();
 
         $maTaiKhoan = session()->get('ma_tai_khoan');

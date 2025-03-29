@@ -46,7 +46,7 @@
                     <th scope="col" class="text-white" style="width: 40%;">Tên đề tài</th>
                     <th scope="col" class="text-white">Lĩnh vực</th>
                     <th scope="col" class="text-white">Giảng viên</th>
-                    <th scope="col" class="text-white">Trạng thái</th>
+                    <th scope="col" class="text-white">Sinh viên đã đăng ký</th>
                     <th scope="col" class="text-white"></th>
                 </tr>
             </thead>
@@ -62,15 +62,22 @@
                         <td>
                             {!! $deTai->giangViens->pluck('ho_ten')->implode('<br>') !!}
                         </td>
-                        <td class="text-center">
+                        {{-- <td class="text-center">
                             @if ($deTai->da_dang_ky == 0)
                                 <span class="text-danger">Chưa đăng ký</span>
                             @else
                                 <span class="text-success">Đã đăng ký</span>
                             @endif
+                        </td> --}}
+                        <td class="text-center">
+                            @if ($deTai->so_luong_sv >= $deTai->so_luong_sv_toi_da)
+                                <span class="text-danger">{{ $deTai->so_luong_sv."/".$deTai->so_luong_sv_toi_da}}</span>
+                            @else
+                                <span class="text-success">{{ $deTai->so_luong_sv."/".$deTai->so_luong_sv_toi_da}}</span>
+                            @endif
                         </td>
                         <td class="text-center">
-                            @if ($deTai->da_dang_ky == 0 && session('co_de_tai') == 0)
+                            @if ($deTai->so_luong_sv < $deTai->so_luong_sv_toi_da && session('co_de_tai') == 0)
                                 <a href="{{ route('dang_ky_de_tai.dang_ky', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
                                     class="btn btn-primary btn-sm">Đăng ký</a>
                             @else
