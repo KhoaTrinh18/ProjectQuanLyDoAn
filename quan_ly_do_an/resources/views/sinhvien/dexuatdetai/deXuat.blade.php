@@ -163,21 +163,22 @@
                             $("#confirmModal").modal('hide');
 
                             $.each(result.errors, function(field, messages) {
-                                console.log(result);
                                 let inputField = $("[name='DeTai[" + field + "]']");
                                 if (field == 'mo_ta') {
                                     let summernoteEditor = $("#mo_ta").siblings(
                                         ".note-editor");
                                     summernoteEditor.css("border", "1px solid red");
                                 }
-                                inputField.addClass("is-invalid");
                                 $('.error-' + field).text(messages[0]).removeClass(
                                     "d-none").addClass("d-block");
                                 if (field.startsWith("mssv.")) {
                                     let index = field.split('.')[1];
                                     $(".error-mssv-" + index).text(messages[0])
                                         .removeClass("d-none").show();
+                                    $("[name='DeTai[mssv][" + index + "]']").addClass(
+                                        "is-invalid");
                                 }
+                                inputField.addClass("is-invalid");
                             });
                         }
                     },

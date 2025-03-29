@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use App\Models\{
+    GiangVien,
     TaiKhoan,
     SinhVien
 };
@@ -34,11 +35,15 @@ class DangNhapController extends Controller
         Session::put('ma_tai_khoan', $taiKhoan->ma_tk);
 
         $route = '/';
-        if ($taiKhoan->loai_tk === 'sinh_vien') {
+        if ($taiKhoan->loai_tk == 'sinh_vien') {
             $sinhVien = SinhVien::where('ma_tk', $taiKhoan->ma_tk)->first();
             Session::put('co_de_tai', ($sinhVien->ma_de_tai_sv == null && $sinhVien->ma_de_tai_gv == null) ? 0 : 1);
             Session::put('ten_sinh_vien', $sinhVien->ho_ten);
             $route = route('dang_ky_de_tai.index');
+        } else if ($taiKhoan->loai_tk == 'giang_vien') {
+            $giangVien = GiangVien::where('ma_tk', $taiKhoan->ma_tk)->first();
+            Session::put('ten_giang_vien', $giangVien->ho_ten);
+            $route = route('dua_ra_de_tai.dua_ra');
         }
 
         return response()->json([

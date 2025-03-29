@@ -5,6 +5,7 @@ namespace App\Http\Controllers\SinhVien;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use App\Models\{
     DeTaiGiangVien,
@@ -65,17 +66,55 @@ class DangKyDeTaiController extends Controller
             return redirect()->back()->with('error', 'Bạn không thể truy cập trực tiếp trang này!');
         }
 
-        $ma_de_tai = $request->input('ma_de_tai');
+        $data = $request->input('DeTai', []);
+        $validator = Validator::make($data, [
+            'mssv.*' => [
+                'sometimes',
+                'nullable',
+            ]
+        ]);
+        $mssvList = [];
+        
+        $validator->after(function ($validator) use ($request, &$mssvList) {
+            $mssvList = array_filter($request->input('DeTai', [])['mssv'], function ($value) {
+                return trim(strip_tags($value)) !== "";
+            });
 
-        $deTai = DeTaiGiangVien::where('ma_de_tai', $ma_de_tai)->first();
+            foreach ($mssvList as $index => $mssv) {
+                if (!preg_match('/^\d+$/', $mssv)) {
+                    $validator->errors()->add("mssv.$index", "MSSV chỉ được chứa số.");
+                    continue;
+                }
+
+                $sinhVien = SinhVien::where('mssv', $mssv)->first();
+                if (!$sinhVien) {
+                    $validator->errors()->add("mssv.$index", "MSSV không tồn tại.");
+                    continue;
+                }
+
+                if (!empty($sinhVien->ma_de_tai_sv) || !empty($sinhVien->ma_de_tai_gv)) {
+                    $validator->errors()->add("mssv.$index", "MSSV đã đăng ký hoặc đề xuất đề tài.");
+                }
+            }
+        });
+
+         if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()->toArray()
+            ]);
+        }
+
+        $deTai = DeTaiGiangVien::where('ma_de_tai', $data['ma_de_tai'])->first();
         $deTai->da_dang_ky = 1;
+        $deTai->trang_thai = 1;
         $deTai->save();
 
         $maTaiKhoan = session()->get('ma_tai_khoan');
         $sinhVien = SinhVien::where('ma_tk', $maTaiKhoan)->first();
         $mssvList[] = $sinhVien->mssv;
         SinhVien::whereIn('mssv', $mssvList)->update([
-            'ma_de_tai_gv' => $ma_de_tai,
+            'ma_de_tai_gv' => $data['ma_de_tai'],
             'loai_sv' => 2,
             'ngay' => Carbon::now()
         ]);
@@ -84,6 +123,7 @@ class DangKyDeTaiController extends Controller
 
         return response()->json([
             'success' => true,
+            'errors' => []
         ]);
     }
 }

@@ -28,42 +28,60 @@
                 <a class="sidebar-brand" href="index.html">
                     <span class="align-middle">AdminKit</span>
                 </a>
-                <ul class="sidebar-nav">
-                    <li class="sidebar-header">
-                        Thực hiện
-                    </li>
-                    <li class="sidebar-item {{ request()->is('dang-ky-de-tai*') ? 'active' : '' }}">
-                        <a class="sidebar-link" href="{{ route('dang_ky_de_tai.index') }}">
-                            <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Đăng ký
-                                đề tài</span>
-                        </a>
-                    </li>
+                @if (session('ten_sinh_vien') != null)
+                    <ul class="sidebar-nav">
+                        <li class="sidebar-header">
+                            Thực hiện
+                        </li>
+                        <li class="sidebar-item {{ request()->is('dang-ky-de-tai*') ? 'active' : '' }}">
+                            <a class="sidebar-link" href="{{ route('dang_ky_de_tai.index') }}">
+                                <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Đăng
+                                    ký
+                                    đề tài</span>
+                            </a>
+                        </li>
 
-                    <li class="sidebar-item {{ request()->is('de-xuat-de-tai*') ? 'active' : '' }}">
-                        <a class="sidebar-link" href="{{ route('de_xuat_de_tai.de_xuat') }}">
-                            <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Đề xuất
-                                đề tài</span>
-                        </a>
-                    </li>
-                    <li class="sidebar-header">
-                        Thông tin
-                    </li>
-                    <li
-                        class="sidebar-item {{ request()->is('thong-tin-de-tai/thong-tin') || request()->is('thong-tin-de-tai/chi-tiet') ? 'active' : '' }}">
-                        <a class="sidebar-link" href="{{ route('thong_tin_de_tai.thong_tin') }}">
-                            <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Đề tài
-                                của tôi</span>
-                        </a>
+                        <li class="sidebar-item {{ request()->is('de-xuat-de-tai*') ? 'active' : '' }}">
+                            <a class="sidebar-link" href="{{ route('de_xuat_de_tai.de_xuat') }}">
+                                <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Đề
+                                    xuất
+                                    đề tài</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-header">
+                            Thông tin
+                        </li>
+                        <li
+                            class="sidebar-item {{ request()->is('thong-tin-de-tai/thong-tin') || request()->is('thong-tin-de-tai/chi-tiet') ? 'active' : '' }}">
+                            <a class="sidebar-link" href="{{ route('thong_tin_de_tai.thong_tin') }}">
+                                <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Đề
+                                    tài
+                                    của tôi</span>
+                            </a>
 
-                    </li>
-                    <li
-                        class="sidebar-item {{ request()->is('thong-tin-de-tai/danh-sach-de-tai-huy') || request()->is('thong-tin-de-tai/chi-tiet-de-tai-huy*')? 'active' : '' }}">
-                        <a class="sidebar-link" href="{{ route('thong_tin_de_tai.danh_sach_de_tai_huy') }}">
-                            <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Đề tài
-                                đã hủy</span>
-                        </a>
-                    </li>
-                </ul>
+                        </li>
+                        <li
+                            class="sidebar-item {{ request()->is('thong-tin-de-tai/danh-sach-de-tai-huy') || request()->is('thong-tin-de-tai/chi-tiet-de-tai-huy*') ? 'active' : '' }}">
+                            <a class="sidebar-link" href="{{ route('thong_tin_de_tai.danh_sach_de_tai_huy') }}">
+                                <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Đề
+                                    tài
+                                    đã hủy</span>
+                            </a>
+                        </li>
+                    </ul>
+                @else
+                    <ul class="sidebar-nav">
+                        <li class="sidebar-header">
+                            Thực hiện
+                        </li>
+                        <li class="sidebar-item {{ request()->is('dua-ra-de-tai*') ? 'active' : '' }}">
+                            <a class="sidebar-link" href="{{ route('dua_ra_de_tai.dua_ra') }}">
+                                <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Đưa
+                                    ra đề tài</span>
+                            </a>
+                        </li>
+                    </ul>
+                @endif
             </div>
         </nav>
         <div class="main">
@@ -74,7 +92,13 @@
                 <div class="navbar-collapse collapse">
                     <ul class="navbar-nav navbar-align">
                         <li class="nav-item d-flex align-items-center">
-                            {{ session('ten_sinh_vien') }}
+                            @if (session('ten_sinh_vien') != null)
+                                {{ session('ten_sinh_vien') }}
+                            @else
+                                @if (session('ten_giang_vien') != null)
+                                    {{ session('ten_giang_vien') }}
+                                @endif
+                            @endif
                         </li>
                         <li class="nav-item ms-2">
                             <button type="submit" class="btn btn-danger" id="dangXuatBtn">Đăng xuất</button>

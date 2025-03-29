@@ -21,10 +21,12 @@ class ThongTinDeTaiController extends Controller
         $sinhVien = SinhVien::where('ma_tk', $maTaiKhoan)->first();
         if ($sinhVien->loai_sv == 1) {
             $deTai = DeTaiSinhVien::where('ma_de_tai', $sinhVien->ma_de_tai_sv)->first();
+            $sinhViens = SinhVien::where('ma_de_tai_sv', $sinhVien->ma_de_tai_sv)->get();
         } else {
             $deTai = DeTaiGiangVien::where('ma_de_tai', $sinhVien->ma_de_tai_gv)->first();
+            $sinhViens = SinhVien::where('ma_de_tai_gv', $sinhVien->ma_de_tai_gv)->get();
         }
-        return view('sinhvien.thongtindetai.thongTin', compact('deTai'));
+        return view('sinhvien.thongtindetai.thongTin', compact('deTai', 'sinhViens'));
     }
 
     public function chiTiet()
@@ -51,21 +53,28 @@ class ThongTinDeTaiController extends Controller
         $sinhVien = SinhVien::where('ma_tk', $maTaiKhoan)->first();
         if ($sinhVien->loai_sv == 1) {
             $deTai = DeTaiSinhVien::where('ma_de_tai', $ma_de_tai)->first();
-            $deTai->da_huy = 1;
+            $sinhViens = SinhVien::Where('ma_de_tai_sv', $ma_de_tai)->get();
+            if ($sinhViens->count() <= 1) {
+                $deTai->da_huy = 1;
+                $deTai->trang_thai = null;
+            } 
             $deTai->save();
 
-            $sinhVien->ma_de_tai_sv = NULL;
-            $sinhVien->loai_sv = NULL;
-            $sinhVien->ngay = NULL;
+            $sinhVien->ma_de_tai_sv = null;
+            $sinhVien->loai_sv = null;
+            $sinhVien->ngay = null;
             $sinhVien->save();
         } else {
             $deTai = DeTaiGiangVien::where('ma_de_tai', $ma_de_tai)->first();
-            $deTai->da_dang_ky = 0;
+            $sinhViens = SinhVien::Where('ma_de_tai_gv', $ma_de_tai)->get();
+            if ($sinhViens->count() <= 1) {
+                $deTai->da_dang_ky = 0;
+            } 
             $deTai->save();
 
-            $sinhVien->ma_de_tai_gv = NULL;
-            $sinhVien->loai_sv = NULL;
-            $sinhVien->ngay = NULL;
+            $sinhVien->ma_de_tai_gv = null;
+            $sinhVien->loai_sv = null;
+            $sinhVien->ngay = null;
             $sinhVien->save();
         }
 

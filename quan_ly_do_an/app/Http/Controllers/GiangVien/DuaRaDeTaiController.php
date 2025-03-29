@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\SinhVien;
+namespace App\Http\Controllers\GiangVien;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -8,20 +8,21 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use App\Models\{
-    DeTaiSinhVien,
+    DeTaiGiangVien,
+    GiangVien,
     LinhVuc,
-    SinhVien
+    GiangVienDeTai
 };
 
-class DeXuatDeTaiController extends Controller
+class DuaRaDeTaiController extends Controller
 {
-    public function deXuat()
+    public function duaRa()
     {
         $linhVucs = LinhVuc::orderBy('ma_linh_vuc', 'desc')->get();
-        return view('sinhvien.dexuatdetai.deXuat', compact('linhVucs'));
+        return view('giangvien.duaradetai.duaRa', compact('linhVucs'));
     }
 
-    public function xacNhanDeXuat(Request $request)
+    public function xacNhanDuaRa(Request $request)
     {
         if (!$request->isMethod('post')) {
             return redirect()->back()->with('error', 'Bạn không thể truy cập trực tiếp trang này!');
@@ -48,10 +49,10 @@ class DeXuatDeTaiController extends Controller
                     }
                 }
             ],
-            'mssv.*' => [
-                'sometimes',
-                'nullable',
-            ]
+            // 'mssv.*' => [
+            //     'sometimes',
+            //     'nullable',
+            // ]
         ], [
             'ten_de_tai.required' => 'Tên đề tài không được để trống.',
             'ten_de_tai.string' => 'Tên đề tài phải là chuỗi ký tự.',
@@ -59,30 +60,28 @@ class DeXuatDeTaiController extends Controller
 
             'ma_linh_vuc.required' => 'Lĩnh vực không được để trống.',
         ]);
-        $mssvList = [];
-        $validator->after(function ($validator) use ($request, &$mssvList) {
-            $mssvList = array_filter($request->input('DeTai', [])['mssv'], function ($value) {
-                return trim(strip_tags($value)) !== "";
-            });
+        // $validator->after(function ($validator) use ($request) {
+        //     $mssvList = array_filter($request->input('DeTai', [])['mssv'], function ($value) {
+        //         return trim(strip_tags($value)) !== "";
+        //     });
 
-            foreach ($mssvList as $index => $mssv) {
-                if (!preg_match('/^\d+$/', $mssv)) {
-                    $validator->errors()->add("mssv.$index", "MSSV chỉ được chứa số.");
-                    continue;
-                }
+        //     foreach ($mssvList as $index => $mssv) {
+        //         if (!preg_match('/^\d+$/', $mssv)) {
+        //             $validator->errors()->add("mssv.$index", "MSSV chỉ được chứa số.");
+        //             continue;
+        //         }
 
-                $sinhVien = SinhVien::where('mssv', $mssv)->first();
-                if (!$sinhVien) {
-                    $validator->errors()->add("mssv.$index", "MSSV không tồn tại.");
-                    continue;
-                }
+        //         $sinhVien = SinhVien::where('mssv', $mssv)->first();
+        //         if (!$sinhVien) {
+        //             $validator->errors()->add("mssv.$index", "MSSV không tồn tại.");
+        //             continue;
+        //         }
 
-                if (!empty($sinhVien->ma_de_tai_sv) || !empty($sinhVien->ma_de_tai_gv)) {
-                    $validator->errors()->add("mssv.$index", "MSSV đã đăng ký hoặc đề xuất đề tài.");
-                }
-            }
-        });
-        Log::info("mssv", $mssvList);
+        //         if (!empty($sinhVien->ma_de_tai_sv) || !empty($sinhVien->ma_de_tai_gv)) {
+        //             $validator->errors()->add("mssv.$index", "MSSV đã đăng ký hoặc đề xuất đề tài.");
+        //         }
+        //     }
+        // });
 
         if ($validator->fails()) {
             return response()->json([
@@ -90,25 +89,23 @@ class DeXuatDeTaiController extends Controller
                 'errors' => $validator->errors()->toArray(),
             ]);
         }
-        
+
         try {
-            $deTaiSV = new DeTaiSinhVien();
-            $deTaiSV->ten_de_tai = $data['ten_de_tai'];
-            $deTaiSV->ma_linh_vuc = $data['ma_linh_vuc'];
-            $deTaiSV->mo_ta = $data['mo_ta'];
-            $deTaiSV->trang_thai = 1;
-            $deTaiSV->save();
+            $deTaiGV = new DeTaiGiangVien();
+            $deTaiGV->ten_de_tai = $data['ten_de_tai'];
+            $deTaiGV->ma_linh_vuc = $data['ma_linh_vuc'];
+            $deTaiGV->mo_ta = $data['mo_ta'];
+            $deTaiGV->save();
 
             $maTaiKhoan = session()->get('ma_tai_khoan');
-            $sinhVien = SinhVien::where('ma_tk', $maTaiKhoan)->first();
-            $mssvList[] = $sinhVien->mssv;
-            SinhVien::whereIn('mssv', $mssvList)->update([
-                'ma_de_tai_sv' => $deTaiSV->ma_de_tai,
-                'loai_sv' => 1,
-                'ngay' => Carbon::now()
-            ]);
-            
-            session(['co_de_tai' => 1]);
+            $giangVien = GiangVien::where('ma_tk', $maTaiKhoan)->first();
+            Log::info("giảng viên:", [$deTaiGV->ma_de_tai]);
+            // $mssvList[] = $sinhVien->mssv;
+            $GV_DT = new GiangVienDeTai();
+            $GV_DT->ma_gv = $giangVien->ma_gv;
+            $GV_DT->ma_de_tai = $deTaiGV->ma_de_tai;
+            $GV_DT->ngay_dua_ra = Carbon::now();
+            $GV_DT->save();
 
             return response()->json([
                 'success' => true,

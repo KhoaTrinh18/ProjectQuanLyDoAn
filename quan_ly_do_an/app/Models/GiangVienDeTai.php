@@ -10,7 +10,8 @@ class GiangVienDeTai extends Model
     use HasFactory;
 
     protected $table = 'giang_vien_de_tai';
-    protected $primaryKey = ['ma_gv', 'ma_de_tai'];
+    protected $primaryKey = null; 
+    public $incrementing = false;
     public $timestamps = false;
 
     public function giangVien()
