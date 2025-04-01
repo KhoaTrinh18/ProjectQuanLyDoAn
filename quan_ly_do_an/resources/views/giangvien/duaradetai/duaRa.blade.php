@@ -20,8 +20,7 @@
                                 <div class="ms-2 w-100">
                                     <input type="text" class="form-control form-control-lg shadow-none"
                                         placeholder="Nhập tên đề tài" name="DeTai[ten_de_tai]">
-                                    <span class="error-message text-danger d-block mt-2 error-ten_de_tai"></span>
-
+                                    <span class="error-message text-danger d-none mt-2 error-ten_de_tai"></span>
                                 </div>
                             </div>
                             <div class="d-flex mb-3">
@@ -38,7 +37,7 @@
                                             </option>
                                         @endforeach
                                     </select>
-                                    <span class="error-message text-danger d-block mt-2 error-ma_linh_vuc"></span>
+                                    <span class="error-message text-danger d-none mt-2 error-ma_linh_vuc"></span>
                                 </div>
                             </div>
                             <div class="d-flex mb-3">
@@ -92,7 +91,9 @@
                                     data-bs-target="#confirmModal">
                                     Đưa ra
                                 </button> --}}
-                                <button class="btn btn-primary btn-lg w-25" type="submit" id="duaRa">Đưa ra</button>
+                                <a href="{{ route('dua_ra_de_tai.danh_sach_de_tai') }}" class="btn btn-secondary btn-lg">Quay
+                                    lại</a>
+                                <button class="btn btn-primary btn-lg" type="submit" id="duaRa">Xác nhận đưa ra</button>
                             </div>
                             {{-- <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel"
                                 aria-hidden="true">

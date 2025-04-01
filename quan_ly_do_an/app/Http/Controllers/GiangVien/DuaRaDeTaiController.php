@@ -16,6 +16,24 @@ use App\Models\{
 
 class DuaRaDeTaiController extends Controller
 {
+    public function danhSachDeTai()
+    {
+        $maTaiKhoan = session()->get('ma_tai_khoan');
+        $giangVien = GiangVien::where('ma_tk', $maTaiKhoan)->first();
+        $maDeTais = GiangVienDeTai::where('ma_gv', $giangVien->ma_gv)->pluck('ma_de_tai');
+        $deTais = DeTaiGiangVien::with(['linhVuc', 'giangViens'])
+            ->whereIn('ma_de_tai', $maDeTais)
+            ->orderBy('ma_de_tai', 'desc')
+            ->get();
+        return view('giangvien.duaradetai.danhSachDeTai', compact('deTais'));
+    }
+
+    public function chiTietDeTai($ma_de_tai)
+    {
+        $deTai = DeTaiGiangVien::with(['linhVuc', 'giangViens'])->where('ma_de_tai', $ma_de_tai)->firstOrFail();
+        return view('giangvien.duaradetai.chiTietDeTai', compact('deTai'));
+    }
+
     public function duaRa()
     {
         $linhVucs = LinhVuc::orderBy('ma_linh_vuc', 'desc')->get();

@@ -12,4 +12,14 @@ class GiangVien extends Model
     protected $table = 'giang_vien';
     protected $primaryKey = 'ma_gv';
     public $timestamps = false;
+
+    public function hocVi()
+    {
+        return $this->belongsTo(HocVi::class, 'ma_hoc_vi', 'ma_hoc_vi');
+    }
+
+    public function deTais()
+    {
+        return $this->belongsToMany(DeTaiGiangVien::class, 'giang_vien_de_tai', 'ma_gv', 'ma_de_tai');
+    }
 }

@@ -6,7 +6,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="card">
-                    @if (session('co_de_tai') == 1)
+                    @if ($coDeTai == 1)
                         <div class="card-header d-flex justify-content-center align-items-center">
                             <h2 style="font-weight: bold"><i>Bạn đã đăng ký hoặc đề xuất đề tài!</i></h2>
                         </div>
@@ -14,7 +14,7 @@
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <h2 style="font-weight: bold">Đề xuất đề tài</h2>
                         </div>
-                        <div class="card-body">
+                        <div class="card-body" >
                             <form id="form_de_xuat">
                                 <div class="d-flex mb-3">
                                     <label for="DeTai[ten_de_tai]"
@@ -25,7 +25,7 @@
                                     <div class="ms-2 w-100">
                                         <input type="text" class="form-control form-control-lg shadow-none"
                                             placeholder="Nhập tên đề tài" name="DeTai[ten_de_tai]">
-                                        <span class="error-message text-danger d-block mt-2 error-ten_de_tai"></span>
+                                        <span class="error-message text-danger d-none mt-2 error-ten_de_tai"></span>
 
                                     </div>
                                 </div>
@@ -43,7 +43,7 @@
                                                 </option>
                                             @endforeach
                                         </select>
-                                        <span class="error-message text-danger d-block mt-2 error-ma_linh_vuc"></span>
+                                        <span class="error-message text-danger d-none mt-2 error-ma_linh_vuc"></span>
                                     </div>
                                 </div>
                                 <div class="d-flex mb-3">
@@ -99,7 +99,7 @@
                                     </button>
                                 </div>
                                 <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel"
-                                    aria-hidden="true">
+                                    aria-hidden="true" style="font-size: 16px">
                                     <div class="modal-dialog">
                                         <div class="modal-content">
                                             <div class="modal-header">
@@ -107,11 +107,7 @@
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                     aria-label="Close"></button>
                                             </div>
-                                            <div class="modal-body">
-                                                Khi bạn đã đề xuất 1 đề tài thì không thể đăng ký đề tài có trong danh sách
-                                                đề
-                                                tài. Bạn có chắc chắn muốn
-                                                đề xuất đề tài này không?
+                                            <div class="modal-body">Bạn có chắc chắn muốn đề xuất đề tài này không?
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary"

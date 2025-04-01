@@ -11,4 +11,6 @@ Route::middleware([KiemTraDangNhap::class])->group(function () {
     Route::get('/dua-ra-de-tai/xac-nhan-dua-ra', function() {
         return redirect()->back()->with('error', 'Sai đường dẫn');
     });
+    Route::get('/dua-ra-de-tai/danh-sach-de-tai', [DuaRaDeTaiController::class, 'danhSachDeTai'])->name('dua_ra_de_tai.danh_sach_de_tai');
+    Route::get('/dua-ra-de-tai/chi-tiet-de-tai/{ma_de_tai}', [DuaRaDeTaiController::class, 'chiTietDeTai'])->name('dua_ra_de_tai.chi_tiet_de_tai');
 });

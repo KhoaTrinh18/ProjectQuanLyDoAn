@@ -24,7 +24,7 @@
                             <div class="text-center">
                                 <a href="{{ route('thong_tin_de_tai.danh_sach_de_tai_huy') }}"
                                     class="btn btn-secondary btn-lg">Quay lại</a>
-                                @if (session('co_de_tai') == 0)
+                                @if ($coDeTai == 0)
                                     <button type="submit" class="btn btn-primary btn-lg" id="deXuat">Xác nhận đề
                                         xuất</button>
                                 @endif

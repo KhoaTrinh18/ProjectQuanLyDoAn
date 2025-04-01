@@ -70,14 +70,14 @@
                             @endif
                         </td> --}}
                         <td class="text-center">
-                            @if ($deTai->so_luong_sv >= $deTai->so_luong_sv_toi_da)
-                                <span class="text-danger">{{ $deTai->so_luong_sv."/".$deTai->so_luong_sv_toi_da}}</span>
+                            @if ($deTai->so_luong_sv_dang_ky >= $deTai->so_luong_sv_toi_da)
+                                <span class="text-danger">{{ $deTai->so_luong_sv_dang_ky."/".$deTai->so_luong_sv_toi_da}}</span>
                             @else
-                                <span class="text-success">{{ $deTai->so_luong_sv."/".$deTai->so_luong_sv_toi_da}}</span>
+                                <span class="text-success">{{ $deTai->so_luong_sv_dang_ky."/".$deTai->so_luong_sv_toi_da}}</span>
                             @endif
                         </td>
                         <td class="text-center">
-                            @if ($deTai->so_luong_sv < $deTai->so_luong_sv_toi_da && session('co_de_tai') == 0)
+                            @if ($deTai->so_luong_sv_dang_ky < $deTai->so_luong_sv_toi_da && $coDeTai == 0)
                                 <a href="{{ route('dang_ky_de_tai.dang_ky', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
                                     class="btn btn-primary btn-sm">Đăng ký</a>
                             @else

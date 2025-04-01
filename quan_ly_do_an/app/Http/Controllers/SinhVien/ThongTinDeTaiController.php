@@ -19,6 +19,7 @@ class ThongTinDeTaiController extends Controller
     {
         $maTaiKhoan = session()->get('ma_tai_khoan');
         $sinhVien = SinhVien::where('ma_tk', $maTaiKhoan)->first();
+        $coDeTai = ($sinhVien->ma_de_tai_sv == null && $sinhVien->ma_de_tai_gv == null) ? 0 : 1;
         if ($sinhVien->loai_sv == 1) {
             $deTai = DeTaiSinhVien::where('ma_de_tai', $sinhVien->ma_de_tai_sv)->first();
             $sinhViens = SinhVien::where('ma_de_tai_sv', $sinhVien->ma_de_tai_sv)->get();
@@ -28,7 +29,7 @@ class ThongTinDeTaiController extends Controller
             $sinhViens = SinhVien::where('ma_de_tai_gv', $sinhVien->ma_de_tai_gv)->get();
             $loaiDeTai = 'de_tai_gv';
         }
-        return view('sinhvien.thongtindetai.thongTin', compact('deTai', 'sinhViens', 'loaiDeTai'));
+        return view('sinhvien.thongtindetai.thongTin', compact('deTai', 'sinhViens', 'loaiDeTai', 'coDeTai'));
     }
 
     public function chiTiet()
@@ -66,21 +67,7 @@ class ThongTinDeTaiController extends Controller
             $sinhVien->loai_sv = null;
             $sinhVien->ngay = null;
             $sinhVien->save();
-        } else {
-            $deTai = DeTaiGiangVien::where('ma_de_tai', $ma_de_tai)->first();
-            $sinhViens = SinhVien::Where('ma_de_tai_gv', $ma_de_tai)->get();
-            if ($sinhViens->count() <= 1) {
-                $deTai->da_dang_ky = 0;
-            } 
-            $deTai->save();
-
-            $sinhVien->ma_de_tai_gv = null;
-            $sinhVien->loai_sv = null;
-            $sinhVien->ngay = null;
-            $sinhVien->save();
         }
-
-        session(['co_de_tai' => 0]);
 
         return response()->json([
             'success' => true,

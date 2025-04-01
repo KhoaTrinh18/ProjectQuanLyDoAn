@@ -17,8 +17,11 @@ class DeXuatDeTaiController extends Controller
 {
     public function deXuat()
     {
+        $maTaiKhoan = session()->get('ma_tai_khoan');
+        $sinhVien = SinhVien::where('ma_tk', $maTaiKhoan)->first();
+        $coDeTai = ($sinhVien->ma_de_tai_sv == null && $sinhVien->ma_de_tai_gv == null) ? 0 : 1;
         $linhVucs = LinhVuc::orderBy('ma_linh_vuc', 'desc')->get();
-        return view('sinhvien.dexuatdetai.deXuat', compact('linhVucs'));
+        return view('sinhvien.dexuatdetai.deXuat', compact('linhVucs', 'coDeTai'));
     }
 
     public function xacNhanDeXuat(Request $request)
@@ -82,7 +85,6 @@ class DeXuatDeTaiController extends Controller
                 }
             }
         });
-        Log::info("mssv", $mssvList);
 
         if ($validator->fails()) {
             return response()->json([
@@ -97,6 +99,7 @@ class DeXuatDeTaiController extends Controller
             $deTaiSV->ma_linh_vuc = $data['ma_linh_vuc'];
             $deTaiSV->mo_ta = $data['mo_ta'];
             $deTaiSV->trang_thai = 1;
+            $deTaiSV->so_luong_sv_de_xuat = count($mssvList) + 1;
             $deTaiSV->save();
 
             $maTaiKhoan = session()->get('ma_tai_khoan');

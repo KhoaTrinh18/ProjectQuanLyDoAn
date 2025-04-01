@@ -6,7 +6,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="card">
-                    @if (session('co_de_tai') == 0)
+                    @if ($coDeTai == 0)
                         <div class="card-header d-flex justify-content-center align-items-center flex-column">
                             <h2 style="font-weight: bold"><i>Bạn chưa có đề tài</i></h2>
                             <h5 style="font-weight: bold"><i>(Vui lòng đề xuất hoặc đăng ký!)</i></h5>
@@ -18,13 +18,23 @@
                         <div class="card-body" style="font-size: 16px">
                             <p><strong>Đề tài: </strong>{{ $deTai->ten_de_tai }} (<a
                                     href="{{ route('thong_tin_de_tai.chi_tiet') }}">Chi tiết</a>)</p>
-                            <p><strong>Số lượng sinh viên đã đăng ký:
-                                </strong>{{ $deTai->so_luong_sv . '/' . $deTai->so_luong_sv_toi_da }}</p>
-                            @if ($deTai->so_luong_sv == 1)
+                            <p><strong>Hình thức:</strong>
+                                @if ($loaiDeTai == 'de_tai_sv')
+                                    Đề xuất
+                                @else
+                                    Đăng ký
+                                @endif
+                            </p>
+                            @if ($loaiDeTai == 'de_tai_gv')
+                                <p><strong>Số lượng sinh viên đã đăng ký:
+                                    </strong>{{ $deTai->so_luong_sv_dang_ky . '/' . $deTai->so_luong_sv_toi_da }}</p>
+                            @endif
+
+                            @if ($deTai->so_luong_sv_dang_ky == 1)
                                 <p><strong>Sinh viên đã đăng ký:
                                     </strong>{{ implode(', ', $sinhViens->map(fn($sv) => "{$sv->ho_ten} ({$sv->mssv})")->toArray()) }}
                                 </p>
-                            @else
+                            @elseif ($deTai->so_luong_sv_dang_ky > 1)
                                 <p><strong>Sinh viên đã đăng ký:</strong></p>
                                 <ul>
                                     @foreach ($sinhViens as $sv)
@@ -32,7 +42,21 @@
                                     @endforeach
                                 </ul>
                             @endif
-                            @if ($deTai->loai_de_tai == 'de_tai_sv')
+
+                            @if ($deTai->so_luong_sv_de_xuat == 1)
+                                <p><strong>Sinh viên đã đề xuất:
+                                    </strong>{{ implode(', ', $sinhViens->map(fn($sv) => "{$sv->ho_ten} ({$sv->mssv})")->toArray()) }}
+                                </p>
+                            @elseif ($deTai->so_luong_sv_de_xuat > 1)
+                                <p><strong>Sinh viên đã đề xuất:</strong></p>
+                                <ul>
+                                    @foreach ($sinhViens as $sv)
+                                        <li>{{ $sv->ho_ten }} ({{ $sv->mssv }})</li>
+                                    @endforeach
+                                </ul>
+                            @endif
+
+                            @if ($loaiDeTai == 'de_tai_sv')
                                 <p><strong>Trạng thái: </strong>
                                     @if ($deTai->trang_thai == 1)
                                         <span class="text-warning">Đang xử lý</span>
@@ -42,7 +66,12 @@
                                         <span class="text-danger">Không được duyệt</span>
                                     @endif
                                 </p>
+                            @else
+                                <p><strong>Trạng thái: </strong>
+                                    <span class="text-success">Đã duyệt</span>
+                                </p>
                             @endif
+                            
                             {{-- @if ($deTai->trang_thai != 1 && $deTai->trang_thai != null)
                                 <p><strong>Điểm demo: </strong>{{ $deTai->diem_demo ? $deTai->diem_demo : 'chưa có' }}</p>
                                 <p><strong>Điểm báo cáo: </strong>{{ $deTai->diem_demo ? $deTai->diem_bao_cao : 'chưa có' }}
@@ -50,7 +79,7 @@
                                 <p><strong>Điểm bảo vệ: </strong></p>
                                 <p><strong>Điểm giảng viên hướng dẫn: </strong></p>
                             @else --}}
-                            @if ($deTai->loai_de_tai == 'de_tai_sv')
+                            @if ($loaiDeTai == 'de_tai_sv')
                                 <form id="form_huy">
                                     <input type="hidden" name="ma_de_tai" value="{{ $deTai->ma_de_tai }}">
                                     <div class="text-center">
@@ -58,12 +87,15 @@
                                         <button type="submit" class="btn btn-danger btn-lg" id="huy">Hủy</button>
                                     </div>
                                 </form>
+                                <h5 class="text-center mt-4" style="font-weight: bold"><i>Sinh viên có thể hủy khi chưa
+                                        duyệt
+                                        trong thời gian quy định!</i>
+                                </h5>
                             @else
-                                <h5 class="text-center" style="font-weight: bold"><i>Sinh viên muốn hủy phải liên hệ với giảng viên đưa ra đề tài!</i>
+                                <h5 class="text-center" style="font-weight: bold"><i>Sinh viên muốn hủy phải liên hệ với
+                                        giảng viên đưa ra đề tài trong thời gian quy định!</i>
                                 </h5>
                             @endif
-
-                            {{-- @endif --}}
                         </div>
                     @endif
                 </div>

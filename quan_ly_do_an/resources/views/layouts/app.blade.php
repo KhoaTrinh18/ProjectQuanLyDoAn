@@ -34,7 +34,7 @@
                             Thực hiện
                         </li>
                         <li class="sidebar-item {{ request()->is('dang-ky-de-tai*') ? 'active' : '' }}">
-                            <a class="sidebar-link" href="{{ route('dang_ky_de_tai.index') }}">
+                            <a class="sidebar-link" href="{{ route('dang_ky_de_tai.danh_sach_de_tai') }}">
                                 <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Đăng
                                     ký
                                     đề tài</span>
