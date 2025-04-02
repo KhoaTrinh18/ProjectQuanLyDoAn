@@ -32,7 +32,7 @@
 
                             @if ($deTai->so_luong_sv_dang_ky == 1)
                                 <p><strong>Sinh viên đã đăng ký:
-                                    </strong>{{ implode(', ', $sinhViens->map(fn($sv) => "{$sv->ho_ten} ({$sv->mssv})")->toArray()) }}
+                                    </strong>{{ $sinhViens->first()->ho_ten }} ({{ $sinhViens->first()->mssv }})
                                 </p>
                             @elseif ($deTai->so_luong_sv_dang_ky > 1)
                                 <p><strong>Sinh viên đã đăng ký:</strong></p>
@@ -45,7 +45,7 @@
 
                             @if ($deTai->so_luong_sv_de_xuat == 1)
                                 <p><strong>Sinh viên đã đề xuất:
-                                    </strong>{{ implode(', ', $sinhViens->map(fn($sv) => "{$sv->ho_ten} ({$sv->mssv})")->toArray()) }}
+                                    </strong>{{ $sinhViens->first()->ho_ten }} ({{ $sinhViens->first()->mssv }})
                                 </p>
                             @elseif ($deTai->so_luong_sv_de_xuat > 1)
                                 <p><strong>Sinh viên đã đề xuất:</strong></p>

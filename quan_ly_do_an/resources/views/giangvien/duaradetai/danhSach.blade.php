@@ -36,7 +36,7 @@
                                         </td>
                                         <td>{{ $deTai->linhVuc->ten_linh_vuc }}</td>
                                         <td class="text-center">{{ $deTai->so_luong_sv_toi_da }}</td>
-                                        <td class="text-center">
+                                        <td>
                                             @if ($deTai->trang_thai == 1)
                                                 <span class="text-warning">Đang xử lý</span>
                                             @elseif ($deTai->trang_thai == 2)

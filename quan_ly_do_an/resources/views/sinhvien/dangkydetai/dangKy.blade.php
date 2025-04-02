@@ -11,6 +11,7 @@
                     </div>
                     <div class="card-body" style="font-size: 16px">
                         <h3 class="text-center mb-4" style="font-weight: bold">{{ $deTai->ten_de_tai }}</h3>
+
                         @if ($deTai->giangViens->count() == 1)
                             @php $giangVien = $deTai->giangViens->first(); @endphp
                             <p><strong>Giảng viên ra đề tài:</strong> {{ $giangVien->ho_ten }} - Email:
@@ -26,24 +27,23 @@
 
                         <p><strong>Lĩnh vực:</strong> {{ $deTai->linhVuc->ten_linh_vuc }}</p>
                         <p><strong>Mô tả:</strong> {!! $deTai->mo_ta !!}</p>
-                        
+
                         @if ($deTai->so_luong_sv_dang_ky < 1)
-                            <p><strong>Sinh viên thực hiện:
+                            <p><strong>Sinh viên đã đăng ký:
                                 </strong>chưa có</p>
+                        @elseif ($deTai->so_luong_sv_dang_ky == 1)
+                            <p><strong>Sinh viên đã đăng ký:
+                                </strong>{{ $sinhViens->first()->ho_ten }} ({{ $sinhViens->first()->mssv }})
+                            </p>
                         @else
-                            @if ($deTai->so_luong_sv_dang_ky == 1)
-                                <p><strong>Sinh viên đã đăng ký:
-                                    </strong>{{ implode(', ', $sinhViens->map(fn($sv) => "{$sv->ho_ten} ({$sv->mssv})")->toArray()) }}
-                                </p>
-                            @else
-                                <p><strong>Sinh viên đã đăng ký:</strong></p>
-                                <ul>
-                                    @foreach ($sinhViens as $sv)
-                                        <li>{{ $sv->ho_ten }} ({{ $sv->mssv }})</li>
-                                    @endforeach
-                                </ul>
-                            @endif
+                            <p><strong>Sinh viên đã đăng ký:</strong></p>
+                            <ul>
+                                @foreach ($sinhViens as $sv)
+                                    <li>{{ $sv->ho_ten }} ({{ $sv->mssv }})</li>
+                                @endforeach
+                            </ul>
                         @endif
+
                         <form id="form_dang_ky">
                             <input type="hidden" name="DeTai[ma_de_tai]" value="{{ $deTai->ma_de_tai }}">
                             <div class="text-center">

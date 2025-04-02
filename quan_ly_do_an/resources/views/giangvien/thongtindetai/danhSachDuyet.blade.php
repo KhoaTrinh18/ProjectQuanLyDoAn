@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Danh sách đề tài đã hủy')
+@section('title', 'Danh sách đề tài đã duyệt')
 
 @section('content')
     <div class="container-fluid p-0">
@@ -7,7 +7,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <h2 style="font-weight: bold">Danh sách đề tài đã hủy</h2>
+                        <h2 style="font-weight: bold">Danh sách đề tài đã duyệt</h2>
                     </div>
                     <div class="card-body">
                         <table class="table table-bordered table-striped table-hover">
@@ -16,6 +16,7 @@
                                     <th scope="col" class="text-white">#</th>
                                     <th scope="col" class="text-white" style="width: 40%;">Tên đề tài</th>
                                     <th scope="col" class="text-white">Lĩnh vực</th>
+                                    <th scope="col" class="text-white">Số lượng sinh viên đăng ký</th>
                                     <th scope="col" class="text-white"></th>
                                 </tr>
                             </thead>
@@ -30,13 +31,17 @@
                                         </td>
                                         <td>{{ $deTai->linhVuc->ten_linh_vuc }}</td>
                                         <td class="text-center">
-                                            @if ($deTai->da_dang_ky == 0 && $coDeTai== 0)
-                                            <a href="{{ route('thong_tin_de_tai.chi_tiet_de_tai_huy', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
-                                                class="btn btn-primary btn-sm">Đề xuất lại</a>
+                                            @if ($deTai->so_luong_sv_dang_ky < $deTai->so_luong_sv_toi_da)
+                                                <span
+                                                    class="text-danger">{{ $deTai->so_luong_sv_dang_ky . '/' . $deTai->so_luong_sv_toi_da }}</span>
                                             @else
-                                            <a href="{{ route('thong_tin_de_tai.chi_tiet_de_tai_huy', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
-                                                class="btn btn-secondary btn-sm">Xem</a>
+                                                <span
+                                                    class="text-success">{{ $deTai->so_luong_sv_dang_ky . '/' . $deTai->so_luong_sv_toi_da }}</span>
                                             @endif
+                                        </td>
+                                        <td class="text-center">
+                                            <a href="{{ route('thong_tin_de_tai.chi_tiet_duyet', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
+                                                class="btn btn-secondary btn-sm">Xem</a>
                                         </td>
                                     </tr>
                                 @endforeach

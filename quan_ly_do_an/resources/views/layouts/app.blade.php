@@ -75,9 +75,18 @@
                             Thực hiện
                         </li>
                         <li class="sidebar-item {{ request()->is('dua-ra-de-tai*') ? 'active' : '' }}">
-                            <a class="sidebar-link" href="{{ route('dua_ra_de_tai.dua_ra') }}">
+                            <a class="sidebar-link" href="{{ route('dua_ra_de_tai.danh_sach') }}">
                                 <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Đưa
                                     ra đề tài</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-header">
+                            Thông tin
+                        </li>
+                        <li class="sidebar-item {{ request()->is('thong-tin-de-tai*') ? 'active' : '' }}">
+                            <a class="sidebar-link" href="{{ route('thong_tin_de_tai.danh_sach_duyet') }}">
+                                <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Đề
+                                    tài đã duyệt</span>
                             </a>
                         </li>
                     </ul>
