@@ -23,8 +23,10 @@
                                 @endforeach
                             </ul>
                         @endif
+
                         <p><strong>Lĩnh vực:</strong> {{ $deTai->linhVuc->ten_linh_vuc }}</p>
                         <p><strong>Mô tả:</strong> {!! $deTai->mo_ta !!}</p>
+                        
                         @if ($deTai->so_luong_sv_dang_ky < 1)
                             <p><strong>Sinh viên thực hiện:
                                 </strong>chưa có</p>
@@ -45,7 +47,7 @@
                         <form id="form_dang_ky">
                             <input type="hidden" name="DeTai[ma_de_tai]" value="{{ $deTai->ma_de_tai }}">
                             <div class="text-center">
-                                <a href="{{ route('dang_ky_de_tai.danh_sach_de_tai') }}" class="btn btn-secondary btn-lg">Quay
+                                <a href="{{ route('dang_ky_de_tai.danh_sach') }}" class="btn btn-secondary btn-lg">Quay
                                     lại</a>
                                 @if ($deTai->so_luong_sv_dang_ky < $deTai->so_luong_sv_toi_da && $coDeTai == 0)
                                     <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal"
@@ -107,7 +109,7 @@
                     success: function(result) {
                         if (result.success) {
                             alert("Đăng ký thành công!");
-                            window.location.href = "{{ route('dang_ky_de_tai.danh_sach_de_tai') }}";
+                            window.location.href = "{{ route('dang_ky_de_tai.danh_sach') }}";
                         } else {
                             $.each(result.errors, function(field, messages) {
                                 $('.error-' + field).text(messages[0]).removeClass(

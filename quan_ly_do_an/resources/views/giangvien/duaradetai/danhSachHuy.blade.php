@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Danh sách đề tài')
+@section('title', 'Danh sách đề tài hủy')
 
 @section('content')
     <div class="container-fluid p-0">
@@ -7,8 +7,8 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <h2 style="font-weight: bold">Danh sách đề tài</h2>
-                        <a href="{{ route('dua_ra_de_tai.dua_ra') }}" class="btn btn-success btn-lg">Đưa ra</a>
+                        <h2 style="font-weight: bold">Danh sách đề tài hủy</h2>
+                        <a href="{{ route('dua_ra_de_tai.danh_sach') }}" class="btn btn-secondary btn-lg">Quay lại</a>
                     </div>
                     <div class="card-body">
                         <table class="table table-bordered table-striped table-hover">
@@ -32,19 +32,11 @@
                                             {{ $deTai->ten_de_tai }}
                                         </td>
                                         <td>{{ $deTai->linhVuc->ten_linh_vuc }}</td>
-                                        <td>{{ $deTai->so_luong_sv_toi_da }}</td>
-                                        <td>
-                                            @if ($deTai->trang_thai == 1)
-                                                <span class="text-warning">Đang xử lý</span>
-                                            @elseif ($deTai->trang_thai == 2)
-                                                <span class="text-success">Đã duyệt</span>
-                                            @else
-                                                <span class="text-danger">Không được duyệt</span>
-                                            @endif
-                                        </td>
+                                        <td class="text-center">{{ $deTai->so_luong_sv_toi_da }}</td>
+                                        <td class="text-danger text-center">đã hủy</td>
                                         <td class="text-center">
-                                            <a href="{{ route('dua_ra_de_tai.chi_tiet_de_tai', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
-                                                class="btn btn-secondary btn-sm">Xem</a>
+                                            <a href="{{ route('dua_ra_de_tai.khoi_phuc', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
+                                                class="btn btn-primary btn-sm">Khôi phục</a>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -55,6 +47,9 @@
                                 @endif
                             </tbody>
                         </table>
+                        <h5 class="text-center" style="font-weight: bold"><i>Khi đề tài đã được duyệt giảng viên không thể
+                                tự hủy. Nếu cần hủy thì phải liên hệ với trưởng khoa trong thời gian quy định!</i>
+                        </h5>
                     </div>
                 </div>
             </div>

@@ -15,15 +15,18 @@ use App\Models\{
 
 class DangKyDeTaiController extends Controller
 {
-    public function danhSachDeTai(Request $request)
+    public function danhSach(Request $request)
     {
         $limit = $request->query('limit', 10);
+
         $maTaiKhoan = session()->get('ma_tai_khoan');
         $sinhVien = SinhVien::where('ma_tk', $maTaiKhoan)->first();
-        $coDeTai = ($sinhVien->ma_de_tai_sv == null && $sinhVien->ma_de_tai_gv == null) ? 0 : 1;
+        $coDeTai = ($sinhVien && ($sinhVien->ma_de_tai_sv !== null || $sinhVien->ma_de_tai_gv !== null)) ? 1 : 0;
+
         $linhVucs = LinhVuc::orderBy('ma_linh_vuc', 'desc')->get();
         $deTais = DeTaiGiangVien::with('linhVuc')->orderBy('ma_de_tai', 'desc')->paginate($limit);
-        return view('sinhvien.dangkydetai.danhSachDeTai', compact('deTais', 'linhVucs', 'coDeTai'));
+
+        return view('sinhvien.dangkydetai.danhSach', compact('deTais', 'linhVucs', 'coDeTai'));
     }
 
     public function pageAjax(Request $request)
@@ -33,27 +36,28 @@ class DangKyDeTaiController extends Controller
         if ($request->filled('ten_de_tai')) {
             $query->where('ten_de_tai', 'like', '%' . $request->ten_de_tai . '%');
         }
-    
+
         if ($request->filled('ma_linh_vuc')) {
             $query->where('ma_linh_vuc', $request->ma_linh_vuc);
         }
-    
+
         if ($request->filled('giang_vien')) {
             $query->whereHas('giangViens', function ($q) use ($request) {
                 $q->where('ho_ten', 'like', '%' . $request->giang_vien . '%');
             });
         }
-    
+
         if ($request->filled('trang_thai')) {
             $query->where('da_dang_ky', $request->trang_thai);
         }
-    
+
         $limit = $request->input('limit', 10);
         $deTais = $query->orderBy('ma_de_tai', 'desc')->paginate($limit);
+
         $maTaiKhoan = session()->get('ma_tai_khoan');
         $sinhVien = SinhVien::where('ma_tk', $maTaiKhoan)->first();
-        $coDeTai = ($sinhVien->ma_de_tai_sv == null && $sinhVien->ma_de_tai_gv == null) ? 0 : 1;
-    
+        $coDeTai = ($sinhVien && ($sinhVien->ma_de_tai_sv !== null || $sinhVien->ma_de_tai_gv !== null)) ? 1 : 0;
+
         return response()->json([
             'success' => true,
             'html' => view('sinhvien.dangkydetai.pageAjax', compact('deTais', 'coDeTai'))->render(),
@@ -64,9 +68,11 @@ class DangKyDeTaiController extends Controller
     {
         $maTaiKhoan = session()->get('ma_tai_khoan');
         $sinhVien = SinhVien::where('ma_tk', $maTaiKhoan)->first();
-        $coDeTai = ($sinhVien->ma_de_tai_sv == null && $sinhVien->ma_de_tai_gv == null) ? 0 : 1;
+        $coDeTai = ($sinhVien && ($sinhVien->ma_de_tai_sv !== null || $sinhVien->ma_de_tai_gv !== null)) ? 1 : 0;
+
         $sinhViens = SinhVien::where('ma_de_tai_gv', $ma_de_tai)->get();
         $deTai = DeTaiGiangVien::with(['linhVuc', 'giangViens'])->where('ma_de_tai', $ma_de_tai)->firstOrFail();
+        
         return view('sinhvien.dangkydetai.dangKy', compact('deTai', 'sinhViens', 'coDeTai'));
     }
 

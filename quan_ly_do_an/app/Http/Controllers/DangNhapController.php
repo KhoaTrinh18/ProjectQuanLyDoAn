@@ -38,7 +38,7 @@ class DangNhapController extends Controller
         if ($taiKhoan->loai_tk == 'sinh_vien') {
             $sinhVien = SinhVien::where('ma_tk', $taiKhoan->ma_tk)->first();
             Session::put('ten_sinh_vien', $sinhVien->ho_ten);
-            $route = route('dang_ky_de_tai.danh_sach_de_tai');
+            $route = route('dang_ky_de_tai.danh_sach');
         } else if ($taiKhoan->loai_tk == 'giang_vien') {
             $giangVien = GiangVien::with('hocVi')->where('ma_tk', $taiKhoan->ma_tk)->first();
             if($giangVien->hocVi->ten_hoc_vi == "Thạc sĩ") {
@@ -47,7 +47,7 @@ class DangNhapController extends Controller
                 $hocVi = "TS. ";
             }
             Session::put('ten_giang_vien', $hocVi.$giangVien->ho_ten);
-            $route = route('dua_ra_de_tai.dua_ra');
+            $route = route('dua_ra_de_tai.danh_sach');
         }
 
         return response()->json([

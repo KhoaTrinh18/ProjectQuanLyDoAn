@@ -27,7 +27,7 @@
                         <p><strong>Mô tả:</strong> {!! $deTai->mo_ta !!}</p>
                         <p><strong>Số lượng sinh viên đăng ký tối đa:</strong> {{ $deTai->so_luong_sv_toi_da }}</p>
                         <div class="text-center">
-                            <a href="{{ route('dua_ra_de_tai.danh_sach_de_tai') }}" class="btn btn-secondary btn-lg">Quay
+                            <a href="{{ route('dua_ra_de_tai.danh_sach') }}" class="btn btn-secondary btn-lg">Quay
                                 lại</a>
                         </div>
                     </div>
