@@ -8,7 +8,8 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use App\Models\{
     GiangVien,
-    TaiKhoan,
+    TaiKhoanSV,
+    TaiKhoanGV,
     SinhVien
 };
 
@@ -24,23 +25,34 @@ class DangNhapController extends Controller
         $tenTaiKhoan = $request->input('ten_tai_khoan');
         $matKhau = $request->input('mat_khau');
 
-        $taiKhoan = TaiKhoan::where('ten_tk', $tenTaiKhoan)->first();
-        if (!$taiKhoan || $taiKhoan->mat_khau !== $matKhau) {
-            return response()->json([
-                'success' => false,
-                'error' => 'Tên tài khoản hoặc mật khẩu không đúng!',
-            ]);
+        $taiKhoanSV = TaiKhoanSV::where('ten_tk', $tenTaiKhoan)->first();
+        $taiKhoanGV = TaiKhoanGV::where('ten_tk', $tenTaiKhoan)->first();
+
+        if($taiKhoanSV) {
+            if (!$taiKhoanSV || $taiKhoanSV->mat_khau !== $matKhau){
+                return response()->json([
+                    'success' => false,
+                    'error' => 'Tên tài khoản hoặc mật khẩu không đúng!',
+                ]);
+            }
+            Session::put('ma_tai_khoan', $taiKhoanSV->ma_tk);
+        } else {
+            if (!$taiKhoanGV || $taiKhoanGV->mat_khau !== $matKhau){
+                return response()->json([
+                    'success' => false,
+                    'error' => 'Tên tài khoản hoặc mật khẩu không đúng!',
+                ]);
+            }
+            Session::put('ma_tai_khoan', $taiKhoanGV->ma_tk);
         }
 
-        Session::put('ma_tai_khoan', $taiKhoan->ma_tk);
-
         $route = '/';
-        if ($taiKhoan->loai_tk == 'sinh_vien') {
-            $sinhVien = SinhVien::where('ma_tk', $taiKhoan->ma_tk)->first();
+        if ($taiKhoanSV) {
+            $sinhVien = SinhVien::where('ma_tk', $taiKhoanSV->ma_tk)->first();
             Session::put('ten_sinh_vien', $sinhVien->ho_ten);
             $route = route('dang_ky_de_tai.danh_sach');
-        } else if ($taiKhoan->loai_tk == 'giang_vien') {
-            $giangVien = GiangVien::with('hocVi')->where('ma_tk', $taiKhoan->ma_tk)->first();
+        } else if ($taiKhoanGV->loai_tk == 'giang_vien') {
+            $giangVien = GiangVien::with('hocVi')->where('ma_tk', $taiKhoanGV->ma_tk)->first();
             if($giangVien->hocVi->ten_hoc_vi == "Thạc sĩ") {
                 $hocVi = "ThS. ";
             } else {
@@ -48,6 +60,9 @@ class DangNhapController extends Controller
             }
             Session::put('ten_giang_vien', $hocVi.$giangVien->ho_ten);
             $route = route('dua_ra_de_tai.danh_sach');
+        } else if ($taiKhoanGV->loai_tk == 'admin') {
+            Session::put('ten_admin', 'admin');
+            $route = route('thiet_lap.danh_sach');
         }
 
         return response()->json([

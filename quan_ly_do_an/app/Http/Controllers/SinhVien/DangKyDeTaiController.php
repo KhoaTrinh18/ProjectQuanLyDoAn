@@ -8,9 +8,12 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use App\Models\{
+    BangPhanCongSVDK,
     DeTaiGiangVien,
     SinhVien,
-    LinhVuc
+    LinhVuc,
+    TaiKhoanSV,
+    ThietLap
 };
 
 class DangKyDeTaiController extends Controller
@@ -21,12 +24,21 @@ class DangKyDeTaiController extends Controller
 
         $maTaiKhoan = session()->get('ma_tai_khoan');
         $sinhVien = SinhVien::where('ma_tk', $maTaiKhoan)->first();
-        $coDeTai = ($sinhVien && ($sinhVien->ma_de_tai_sv !== null || $sinhVien->ma_de_tai_gv !== null)) ? 1 : 0;
+        $daDangKy = $sinhVien->dang_ky;
 
         $linhVucs = LinhVuc::orderBy('ma_linh_vuc', 'desc')->get();
         $deTais = DeTaiGiangVien::with('linhVuc')->orderBy('ma_de_tai', 'desc')->paginate($limit);
 
-        return view('sinhvien.dangkydetai.danhSach', compact('deTais', 'linhVucs', 'coDeTai'));
+        $taikhoan = TaiKhoanSV::where('ma_tk', $maTaiKhoan)->first();
+        $thietLap = ThietLap::where('nam_hoc', $taikhoan->nam_hoc)->first();
+        $ngayHetHan = Carbon::create(2024, 5, 1)->toDateString();
+        if (Carbon::parse($thietLap->ngay_ket_thuc_dang_ky)->lt($ngayHetHan)) {
+            $hetHan = 1;
+        } else {
+            $hetHan = 0;
+        }
+
+        return view('sinhvien.dangkydetai.danhSach', compact('deTais', 'linhVucs', 'daDangKy', 'hetHan'));
     }
 
     public function pageAjax(Request $request)
@@ -48,7 +60,11 @@ class DangKyDeTaiController extends Controller
         }
 
         if ($request->filled('trang_thai')) {
-            $query->where('da_dang_ky', $request->trang_thai);
+            if ($request->trang_thai == 1) {
+                $query->where('so_luong_sv_dang_ky', '>', 0);
+            } elseif ($request->trang_thai == 0) {
+                $query->where('so_luong_sv_dang_ky', 0);
+            }
         }
 
         $limit = $request->input('limit', 10);
@@ -56,11 +72,11 @@ class DangKyDeTaiController extends Controller
 
         $maTaiKhoan = session()->get('ma_tai_khoan');
         $sinhVien = SinhVien::where('ma_tk', $maTaiKhoan)->first();
-        $coDeTai = ($sinhVien && ($sinhVien->ma_de_tai_sv !== null || $sinhVien->ma_de_tai_gv !== null)) ? 1 : 0;
+        $daDangKy = $sinhVien->dang_ky;
 
         return response()->json([
             'success' => true,
-            'html' => view('sinhvien.dangkydetai.pageAjax', compact('deTais', 'coDeTai'))->render(),
+            'html' => view('sinhvien.dangkydetai.pageAjax', compact('deTais', 'daDangKy'))->render(),
         ]);
     }
 
@@ -68,12 +84,11 @@ class DangKyDeTaiController extends Controller
     {
         $maTaiKhoan = session()->get('ma_tai_khoan');
         $sinhVien = SinhVien::where('ma_tk', $maTaiKhoan)->first();
-        $coDeTai = ($sinhVien && ($sinhVien->ma_de_tai_sv !== null || $sinhVien->ma_de_tai_gv !== null)) ? 1 : 0;
+        $daDangKy = $sinhVien->dang_ky;
 
-        $sinhViens = SinhVien::where('ma_de_tai_gv', $ma_de_tai)->get();
-        $deTai = DeTaiGiangVien::with(['linhVuc', 'giangViens'])->where('ma_de_tai', $ma_de_tai)->firstOrFail();
-        
-        return view('sinhvien.dangkydetai.dangKy', compact('deTai', 'sinhViens', 'coDeTai'));
+        $deTai = DeTaiGiangVien::with(['linhVuc', 'giangViens', 'sinhViens'])->where('ma_de_tai', $ma_de_tai)->firstOrFail();
+
+        return view('sinhvien.dangkydetai.dangKy', compact('deTai', 'daDangKy'));
     }
 
     public function xacNhanDangKy(Request $request)
@@ -84,22 +99,27 @@ class DangKyDeTaiController extends Controller
 
         $data = $request->input('DeTai', []);
 
-        $deTai = DeTaiGiangVien::where('ma_de_tai', $data['ma_de_tai'])->first();
-        $deTai->so_luong_sv_dang_ky += 1;
-        $deTai->save();
+        $deTaiGV = DeTaiGiangVien::where('ma_de_tai', $data['ma_de_tai'])->first();
+        $deTaiGV->so_luong_sv_dang_ky += 1;
+        $deTaiGV->save();
 
         $maTaiKhoan = session()->get('ma_tai_khoan');
         $sinhVien = SinhVien::where('ma_tk', $maTaiKhoan)->first();
-        $mssvList[] = $sinhVien->mssv;
-        SinhVien::whereIn('mssv', $mssvList)->update([
-            'ma_de_tai_gv' => $data['ma_de_tai'],
-            'loai_sv' => 2,
-            'ngay' => Carbon::now()
-        ]);
+        $sinhVien->dang_ky = 1;
+        $sinhVien->loai_sv = 2;
+        $sinhVien->save();
 
-        return response()->json([
-            'success' => true,
-            'errors' => []
-        ]);
+        $phanCongSVDKs = [];
+        foreach ($deTaiGV->giangViens as $giangVien) {
+            $phanCongSVDKs[] = [
+                'ma_sv' => $sinhVien->ma_sv,
+                'ma_gvhd' => $giangVien->ma_gv,
+                'ma_de_tai' => $data['ma_de_tai'],
+                'ngay_dang_ky' => now()->toDateString(),
+            ];
+        }
+        BangPhanCongSVDK::insert($phanCongSVDKs);
+
+        return response()->json(['success' => true]);
     }
 }

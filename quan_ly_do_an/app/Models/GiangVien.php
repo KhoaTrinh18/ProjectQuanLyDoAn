@@ -20,6 +20,6 @@ class GiangVien extends Model
 
     public function deTais()
     {
-        return $this->belongsToMany(DeTaiGiangVien::class, 'giang_vien_de_tai', 'ma_gv', 'ma_de_tai');
+        return $this->belongsToMany(DeTaiGiangVien::class, 'giang_vien_de_tai_gv', 'ma_gv', 'ma_de_tai');
     }
 }

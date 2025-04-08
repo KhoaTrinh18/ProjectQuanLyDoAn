@@ -6,50 +6,56 @@
         <div class="row">
             <div class="col-12">
                 <div class="card">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <h2 style="font-weight: bold">Danh sách đề tài</h2>
-                    </div>
-                    <div class="card-body">
-                        <form class="d-flex mb-3" id="form_tim_kiem">
-                            <div class="d-flex flex-column" style="width: 350px">
-                                <div class="d-flex align-items-center justify-content-between">
-                                    <label for="ten_de_tai">Tên đề tài:</label>
-                                    <input type="text" name="ten_de_tai" class="form-control ms-2 w-75 shadow-none"
-                                        placeholder="Tên đề tài">
+                    @if ($hetHan == 1)
+                        <div class="card-header d-flex justify-content-center align-items-center flex-column">
+                            <h2 style="font-weight: bold"><i>Đã hết hạn thời gian đăng ký!</i></h2>
+                        </div>
+                    @else
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h2 style="font-weight: bold">Danh sách đề tài</h2>
+                        </div>
+                        <div class="card-body">
+                            <form class="d-flex mb-3" id="form_tim_kiem">
+                                <div class="d-flex flex-column" style="width: 350px">
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <label for="ten_de_tai">Tên đề tài:</label>
+                                        <input type="text" name="ten_de_tai" class="form-control ms-2 w-75 shadow-none"
+                                            placeholder="Tên đề tài">
+                                    </div>
+                                    <div class="d-flex align-items-center justify-content-between mt-2">
+                                        <label for="ma_linh_vuc">Lĩnh vực:</label>
+                                        <select class="form-select ms-2 w-75 shadow-none" name="ma_linh_vuc">
+                                            <option value="" selected>Chọn lĩnh vực</option>
+                                            @foreach ($linhVucs as $linhVuc)
+                                                <option value="{{ $linhVuc->ma_linh_vuc }}">{{ $linhVuc->ten_linh_vuc }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 </div>
-                                <div class="d-flex align-items-center justify-content-between mt-2">
-                                    <label for="ma_linh_vuc">Lĩnh vực:</label>
-                                    <select class="form-select ms-2 w-75 shadow-none" name="ma_linh_vuc">
-                                        <option value="" selected>Chọn lĩnh vực</option>
-                                        @foreach ($linhVucs as $linhVuc)
-                                            <option value="{{ $linhVuc->ma_linh_vuc }}">{{ $linhVuc->ten_linh_vuc }}
-                                            </option>
-                                        @endforeach
-                                    </select>
+                                <div class="d-flex flex-column ms-3" style="width: 350px">
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <label for="giang_vien">Giảng viên:</label>
+                                        <input type="text" name="giang_vien" class="form-control ms-2 w-75 shadow-none"
+                                            placeholder="Giảng viên">
+                                    </div>
+                                    <div class="d-flex align-items-center justify-content-between mt-2">
+                                        <label for="trang_thai">Trạng thái:</label>
+                                        <select class="form-select ms-2 w-75 shadow-none" name="trang_thai">
+                                            <option value="" selected>Chọn trạng thái</option>
+                                            <option value="1">Có người đăng ký</option>
+                                            <option value="0">Chưa có người đăng ký</option>
+                                        </select>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="d-flex flex-column ms-3" style="width: 350px">
-                                <div class="d-flex align-items-center justify-content-between">
-                                    <label for="giang_vien">Giảng viên:</label>
-                                    <input type="text" name="giang_vien" class="form-control ms-2 w-75 shadow-none"
-                                        placeholder="Giảng viên">
+                                <div class="ms-3">
+                                    <button id="clear" class="btn btn-secondary">Clear</button>
+                                    <button id="timKiem" class="btn btn-primary" type="submit">Tìm kiếm</button>
                                 </div>
-                                <div class="d-flex align-items-center justify-content-between mt-2">
-                                    <label for="trang_thai">Trạng thái:</label>
-                                    <select class="form-select ms-2 w-75 shadow-none" name="trang_thai">
-                                        <option value="" selected>Chọn trạng thái</option>
-                                        <option value="1">Đã đăng ký</option>
-                                        <option value="0">Chưa đăng ký</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="ms-3">
-                                <button id="clear" class="btn btn-secondary">Clear</button>
-                                <button id="timKiem" class="btn btn-primary" type="submit">Tìm kiếm</button>
-                            </div>
-                        </form>
-                        @include('sinhvien.dangkydetai.pageAjax', ['deTais' => $deTais])
-                    </div>
+                            </form>
+                            @include('sinhvien.dangkydetai.pageAjax', ['deTais' => $deTais])
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>

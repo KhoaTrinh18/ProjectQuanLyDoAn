@@ -11,7 +11,7 @@ use App\Models\{
     DeTaiGiangVien,
     GiangVien,
     LinhVuc,
-    GiangVienDeTai
+    GiangVienDeTaiGV
 };
 
 class DuaRaDeTaiController extends Controller
@@ -20,7 +20,7 @@ class DuaRaDeTaiController extends Controller
     {
         $maTaiKhoan = session()->get('ma_tai_khoan');
         $giangVien = GiangVien::where('ma_tk', $maTaiKhoan)->first();
-        $maDeTais = GiangVienDeTai::where('ma_gv', $giangVien->ma_gv)->pluck('ma_de_tai');
+        $maDeTais = GiangVienDeTaiGV::where('ma_gv', $giangVien->ma_gv)->pluck('ma_de_tai');
         $deTais = DeTaiGiangVien::with('linhVuc')
             ->whereIn('ma_de_tai', $maDeTais)
             ->where('da_huy', 0)
@@ -121,7 +121,7 @@ class DuaRaDeTaiController extends Controller
             $maTaiKhoan = session()->get('ma_tai_khoan');
             $giangVien = GiangVien::where('ma_tk', $maTaiKhoan)->first();
             // $mssvList[] = $sinhVien->mssv;
-            $GV_DT = new GiangVienDeTai();
+            $GV_DT = new GiangVienDeTaiGV();
             $GV_DT->ma_gv = $giangVien->ma_gv;
             $GV_DT->ma_de_tai = $deTaiGV->ma_de_tai;
             $GV_DT->ngay_dua_ra = Carbon::now();
@@ -235,7 +235,7 @@ class DuaRaDeTaiController extends Controller
     public function danhSachHuy() {
         $maTaiKhoan = session()->get('ma_tai_khoan');
         $giangVien = GiangVien::where('ma_tk', $maTaiKhoan)->first();
-        $maDeTais = GiangVienDeTai::where('ma_gv', $giangVien->ma_gv)->pluck('ma_de_tai');
+        $maDeTais = GiangVienDeTaiGV::where('ma_gv', $giangVien->ma_gv)->pluck('ma_de_tai');
         $deTais = DeTaiGiangVien::with('linhVuc')
             ->whereIn('ma_de_tai', $maDeTais)
             ->where('da_huy', 1)

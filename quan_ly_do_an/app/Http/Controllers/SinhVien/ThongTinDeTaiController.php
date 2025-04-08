@@ -8,9 +8,11 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use App\Models\{
+    BangPhanCongSVDK,
     SinhVien,
     DeTaiGiangVien,
-    DeTaiSinhVien
+    DeTaiSinhVien,
+    SinhVienDeTaiSV
 };
 
 class ThongTinDeTaiController extends Controller
@@ -19,17 +21,17 @@ class ThongTinDeTaiController extends Controller
     {
         $maTaiKhoan = session()->get('ma_tai_khoan');
         $sinhVien = SinhVien::where('ma_tk', $maTaiKhoan)->first();
-        $coDeTai = ($sinhVien->ma_de_tai_sv == null && $sinhVien->ma_de_tai_gv == null) ? 0 : 1;
+        $daDangKy = $sinhVien->dang_ky;
         if ($sinhVien->loai_sv == 1) {
-            $deTai = DeTaiSinhVien::where('ma_de_tai', $sinhVien->ma_de_tai_sv)->first();
-            $sinhViens = SinhVien::where('ma_de_tai_sv', $sinhVien->ma_de_tai_sv)->get();
+            $sinhVienDTSV = SinhVienDeTaiSV::where('ma_sv', $sinhVien->ma_sv)->first();
+            $deTai = DeTaiSinhVien::with('sinhViens')->where('ma_de_tai', $sinhVienDTSV->ma_de_tai)->first();
             $loaiDeTai = 'de_tai_sv';
         } else {
-            $deTai = DeTaiGiangVien::where('ma_de_tai', $sinhVien->ma_de_tai_gv)->first();
-            $sinhViens = SinhVien::where('ma_de_tai_gv', $sinhVien->ma_de_tai_gv)->get();
+            $phanCongSVDK = BangPhanCongSVDK::where('ma_sv', $sinhVien->ma_sv)->first();
+            $deTai = DeTaiGiangVien::with('sinhViens')->where('ma_de_tai', $phanCongSVDK->ma_de_tai)->first();
             $loaiDeTai = 'de_tai_gv';
         }
-        return view('sinhvien.thongtindetai.thongTin', compact('deTai', 'sinhViens', 'loaiDeTai', 'coDeTai'));
+        return view('sinhvien.thongtindetai.thongTin', compact('deTai', 'loaiDeTai', 'daDangKy'));
     }
 
     public function chiTiet()

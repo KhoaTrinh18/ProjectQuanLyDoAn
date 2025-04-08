@@ -69,7 +69,7 @@
                             </a>
                         </li>
                     </ul>
-                @else
+                @elseif (session('ten_giang_vien') != null)
                     <ul class="sidebar-nav">
                         <li class="sidebar-header">
                             Thực hiện
@@ -90,6 +90,30 @@
                             </a>
                         </li>
                     </ul>
+                @else
+                    <ul class="sidebar-nav">
+                        <li class="sidebar-header">
+                            Thực hiện
+                        </li>
+                        <li class="sidebar-item {{ request()->is('thiet-lap*') ? 'active' : '' }}">
+                            <a class="sidebar-link" href="{{ route('thiet_lap.danh_sach') }}">
+                                <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Thiết lập</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item {{ request()->is('de-tai-giang-vien*') ? 'active' : '' }}">
+                            <a class="sidebar-link" href="{{ route('de_tai_giang_vien.danh_sach') }}">
+                                <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Đề tài giảng viên</span>
+                            </a>
+                        </li>
+                        {{-- <li class="sidebar-item {{ request()->is('thiet-lap*') ? 'active' : '' }}">
+                            <a class="sidebar-link" href="{{ route('thiet_lap.danh_sach') }}">
+                                <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Đề tài giảng viên</span>
+                            </a>
+                        </li> --}}
+                        <li class="sidebar-header">
+                            Thông tin
+                        </li>
+                    </ul>
                 @endif
             </div>
         </nav>
@@ -103,10 +127,10 @@
                         <li class="nav-item d-flex align-items-center">
                             @if (session('ten_sinh_vien') != null)
                                 {{ session('ten_sinh_vien') }}
+                            @elseif (session('ten_giang_vien') != null)
+                                {{ session('ten_giang_vien') }}
                             @else
-                                @if (session('ten_giang_vien') != null)
-                                    {{ session('ten_giang_vien') }}
-                                @endif
+                                {{ session('ten_admin') }}
                             @endif
                         </li>
                         <li class="nav-item ms-2">

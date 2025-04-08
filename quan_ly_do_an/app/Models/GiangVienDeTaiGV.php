@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class GiangVienDeTai extends Model
+class GiangVienDeTaiGV extends Model
 {
     use HasFactory;
 
-    protected $table = 'giang_vien_de_tai';
+    protected $table = 'giang_vien_de_tai_gv';
     protected $primaryKey = null; 
     public $incrementing = false;
     public $timestamps = false;

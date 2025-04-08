@@ -32,14 +32,15 @@
                             <p><strong>Sinh viên đã đăng ký:
                                 </strong>chưa có</p>
                         @elseif ($deTai->so_luong_sv_dang_ky == 1)
+                            @php $sinhVien = $deTai->sinhViens->first(); @endphp
                             <p><strong>Sinh viên đã đăng ký:
-                                </strong>{{ $sinhViens->first()->ho_ten }} ({{ $sinhViens->first()->mssv }})
+                                </strong>{{ $sinhVien->ho_ten }} ({{ $sinhVien->mssv }})
                             </p>
                         @else
                             <p><strong>Sinh viên đã đăng ký:</strong></p>
                             <ul>
-                                @foreach ($sinhViens as $sv)
-                                    <li>{{ $sv->ho_ten }} ({{ $sv->mssv }})</li>
+                                @foreach ($deTai->sinhViens as $sinhVien)
+                                    <li>{{ $sinhVien->ho_ten }} ({{ $sinhVien->mssv }})</li>
                                 @endforeach
                             </ul>
                         @endif
@@ -49,7 +50,7 @@
                             <div class="text-center">
                                 <a href="{{ route('dang_ky_de_tai.danh_sach') }}" class="btn btn-secondary btn-lg">Quay
                                     lại</a>
-                                @if ($deTai->so_luong_sv_dang_ky < $deTai->so_luong_sv_toi_da && $coDeTai == 0)
+                                @if ($deTai->so_luong_sv_dang_ky < $deTai->so_luong_sv_toi_da && !$daDangKy)
                                     <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal"
                                         data-bs-target="#confirmModal">Xác nhận đăng
                                         ký</button>
@@ -110,18 +111,6 @@
                         if (result.success) {
                             alert("Đăng ký thành công!");
                             window.location.href = "{{ route('dang_ky_de_tai.danh_sach') }}";
-                        } else {
-                            $.each(result.errors, function(field, messages) {
-                                $('.error-' + field).text(messages[0]).removeClass(
-                                    "d-none").addClass("d-block");
-                                if (field.startsWith("mssv.")) {
-                                    let index = field.split('.')[1];
-                                    $(".error-mssv-" + index).text(messages[0])
-                                        .removeClass("d-none").show();
-                                    $("[name='DeTai[mssv][" + index + "]']").addClass(
-                                        "is-invalid");
-                                }
-                            });
                         }
                     },
                     error: function(xhr) {

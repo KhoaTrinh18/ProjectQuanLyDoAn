@@ -5,11 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class TaiKhoan extends Model
+class BangPhanCongSVDK extends Model
 {
     use HasFactory;
 
-    protected $table = 'tai_khoan';
-    protected $primaryKey = 'ma_lai_khoan';
+    protected $table = 'bang_phan_cong_svdk';
+    protected $primaryKey = null; 
+    public $incrementing = false;
     public $timestamps = false;
 }

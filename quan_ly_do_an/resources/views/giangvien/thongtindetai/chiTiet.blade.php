@@ -44,7 +44,7 @@
                                     <div class="modal-dialog">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title" id="confirmModalLabel">Xác nhận đăng ký</h5>
+                                                <h5 class="modal-title" id="confirmModalLabel">Xác nhận hủy đăng ký</h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                     aria-label="Close"></button>
                                             </div>

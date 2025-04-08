@@ -10,7 +10,10 @@ use Carbon\Carbon;
 use App\Models\{
     DeTaiSinhVien,
     LinhVuc,
-    SinhVien
+    SinhVien,
+    SinhVienDeTaiSV,
+    TaiKhoanSV,
+    ThietLap
 };
 
 class DeXuatDeTaiController extends Controller
@@ -19,9 +22,20 @@ class DeXuatDeTaiController extends Controller
     {
         $maTaiKhoan = session()->get('ma_tai_khoan');
         $sinhVien = SinhVien::where('ma_tk', $maTaiKhoan)->first();
-        $coDeTai = ($sinhVien->ma_de_tai_sv == null && $sinhVien->ma_de_tai_gv == null) ? 0 : 1;
+        $daDangKy = $sinhVien->dang_ky;
+
         $linhVucs = LinhVuc::orderBy('ma_linh_vuc', 'desc')->get();
-        return view('sinhvien.dexuatdetai.deXuat', compact('linhVucs', 'coDeTai'));
+
+        $taikhoan = TaiKhoanSV::where('ma_tk', $maTaiKhoan)->first();
+        $thietLap = ThietLap::where('nam_hoc', $taikhoan->nam_hoc)->first();
+        $ngayHetHan = Carbon::create(2024, 5, 1)->toDateString();
+        if(Carbon::parse($thietLap->ngay_ket_thuc_dang_ky)->lt($ngayHetHan)) {
+            $hetHan = 1;
+        } else {
+            $hetHan = 0;
+        }
+
+        return view('sinhvien.dexuatdetai.deXuat', compact('linhVucs', 'daDangKy', 'hetHan'));
     }
 
     public function xacNhanDeXuat(Request $request)
@@ -80,7 +94,7 @@ class DeXuatDeTaiController extends Controller
                     continue;
                 }
 
-                if (!empty($sinhVien->ma_de_tai_sv) || !empty($sinhVien->ma_de_tai_gv)) {
+                if ($sinhVien->dang_ky) {
                     $validator->errors()->add("mssv.$index", "MSSV đã đăng ký hoặc đề xuất đề tài.");
                 }
             }
@@ -105,14 +119,23 @@ class DeXuatDeTaiController extends Controller
             $maTaiKhoan = session()->get('ma_tai_khoan');
             $sinhVien = SinhVien::where('ma_tk', $maTaiKhoan)->first();
             $mssvList[] = $sinhVien->mssv;
+            $sinhViens = SinhVien::whereIn('mssv', $mssvList)->get();
             SinhVien::whereIn('mssv', $mssvList)->update([
-                'ma_de_tai_sv' => $deTaiSV->ma_de_tai,
+                'dang_ky' => 1,
                 'loai_sv' => 1,
-                'ngay' => Carbon::now()
-            ]);
-            
-            session(['co_de_tai' => 1]);
+            ]); 
 
+            $sinhVienDTSVs = [];
+            foreach($sinhViens as $sinhVien) {
+                $sinhVienDTSVs[] = [
+                    'ma_sv' => $sinhVien->ma_sv,
+                    'ma_de_tai' => $deTaiSV->ma_de_tai,
+                    'ngay_de_xuat' => now()->toDateString()
+                ];
+            }
+            Log::info("sinh viên", $sinhVienDTSVs);
+            SinhVienDeTaiSV::insert($sinhVienDTSVs);
+            
             return response()->json([
                 'success' => true,
                 'errors' => [],

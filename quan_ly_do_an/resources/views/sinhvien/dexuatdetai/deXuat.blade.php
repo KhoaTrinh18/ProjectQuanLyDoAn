@@ -6,7 +6,11 @@
         <div class="row">
             <div class="col-12">
                 <div class="card">
-                    @if ($coDeTai == 1)
+                    @if ($hetHan == 1)
+                        <div class="card-header d-flex justify-content-center align-items-center flex-column">
+                            <h2 style="font-weight: bold"><i>Đã hết hạn thời gian đề xuất!</i></h2>
+                        </div>
+                    @elseif ($daDangKy)
                         <div class="card-header d-flex justify-content-center align-items-center">
                             <h2 style="font-weight: bold"><i>Bạn đã đăng ký hoặc đề xuất đề tài!</i></h2>
                         </div>
@@ -14,7 +18,7 @@
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <h2 style="font-weight: bold">Đề xuất đề tài</h2>
                         </div>
-                        <div class="card-body" >
+                        <div class="card-body">
                             <form id="form_de_xuat">
                                 <div class="d-flex mb-3">
                                     <label for="DeTai[ten_de_tai]"

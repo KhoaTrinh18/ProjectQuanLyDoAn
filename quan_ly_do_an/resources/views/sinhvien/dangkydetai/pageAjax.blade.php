@@ -77,7 +77,7 @@
                             @endif
                         </td>
                         <td class="text-center">
-                            @if ($deTai->so_luong_sv_dang_ky < $deTai->so_luong_sv_toi_da && $coDeTai == 0)
+                            @if ($deTai->so_luong_sv_dang_ky < $deTai->so_luong_sv_toi_da && !$daDangKy)
                                 <a href="{{ route('dang_ky_de_tai.dang_ky', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
                                     class="btn btn-primary btn-sm">Đăng ký</a>
                             @else

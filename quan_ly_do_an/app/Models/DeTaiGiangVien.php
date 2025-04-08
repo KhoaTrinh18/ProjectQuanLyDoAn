@@ -20,6 +20,15 @@ class DeTaiGiangVien extends Model
 
     public function giangViens()
     {
-        return $this->belongsToMany(GiangVien::class, 'giang_vien_de_tai', 'ma_de_tai', 'ma_gv');
+        return $this->belongsToMany(GiangVien::class, 'giang_vien_de_tai_gv', 'ma_de_tai', 'ma_gv');
+    }
+
+    public function sinhViens(){
+        return $this->belongsToMany(SinhVien::class, 'bang_phan_cong_svdk', 'ma_de_tai', 'ma_sv');
+    }
+
+    public function ngayDuaRa()
+    {
+        return $this->hasOne(GiangVienDeTaiGV::class, 'ma_de_tai', 'ma_de_tai');
     }
 }

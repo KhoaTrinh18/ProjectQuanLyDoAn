@@ -17,4 +17,8 @@ class DeTaiSinhVien extends Model
     {
         return $this->belongsTo(LinhVuc::class, 'ma_linh_vuc', 'ma_linh_vuc');
     }
+
+    public function sinhViens(){
+        return $this->belongsToMany(SinhVien::class, 'sinh_vien_de_tai_sv', 'ma_de_tai', 'ma_sv');
+    }
 }

@@ -6,7 +6,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="card">
-                    @if ($coDeTai == 0)
+                    @if (!$daDangKy)
                         <div class="card-header d-flex justify-content-center align-items-center flex-column">
                             <h2 style="font-weight: bold"><i>Bạn chưa có đề tài</i></h2>
                             <h5 style="font-weight: bold"><i>(Vui lòng đề xuất hoặc đăng ký!)</i></h5>
@@ -25,33 +25,31 @@
                                     Đăng ký
                                 @endif
                             </p>
-                            @if ($loaiDeTai == 'de_tai_gv')
-                                <p><strong>Số lượng sinh viên đã đăng ký:
-                                    </strong>{{ $deTai->so_luong_sv_dang_ky . '/' . $deTai->so_luong_sv_toi_da }}</p>
-                            @endif
 
                             @if ($deTai->so_luong_sv_dang_ky == 1)
                                 <p><strong>Sinh viên đã đăng ký:
-                                    </strong>{{ $sinhViens->first()->ho_ten }} ({{ $sinhViens->first()->mssv }})
+                                    </strong>{{ $deTai->sinhViens->first()->ho_ten }}
+                                    ({{ $deTai->sinhViens->first()->mssv }})
                                 </p>
                             @elseif ($deTai->so_luong_sv_dang_ky > 1)
                                 <p><strong>Sinh viên đã đăng ký:</strong></p>
                                 <ul>
-                                    @foreach ($sinhViens as $sv)
-                                        <li>{{ $sv->ho_ten }} ({{ $sv->mssv }})</li>
+                                    @foreach ($deTai->sinhViens as $sinhVien)
+                                        <li>{{ $sinhVien->ho_ten }} ({{ $sinhVien->mssv }})</li>
                                     @endforeach
                                 </ul>
                             @endif
 
                             @if ($deTai->so_luong_sv_de_xuat == 1)
                                 <p><strong>Sinh viên đã đề xuất:
-                                    </strong>{{ $sinhViens->first()->ho_ten }} ({{ $sinhViens->first()->mssv }})
+                                    </strong>{{ $deTais->sinhViens->first()->ho_ten }}
+                                    ({{ $deTai->sinhViens->first()->mssv }})
                                 </p>
                             @elseif ($deTai->so_luong_sv_de_xuat > 1)
                                 <p><strong>Sinh viên đã đề xuất:</strong></p>
                                 <ul>
-                                    @foreach ($sinhViens as $sv)
-                                        <li>{{ $sv->ho_ten }} ({{ $sv->mssv }})</li>
+                                    @foreach ($deTai->sinhViens as $sinhVien)
+                                        <li>{{ $sinhVien->ho_ten }} ({{ $sinhVien->mssv }})</li>
                                     @endforeach
                                 </ul>
                             @endif
@@ -71,7 +69,7 @@
                                     <span class="text-success">Đã duyệt</span>
                                 </p>
                             @endif
-                            
+
                             {{-- @if ($deTai->trang_thai != 1 && $deTai->trang_thai != null)
                                 <p><strong>Điểm demo: </strong>{{ $deTai->diem_demo ? $deTai->diem_demo : 'chưa có' }}</p>
                                 <p><strong>Điểm báo cáo: </strong>{{ $deTai->diem_demo ? $deTai->diem_bao_cao : 'chưa có' }}
@@ -88,8 +86,7 @@
                                     </div>
                                 </form>
                                 <h5 class="text-center mt-4" style="font-weight: bold"><i>Sinh viên có thể hủy khi chưa
-                                        duyệt
-                                        trong thời gian quy định!</i>
+                                        duyệt đề tài đã đề xuất trong thời gian quy định!</i>
                                 </h5>
                             @else
                                 <h5 class="text-center" style="font-weight: bold"><i>Sinh viên muốn hủy phải liên hệ với

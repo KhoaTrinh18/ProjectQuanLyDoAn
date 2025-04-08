@@ -11,7 +11,7 @@ use App\Models\{
     DeTaiGiangVien,
     GiangVien,
     SinhVien,
-    GiangVienDeTai
+    GiangVienDeTaiGV
 };
 
 class ThongTinDeTaiController extends Controller
@@ -20,7 +20,7 @@ class ThongTinDeTaiController extends Controller
     {
         $maTaiKhoan = session()->get('ma_tai_khoan');
         $giangVien = GiangVien::where('ma_tk', $maTaiKhoan)->first();
-        $maDeTais = GiangVienDeTai::where('ma_gv', $giangVien->ma_gv)->pluck('ma_de_tai');
+        $maDeTais = GiangVienDeTaiGV::where('ma_gv', $giangVien->ma_gv)->pluck('ma_de_tai');
         $deTais = DeTaiGiangVien::with('linhVuc')
             ->whereIn('ma_de_tai', $maDeTais)
             ->where(['da_huy' => 0, 'trang_thai' => 2])
