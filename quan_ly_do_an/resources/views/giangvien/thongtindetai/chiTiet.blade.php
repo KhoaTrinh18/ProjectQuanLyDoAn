@@ -34,7 +34,7 @@
                         @elseif ($deTai->so_luong_sv_dang_ky == 1)
                             <form class="d-flex align-item-center" id="form_huy_sv">
                                 <p class="m-0"><strong>Sinh viên đã đăng ký:
-                                    </strong>{{ $sinhViens->first()->ho_ten }} ({{ $sinhViens->first()->mssv }})
+                                    </strong>{{ $deTai->sinhViens->first()->ho_ten }} ({{ $deTai->sinhViens->first()->mssv }})
                                 </p>
                                 <button class="btn btn-danger btn-sm ms-2" type="button" data-bs-toggle="modal"
                                     data-bs-target="#confirmModal">Hủy đăng
@@ -49,13 +49,13 @@
                                                     aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body"> Bạn có chắc muốn hủy đăng ký của sinh viên
-                                                {{ $sinhViens->first()->ho_ten }}
+                                                {{ $deTai->sinhViens->first()->ho_ten }}
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary"
                                                     data-bs-dismiss="modal">Hủy</button>
                                                 <input type="hidden" name="ma_sv"
-                                                    value="{{ $sinhViens->first()->ma_sv }}">
+                                                    value="{{ $deTai->sinhViens->first()->ma_sv }}">
                                                 <input type="hidden" name="ma_de_tai" value="{{ $deTai->ma_de_tai }}">
                                                 <button type="submit" class="btn btn-primary" id="dangKy">Xác
                                                     nhận</button>

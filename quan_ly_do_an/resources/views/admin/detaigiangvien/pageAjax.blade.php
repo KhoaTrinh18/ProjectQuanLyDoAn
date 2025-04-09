@@ -19,7 +19,8 @@
                             <a class="page-link pagination-link" data-page="1">Đầu</a>
                         </li>
                         <li class="page-item {{ $deTaiGVs->onFirstPage() ? 'disabled' : '' }}">
-                            <a class="page-link pagination-link" data-page="{{ $deTaiGVs->currentPage() - 1 }}">Trước</a>
+                            <a class="page-link pagination-link"
+                                data-page="{{ $deTaiGVs->currentPage() - 1 }}">Trước</a>
                         </li>
                         @for ($page = 1; $page <= $deTaiGVs->lastPage(); $page++)
                             <li class="page-item {{ $page == $deTaiGVs->currentPage() ? 'active' : '' }}">
@@ -28,7 +29,8 @@
                             </li>
                         @endfor
                         <li class="page-item {{ $deTaiGVs->hasMorePages() ? '' : 'disabled' }}">
-                            <a class="page-link pagination-link" data-page="{{ $deTaiGVs->currentPage() + 1 }}">Tiếp</a>
+                            <a class="page-link pagination-link"
+                                data-page="{{ $deTaiGVs->currentPage() + 1 }}">Tiếp</a>
                         </li>
                         <li class="page-item {{ $deTaiGVs->hasMorePages() ? '' : 'disabled' }}">
                             <a class="page-link pagination-link" data-page="{{ $deTaiGVs->lastPage() }}">Cuối</a>
@@ -60,24 +62,22 @@
                             {{ $deTaiGV->ten_de_tai }}
                         </td>
                         <td> {!! $deTaiGV->giangViens->pluck('ho_ten')->implode('<br>') !!} </td>
-                        <td> {{ $deTaiGV->ngayDuaRa->ngay_dua_ra   }} </td>
+                        <td> {{ $deTaiGV->ngayDuaRa->ngay_dua_ra }} </td>
                         <td>
                             @if ($deTaiGV->trang_thai == 1)
                                 <span class="text-warning">Chờ duyệt</span>
                             @else
-                                <span class="text-success">Đã hoàn thành</span>
+                                <span class="text-success">Đã duyệt</span>
                             @endif
                         </td>
                         <td class="text-center">
-                            {{-- @if ($deTai->trang_thai != 1)
-                                <a href="{{ route('dua_ra_de_tai.chi_tiet', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
-                                    class="btn btn-secondary btn-sm">Xem</a>
+                            @if ($deTaiGV->trang_thai == 1)
+                                <a href="{{ route('de_tai_giang_vien.duyet', ['ma_de_tai' => $deTaiGV->ma_de_tai]) }}"
+                                    class="btn btn-primary btn-sm">Duyệt</a>
                             @else
-                                <a href="{{ route('dua_ra_de_tai.huy', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
-                                    class="btn btn-danger btn-sm">hủy</a>
-                                <a href="{{ route('dua_ra_de_tai.chinh_sua', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
-                                    class="btn btn-primary btn-sm">Chỉnh sửa</a>
-                            @endif --}}
+                                <a href="{{ route('de_tai_giang_vien.duyet', ['ma_de_tai' => $deTaiGV->ma_de_tai]) }}"
+                                    class="btn btn-secondary btn-sm">Xem</a>
+                            @endif
                         </td>
                     </tr>
                 @endforeach

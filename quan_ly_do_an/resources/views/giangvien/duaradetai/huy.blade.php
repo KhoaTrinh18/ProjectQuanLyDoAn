@@ -11,6 +11,15 @@
                     </div>
                     <div class="card-body" style="font-size: 16px">
                         <h3 class="text-center mb-4" style="font-weight: bold">{{ $deTai->ten_de_tai }}</h3>
+                        <p><strong>Trạng thái: </strong>
+                            @if ($deTai->trang_thai == 1)
+                                <span class="text-warning">Chờ duyệt</span>
+                            @elseif ($deTai->trang_thai == 2)
+                                <span class="text-success">Đã duyệt</span>
+                            @else
+                                <span class="text-danger">Không được duyệt</span>
+                            @endif
+                        </p>
                         @if ($deTai->giangViens->count() == 1)
                             @php $giangVien = $deTai->giangViens->first(); @endphp
                             <p><strong>Giảng viên ra đề tài:</strong> {{ $giangVien->ho_ten }} - Email:

@@ -27,7 +27,7 @@ class DangKyDeTaiController extends Controller
         $daDangKy = $sinhVien->dang_ky;
 
         $linhVucs = LinhVuc::orderBy('ma_linh_vuc', 'desc')->get();
-        $deTais = DeTaiGiangVien::with('linhVuc')->orderBy('ma_de_tai', 'desc')->paginate($limit);
+        $deTais = DeTaiGiangVien::with('linhVuc')->where(['da_huy' => 0, 'trang_thai' => 2])->orderBy('ma_de_tai', 'desc')->paginate($limit);
 
         $taikhoan = TaiKhoanSV::where('ma_tk', $maTaiKhoan)->first();
         $thietLap = ThietLap::where('nam_hoc', $taikhoan->nam_hoc)->first();

@@ -2,11 +2,12 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GiangVien\{
     DuaRaDeTaiController,
-    ThongTinDeTaiController
+    ThongTinDeTaiController,
+    ChamDiemDeTaiController
 };
 use App\Http\Middleware\KiemTraDangNhap;
 
-Route::middleware([KiemTraDangNhap::class])->group(function () {
+Route::middleware([KiemTraDangNhap::class. ':giangvien'])->group(function () {
     Route::get('/dua-ra-de-tai/dua-ra', [DuaRaDeTaiController::class, 'duaRa'])->name('dua_ra_de_tai.dua_ra');
     Route::post('/dua-ra-de-tai/xac-nhan-dua-ra', [DuaRaDeTaiController::class, 'xacNhanDuaRa'])->name('dua_ra_de_tai.xac_nhan_dua_ra');
     Route::get('/dua-ra-de-tai/xac-nhan-dua-ra', function() {
@@ -35,6 +36,13 @@ Route::middleware([KiemTraDangNhap::class])->group(function () {
     Route::get('/thong-tin-de-tai/chi-tiet-duyet/{ma_de_tai}', [ThongTinDeTaiController::class, 'chiTietDuyet'])->name('thong_tin_de_tai.chi_tiet_duyet');
     Route::post('/thong-tin-de-tai/huy-sinh-vien', [ThongTinDeTaiController::class, 'huySinhVien'])->name('thong_tin_de_tai.huy_sinh_vien');
     Route::get('/thong-tin-de-tai/huy-sinh-vien', function() {
+        return redirect()->back()->with('error', 'Sai đường dẫn');
+    });
+
+    Route::get('/cham-diem-de-tai/danh-sach-huong-dan', [ChamDiemDeTaiController::class, 'danhSachHuongDan'])->name('cham_diem_de_tai.danh_sach_huong_dan');
+    Route::get('/cham-diem-de-tai/chi-tiet-huong-dan/{ma_de_tai}', [ChamDiemDeTaiController::class, 'chiTietHuongDan'])->name('cham_diem_de_tai.chi_tiet_huong_dan');
+    Route::post('/thong-tin-de-tai/cham-diem-huong-dan', [ChamDiemDeTaiController::class, 'chamDiemHuongDan'])->name('cham_diem_de_tai.cham_diem_huong_dan');
+    Route::get('/thong-tin-de-tai/cham-diem-huong-dan', function() {
         return redirect()->back()->with('error', 'Sai đường dẫn');
     });
 });

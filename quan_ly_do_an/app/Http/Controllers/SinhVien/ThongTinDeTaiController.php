@@ -22,16 +22,23 @@ class ThongTinDeTaiController extends Controller
         $maTaiKhoan = session()->get('ma_tai_khoan');
         $sinhVien = SinhVien::where('ma_tk', $maTaiKhoan)->first();
         $daDangKy = $sinhVien->dang_ky;
-        if ($sinhVien->loai_sv == 1) {
-            $sinhVienDTSV = SinhVienDeTaiSV::where('ma_sv', $sinhVien->ma_sv)->first();
-            $deTai = DeTaiSinhVien::with('sinhViens')->where('ma_de_tai', $sinhVienDTSV->ma_de_tai)->first();
-            $loaiDeTai = 'de_tai_sv';
+
+        if($daDangKy) {
+            if ($sinhVien->loai_sv == 1) {
+                $sinhVienDTSV = SinhVienDeTaiSV::where('ma_sv', $sinhVien->ma_sv)->first();
+                $deTai = DeTaiSinhVien::with('sinhViens')->where('ma_de_tai', $sinhVienDTSV->ma_de_tai)->first();
+                $loaiDeTai = 'de_tai_sv';
+            } else {
+                $phanCongSVDK = BangPhanCongSVDK::where('ma_sv', $sinhVien->ma_sv)->first();
+                $deTai = DeTaiGiangVien::with('sinhViens')->where('ma_de_tai', $phanCongSVDK->ma_de_tai)->first();
+                $loaiDeTai = 'de_tai_gv';
+            }
+            return view('sinhvien.thongtindetai.thongTin', compact('deTai', 'loaiDeTai', 'daDangKy'));
         } else {
-            $phanCongSVDK = BangPhanCongSVDK::where('ma_sv', $sinhVien->ma_sv)->first();
-            $deTai = DeTaiGiangVien::with('sinhViens')->where('ma_de_tai', $phanCongSVDK->ma_de_tai)->first();
-            $loaiDeTai = 'de_tai_gv';
+            return view('sinhvien.thongtindetai.thongTin', compact('daDangKy'));
         }
-        return view('sinhvien.thongtindetai.thongTin', compact('deTai', 'loaiDeTai', 'daDangKy'));
+        
+       
     }
 
     public function chiTiet()

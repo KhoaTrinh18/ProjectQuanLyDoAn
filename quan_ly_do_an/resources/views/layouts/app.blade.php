@@ -89,6 +89,15 @@
                                     tài đã duyệt</span>
                             </a>
                         </li>
+                        <li class="sidebar-header">
+                            Chấm điểm
+                        </li>
+                        <li class="sidebar-item {{ request()->is('cham-diem-de-tai*') ? 'active' : '' }}">
+                            <a class="sidebar-link" href="{{ route('cham_diem_de_tai.danh_sach_huong_dan') }}">
+                                <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Đề
+                                    tài hướng dẫn</span>
+                            </a>
+                        </li>
                     </ul>
                 @else
                     <ul class="sidebar-nav">
@@ -97,12 +106,14 @@
                         </li>
                         <li class="sidebar-item {{ request()->is('thiet-lap*') ? 'active' : '' }}">
                             <a class="sidebar-link" href="{{ route('thiet_lap.danh_sach') }}">
-                                <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Thiết lập</span>
+                                <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Thiết
+                                    lập</span>
                             </a>
                         </li>
                         <li class="sidebar-item {{ request()->is('de-tai-giang-vien*') ? 'active' : '' }}">
                             <a class="sidebar-link" href="{{ route('de_tai_giang_vien.danh_sach') }}">
-                                <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Đề tài giảng viên</span>
+                                <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Đề
+                                    tài giảng viên</span>
                             </a>
                         </li>
                         {{-- <li class="sidebar-item {{ request()->is('thiet-lap*') ? 'active' : '' }}">
@@ -123,6 +134,12 @@
                     <i class="hamburger align-self-center"></i>
                 </a>
                 <div class="navbar-collapse collapse">
+                    <div class="nav-item" style="font-size: 18px">Năm học
+                        @php
+                            $thietLap = DB::table('thiet_lap')->where('trang_thai', 1)->first();
+                            echo $thietLap->nam_hoc ?? 'Chưa thiết lập';
+                        @endphp
+                    </div>
                     <ul class="navbar-nav navbar-align">
                         <li class="nav-item d-flex align-items-center">
                             @if (session('ten_sinh_vien') != null)

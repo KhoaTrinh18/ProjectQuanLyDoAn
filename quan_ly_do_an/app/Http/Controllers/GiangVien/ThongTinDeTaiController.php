@@ -31,9 +31,8 @@ class ThongTinDeTaiController extends Controller
 
     public function chiTietDuyet($ma_de_tai)
     {
-        $deTai = DeTaiGiangVien::with(['linhVuc', 'giangViens'])->where('ma_de_tai', $ma_de_tai)->firstOrFail();
-        $sinhViens = SinhVien::where('ma_de_tai_gv', $ma_de_tai)->get();
-        return view('giangvien.thongtindetai.chiTiet', compact('deTai', 'sinhViens'));
+        $deTai = DeTaiGiangVien::with(['linhVuc', 'giangViens', 'sinhViens'])->where('ma_de_tai', $ma_de_tai)->firstOrFail();
+        return view('giangvien.thongtindetai.chiTiet', compact('deTai'));
     }
 
     public function huySinhVien(Request $request) {

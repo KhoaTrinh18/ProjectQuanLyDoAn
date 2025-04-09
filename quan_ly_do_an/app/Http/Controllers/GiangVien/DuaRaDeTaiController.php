@@ -26,6 +26,7 @@ class DuaRaDeTaiController extends Controller
             ->where('da_huy', 0)
             ->orderBy('ma_de_tai', 'desc')
             ->get();
+            
         return view('giangvien.duaradetai.danhSach', compact('deTais'));
     }
 

@@ -50,6 +50,7 @@ class DangNhapController extends Controller
         if ($taiKhoanSV) {
             $sinhVien = SinhVien::where('ma_tk', $taiKhoanSV->ma_tk)->first();
             Session::put('ten_sinh_vien', $sinhVien->ho_ten);
+            Session::put('role', 'sinhvien');
             $route = route('dang_ky_de_tai.danh_sach');
         } else if ($taiKhoanGV->loai_tk == 'giang_vien') {
             $giangVien = GiangVien::with('hocVi')->where('ma_tk', $taiKhoanGV->ma_tk)->first();
@@ -59,9 +60,11 @@ class DangNhapController extends Controller
                 $hocVi = "TS. ";
             }
             Session::put('ten_giang_vien', $hocVi.$giangVien->ho_ten);
+            Session::put('role', 'giangvien');
             $route = route('dua_ra_de_tai.danh_sach');
         } else if ($taiKhoanGV->loai_tk == 'admin') {
             Session::put('ten_admin', 'admin');
+            Session::put('role', 'admin');
             $route = route('thiet_lap.danh_sach');
         }
 

@@ -12,7 +12,7 @@ use App\Http\Middleware\{
 };
 
 
-Route::middleware([KiemTraDangNhap::class])->group(function () {
+Route::middleware([KiemTraDangNhap::class. ':sinhvien'])->group(function () {
     Route::get('/dang-ky-de-tai', [DangKyDeTaiController::class, 'danhSach'])->name('dang_ky_de_tai.danh_sach');
     Route::get('/dang-ky-de-tai/page-ajax', [DangKyDeTaiController::class, 'pageAjax'])->name('dang_ky_de_tai.page_ajax');
     Route::middleware([KiemTraHetHanDangKy::class])->group(function () {
