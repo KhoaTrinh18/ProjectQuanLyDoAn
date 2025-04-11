@@ -17,6 +17,7 @@
                             <p><strong>Giảng viên ra đề tài:</strong> {{ $giangVien->ho_ten }} - Email:
                                 {{ $giangVien->email }} - Số điện thoại: {{ $giangVien->so_dien_thoai }}</p>
                         @else
+                            <p><strong>Giảng viên ra đề tài:</strong></p>
                             <ul>
                                 @foreach ($deTai->giangViens as $giangVien)
                                     <li>{{ $giangVien->ho_ten }} - Email: {{ $giangVien->email }} - SĐT:

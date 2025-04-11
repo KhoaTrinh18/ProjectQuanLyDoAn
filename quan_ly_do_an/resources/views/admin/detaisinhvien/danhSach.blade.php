@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Danh sách đề tài giảng viên')
+@section('title', 'Danh sách đề tài sinh viên')
 
 @section('content')
     <div class="container-fluid p-0">
@@ -7,7 +7,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <h2 style="font-weight: bold">Danh sách đề tài giảng viên</h2>
+                        <h2 style="font-weight: bold">Danh sách đề tài sinh viên</h2>
                         {{-- <div>
                             <a href="{{ route('thiet_lap.them') }}" class="btn btn-success btn-lg">Thêm mới</a>
                         </div> --}}
@@ -21,21 +21,21 @@
                                         placeholder="Tên đề tài">
                                 </div>
                                 <div class="d-flex align-items-center justify-content-between mt-2">
-                                    <label for="ma_linh_vuc">Ngày đưa ra:</label>
+                                    <label for="ma_linh_vuc">Ngày đề xuất:</label>
                                     <div class="d-flex align-items-center ms-2 w-75">
                                         <input type="date" class="form-control shadow-none"
-                                            name="ngay_dua_ra_dau" >
+                                            name="ngay_de_xuat_dau" >
                                         <span class="mx-2">-</span>
                                         <input type="date" class="form-control shadow-none"
-                                            name="ngay_dua_ra_cuoi" >
+                                            name="ngay_de_xuat_cuoi" >
                                     </div>
                                 </div>
                             </div>
                             <div class="d-flex flex-column ms-3" style="width: 380px">
                                 <div class="d-flex align-items-center justify-content-between">
-                                    <label for="giang_vien">Giảng viên:</label>
-                                    <input type="text" name="giang_vien" class="form-control ms-2 w-75 shadow-none"
-                                        placeholder="Giảng viên">
+                                    <label for="giang_vien">Sinh viên:</label>
+                                    <input type="text" name="sinh_vien" class="form-control ms-2 w-75 shadow-none"
+                                        placeholder="Sinh viên">
                                 </div>
                                 <div class="d-flex align-items-center justify-content-between mt-2">
                                     <label for="trang_thai">Trạng thái:</label>
@@ -52,7 +52,7 @@
                                 <button id="timKiem" class="btn btn-primary" type="submit">Tìm kiếm</button>
                             </div>
                         </form>
-                        @include('admin.detaigiangvien.pageAjax', ['deTaiGVs' => $deTaiGVs])
+                        @include('admin.detaisinhvien.pageAjax', ['deTaiSVs' => $deTaiSVs])
                     </div>
                 </div>
             </div>
@@ -100,7 +100,7 @@
                 showTableLoading();
 
                 $.ajax({
-                    url: "{{ route('de_tai_giang_vien.page_ajax') }}",
+                    url: "{{ route('de_tai_sinh_vien.page_ajax') }}",
                     type: "GET",
                     data: requestData,
                     dataType: 'json',

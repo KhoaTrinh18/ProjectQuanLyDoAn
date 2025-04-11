@@ -223,7 +223,6 @@ class DuaRaDeTaiController extends Controller
         $ma_de_tai = $request->input('ma_de_tai');
 
         $deTai = DeTaiGiangVien::where('ma_de_tai', $ma_de_tai)->first();
-        Log::info('đề tài', [$deTai->toArray()]);
         $deTai->da_huy = 1;
         $deTai->trang_thai = null;
         $deTai->save();

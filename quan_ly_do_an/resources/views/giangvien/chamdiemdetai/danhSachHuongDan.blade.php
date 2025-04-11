@@ -23,6 +23,14 @@
                             </thead>
                             <tbody id="table-body">
                                 @foreach ($deTais as $key => $deTai)
+                                    @php
+                                        $phanCong = $phanCongSVDK->where('ma_de_tai', $deTai->ma_de_tai)->first();
+                                        if($phanCong->diem_GVHD) {
+                                            $daChamDiem = 1;
+                                        } else {
+                                            $daChamDiem = 0;
+                                        }
+                                    @endphp
                                     <tr>
                                         <td scope="row">
                                             {{ $key + 1 }}</td>
@@ -35,13 +43,23 @@
                                             {!! $deTai->sinhViens->pluck('ho_ten')->implode('<br>') !!}
                                         </td>
                                         <td class="text-center">
-                                            
+                                            @if ($daChamDiem)
+                                                <span class="text-success">Đã chấm điểm</span>
+                                            @else
+                                                <span class="text-warning">Chưa chấm điểm</span>
+                                            @endif
                                         </td>
                                         <td class="text-center">
                                             <a href="{{ route('cham_diem_de_tai.chi_tiet_huong_dan', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
                                                 class="btn btn-secondary btn-sm">Xem</a>
-                                            <a href="{{ route('cham_diem_de_tai.cham_diem_huong_dan', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
-                                                class="btn btn-primary btn-sm">Chấm điểm</a>
+                                            @if ($daChamDiem)
+                                                <a href="{{ route('cham_diem_de_tai.sua_diem_huong_dan', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
+                                                    class="btn btn-primary btn-sm">Sửa điểm</a>
+                                            @else
+                                                <a href="{{ route('cham_diem_de_tai.cham_diem_huong_dan', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
+                                                    class="btn btn-primary btn-sm">Chấm điểm</a>
+                                            @endif
+
                                         </td>
                                     </tr>
                                 @endforeach

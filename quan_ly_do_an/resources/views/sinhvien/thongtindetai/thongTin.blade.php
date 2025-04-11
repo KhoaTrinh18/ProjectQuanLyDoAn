@@ -42,7 +42,7 @@
 
                             @if ($deTai->so_luong_sv_de_xuat == 1)
                                 <p><strong>Sinh viên đã đề xuất:
-                                    </strong>{{ $deTais->sinhViens->first()->ho_ten }}
+                                    </strong>{{ $deTai->sinhViens->first()->ho_ten }}
                                     ({{ $deTai->sinhViens->first()->mssv }})
                                 </p>
                             @elseif ($deTai->so_luong_sv_de_xuat > 1)
@@ -77,11 +77,10 @@
                                 <p><strong>Điểm bảo vệ: </strong></p>
                                 <p><strong>Điểm giảng viên hướng dẫn: </strong></p>
                             @else --}}
-                            @if ($loaiDeTai == 'de_tai_sv')
+                            @if ($loaiDeTai == 'de_tai_sv' && $deTai->trang_thai != 2)
                                 <form id="form_huy">
                                     <input type="hidden" name="ma_de_tai" value="{{ $deTai->ma_de_tai }}">
                                     <div class="text-center">
-
                                         <button type="submit" class="btn btn-danger btn-lg" id="huy">Hủy</button>
                                     </div>
                                 </form>
@@ -89,8 +88,8 @@
                                         duyệt đề tài đã đề xuất trong thời gian quy định!</i>
                                 </h5>
                             @else
-                                <h5 class="text-center" style="font-weight: bold"><i>Sinh viên muốn hủy phải liên hệ với
-                                        giảng viên đưa ra đề tài trong thời gian quy định!</i>
+                                <h5 class="text-center" style="font-weight: bold"><i>Khi đề tài đã duyệt, sinh viên muốn hủy phải liên hệ với
+                                        trưởng khoa trong thời gian quy định!</i>
                                 </h5>
                             @endif
                         </div>

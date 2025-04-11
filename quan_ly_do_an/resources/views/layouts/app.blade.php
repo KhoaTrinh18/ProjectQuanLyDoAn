@@ -116,6 +116,12 @@
                                     tài giảng viên</span>
                             </a>
                         </li>
+                        <li class="sidebar-item {{ request()->is('de-tai-sinh-vien*') ? 'active' : '' }}">
+                            <a class="sidebar-link" href="{{ route('de_tai_sinh_vien.danh_sach') }}">
+                                <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Đề
+                                    tài sinh viên</span>
+                            </a>
+                        </li>
                         {{-- <li class="sidebar-item {{ request()->is('thiet-lap*') ? 'active' : '' }}">
                             <a class="sidebar-link" href="{{ route('thiet_lap.danh_sach') }}">
                                 <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Đề tài giảng viên</span>

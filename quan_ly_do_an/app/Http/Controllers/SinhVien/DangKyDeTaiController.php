@@ -68,7 +68,7 @@ class DangKyDeTaiController extends Controller
         }
 
         $limit = $request->input('limit', 10);
-        $deTais = $query->orderBy('ma_de_tai', 'desc')->paginate($limit);
+        $deTais = $query->with('linhVuc')->where(['da_huy' => 0, 'trang_thai' => 2])->orderBy('ma_de_tai', 'desc')->paginate($limit);
 
         $maTaiKhoan = session()->get('ma_tai_khoan');
         $sinhVien = SinhVien::where('ma_tk', $maTaiKhoan)->first();

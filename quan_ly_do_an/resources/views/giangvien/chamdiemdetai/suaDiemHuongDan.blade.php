@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Chấm điểm đề tài hướng dẫn')
+@section('title', 'Sửa điểm đề tài hướng dẫn')
 
 @section('content')
     <div class="container-fluid p-0">
@@ -7,14 +7,18 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <h2 style="font-weight: bold">Chấm điểm đề tài hướng dẫn</h2>
+                        <h2 style="font-weight: bold">Sửa điểm đề tài hướng dẫn</h2>
                     </div>
                     <div class="card-body">
                         <p style="font-size: 16px"><strong>Tên đề tài:</strong> {{ $deTai->ten_de_tai }}</p>
                         <form id="form_cham_diem">
                             <input type="hidden" name="ma_de_tai" value="{{ $deTai->ma_de_tai }}">
                             @foreach ($deTai->sinhViens as $i => $sinhVien)
-                                <input type="hidden" name="ChamDiem[{{ $i }}][ma_sv]" value="{{ $sinhVien->ma_sv }}">
+                                @php
+                                    $phanCong = $phanCongSVDK->where('ma_sv', $sinhVien->ma_sv)->first();
+                                @endphp
+                                <input type="hidden" name="ChamDiem[{{ $i }}][ma_sv]"
+                                    value="{{ $sinhVien->ma_sv }}">
                                 <p style="font-size: 16px"><strong>Sinh viên {{ $i + 1 }}:</strong>
                                     {{ $sinhVien->ho_ten }} - {{ $sinhVien->mssv }}</p>
                                 <div class="d-flex mb-3">
@@ -25,7 +29,8 @@
                                     </label>
                                     <div class="ms-2 w-100">
                                         <input type="text" class="form-control form-control-lg shadow-none text-center"
-                                            name="ChamDiem[{{ $i }}][diem]" style="width: 90px" maxlength="4">
+                                            name="ChamDiem[{{ $i }}][diem]" style="width: 90px" maxlength="4"
+                                            value="{{ $phanCong->diem_GVHD }}">
                                         <span
                                             class="error-message text-danger d-none mt-2 error-ChamDiem{{ $i }}diem"></span>
                                     </div>
@@ -37,7 +42,7 @@
                                         Nhận xét
                                     </label>
                                     <div class="ms-2 w-100">
-                                        <textarea class="form-control form-control-lg shadow-none nhan_xet" name="ChamDiem[{{ $i }}][nhan_xet]"></textarea>
+                                        <textarea class="form-control form-control-lg shadow-none nhan_xet" name="ChamDiem[{{ $i }}][nhan_xet]">{{ $phanCong->nhan_xet }}</textarea>
                                         <span
                                             class="error-message text-danger d-none mt-2 error-ChamDiem{{ $i }}nhan_xet"></span>
                                     </div>
@@ -46,8 +51,7 @@
                             <div class="text-center">
                                 <a href="{{ route('cham_diem_de_tai.danh_sach_huong_dan') }}"
                                     class="btn btn-secondary btn-lg">Quay lại</a>
-                                <button class="btn btn-primary btn-lg" type="submit" id="chamDiem">Xác nhận chấm
-                                    điểm</button>
+                                <button class="btn btn-primary btn-lg" type="submit" id="chamDiem">Cập nhật điểm</button>
                             </div>
                         </form>
                     </div>
@@ -71,8 +75,7 @@
                     formData.set(name, content);
                 });
 
-                $(".error-message").text('').removeClass(
-                    "d-block").addClass("d-none");
+                $(".error-message").text('').removeClass("d-block").addClass("d-none");
                 $(".is-invalid").removeClass("is-invalid");
                 $(".note-editor").css("border", "");
 
@@ -87,7 +90,7 @@
                     },
                     success: function(result) {
                         if (result.success) {
-                            alert("Chấm điểm thành công!");
+                            alert("Cập nhật điểm thành công!");
                             window.location.href =
                                 "{{ route('cham_diem_de_tai.danh_sach_huong_dan') }}";
                         } else {
@@ -96,7 +99,6 @@
                                 let fieldName = field.replace(/\./g, '][').replace(
                                     /^(.+?)\]\[/, '$1[') + ']';
                                 let inputField = $("[name='" + fieldName + "']");
-                                console.log(fieldName);
                                 if (inputField.hasClass('nhan_xet')) {
                                     inputField.siblings(".note-editor").css("border",
                                         "1px solid red");

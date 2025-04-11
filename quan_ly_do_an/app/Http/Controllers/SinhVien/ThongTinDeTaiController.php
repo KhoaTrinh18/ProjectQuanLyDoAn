@@ -23,22 +23,22 @@ class ThongTinDeTaiController extends Controller
         $sinhVien = SinhVien::where('ma_tk', $maTaiKhoan)->first();
         $daDangKy = $sinhVien->dang_ky;
 
-        if($daDangKy) {
+        if ($daDangKy) {
             if ($sinhVien->loai_sv == 1) {
                 $sinhVienDTSV = SinhVienDeTaiSV::where('ma_sv', $sinhVien->ma_sv)->first();
                 $deTai = DeTaiSinhVien::with('sinhViens')->where('ma_de_tai', $sinhVienDTSV->ma_de_tai)->first();
                 $loaiDeTai = 'de_tai_sv';
             } else {
                 $phanCongSVDK = BangPhanCongSVDK::where('ma_sv', $sinhVien->ma_sv)->first();
-                $deTai = DeTaiGiangVien::with('sinhViens')->where('ma_de_tai', $phanCongSVDK->ma_de_tai)->first();
+                $deTai = DeTaiGiangVien::with(['sinhViens' => function ($query) use ($phanCongSVDK) {
+                    $query->wherePivot('ma_gvhd', $phanCongSVDK->ma_gvhd);
+                }])->where('ma_de_tai', $phanCongSVDK->ma_de_tai)->first();
                 $loaiDeTai = 'de_tai_gv';
             }
             return view('sinhvien.thongtindetai.thongTin', compact('deTai', 'loaiDeTai', 'daDangKy'));
         } else {
             return view('sinhvien.thongtindetai.thongTin', compact('daDangKy'));
         }
-        
-       
     }
 
     public function chiTiet()
@@ -46,9 +46,11 @@ class ThongTinDeTaiController extends Controller
         $maTaiKhoan = session()->get('ma_tai_khoan');
         $sinhVien = SinhVien::where('ma_tk', $maTaiKhoan)->first();
         if ($sinhVien->loai_sv == 1) {
-            $deTai = DeTaiSinhVien::with('linhVuc')->where('ma_de_tai', $sinhVien->ma_de_tai_sv)->first();
+            $sinhVienDTSV = SinhVienDeTaiSV::where('ma_sv', $sinhVien->ma_sv)->first();
+            $deTai = DeTaiSinhVien::with('linhVuc')->where('ma_de_tai', $sinhVienDTSV->ma_de_tai)->first();
         } else {
-            $deTai = DeTaiGiangVien::with(['linhVuc', 'giangViens'])->where('ma_de_tai', $sinhVien->ma_de_tai_gv)->first();
+            $phanCongSVDK = BangPhanCongSVDK::where('ma_sv', $sinhVien->ma_sv)->first();
+            $deTai = DeTaiGiangVien::with(['linhVuc', 'giangViens'])->where('ma_de_tai', $phanCongSVDK->ma_de_tai)->first();
         }
         return view('sinhvien.thongtindetai.chiTiet', compact('deTai'));
     }
@@ -69,7 +71,7 @@ class ThongTinDeTaiController extends Controller
             if ($sinhViens->count() <= 1) {
                 $deTai->da_huy = 1;
                 $deTai->trang_thai = null;
-            } 
+            }
             $deTai->save();
 
             $sinhVien->ma_de_tai_sv = null;
@@ -89,12 +91,14 @@ class ThongTinDeTaiController extends Controller
         return view('sinhvien.thongtindetai.deTaiHuy', compact('deTais'));
     }
 
-    public function chiTietDeTaiHuy($ma_de_tai) {
+    public function chiTietDeTaiHuy($ma_de_tai)
+    {
         $deTai = DeTaiSinhVien::with('linhVuc')->where('ma_de_tai', $ma_de_tai)->first();
         return view('sinhvien.thongtindetai.chiTietDeTaiHuy', compact('deTai'));
     }
 
-    public function xacNhandeXuat(Request $request) {
+    public function xacNhandeXuat(Request $request)
+    {
         if (!$request->isMethod('post')) {
             return redirect()->back()->with('error', 'Bạn không thể truy cập trực tiếp trang này!');
         }

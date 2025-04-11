@@ -11,6 +11,13 @@
                     </div>
                     <div class="card-body" style="font-size: 16px">
                         <h3 class="text-center mb-4" style="font-weight: bold">{{ $deTai->ten_de_tai }}</h3>
+                        <p><strong>Lĩnh vực:</strong>
+                            @if ($deTai->da_cham_diem)
+                                <span class="text-success">Đã chấm điểm</span>
+                            @else
+                                <span class="text-success">Chưa chấm điểm</span>
+                            @endif
+                        </p>
                         @if ($deTai->giangViens->count() == 1)
                             @php $giangVien = $deTai->giangViens->first(); @endphp
                             <p><strong>Giảng viên ra đề tài:</strong> {{ $giangVien->ho_ten }} - Email:
@@ -42,7 +49,8 @@
                             </ul>
                         @endif
                         <div class="text-center">
-                            <a href="{{ route('cham_diem_de_tai.danh_sach_huong_dan') }}" class="btn btn-secondary btn-lg">Quay
+                            <a href="{{ route('cham_diem_de_tai.danh_sach_huong_dan') }}"
+                                class="btn btn-secondary btn-lg">Quay
                                 lại</a>
                         </div>
                     </div>

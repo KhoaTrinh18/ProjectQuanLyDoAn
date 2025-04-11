@@ -67,12 +67,12 @@
                         @else
                             <p><strong>Sinh viên đã đăng ký:</strong></p>
                             <ul>
-                                @foreach ($sinhViens as $sv)
+                                @foreach ($deTai->sinhViens as $sinhVien)
                                     <li class="mt-2">
                                         <div class="d-flex align-items-center">
-                                            <p class="student-name m-0">{{ $sv->ho_ten }} ({{ $sv->mssv }})</p>
+                                            <p class="student-name m-0">{{ $sinhVien->ho_ten }} ({{ $sinhVien->mssv }})</p>
                                             <button class="btn btn-danger btn-sm ms-2 huy-dang-ky-btn"
-                                                data-ma-sv="{{ $sv->ma_sv }}" data-ho-ten="{{ $sv->ho_ten }}"
+                                                data-ma-sv="{{ $sinhVien->ma_sv }}" data-ho-ten="{{ $sinhVien->ho_ten }}"
                                                 data-bs-toggle="modal" data-bs-target="#confirmModal">
                                                 Hủy đăng ký
                                             </button>

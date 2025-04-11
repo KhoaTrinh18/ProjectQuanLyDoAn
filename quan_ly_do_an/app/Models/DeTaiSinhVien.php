@@ -21,4 +21,9 @@ class DeTaiSinhVien extends Model
     public function sinhViens(){
         return $this->belongsToMany(SinhVien::class, 'sinh_vien_de_tai_sv', 'ma_de_tai', 'ma_sv');
     }
+
+    public function ngayDeXuat()
+    {
+        return $this->hasOne(SinhVienDeTaiSV::class, 'ma_de_tai', 'ma_de_tai');
+    }
 }

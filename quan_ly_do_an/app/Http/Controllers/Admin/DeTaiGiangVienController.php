@@ -52,15 +52,17 @@ class DeTaiGiangVienController extends Controller
         }
 
         if ($request->filled('trang_thai')) {
-            if ($request->trang_thai == 1) {
-                $query->where('so_luong_sv_dang_ky', '>', 0);
-            } elseif ($request->trang_thai == 0) {
-                $query->where('so_luong_sv_dang_ky', 0);
+            if ($request->trang_thai == 0) {
+                $query->where('trang_thai', 0);
+            } elseif ($request->trang_thai == 1) {
+                $query->where('trang_thai', 1);
+            } else {
+                $query->where('trang_thai', 2);
             }
         }
 
         $limit = $request->input('limit', 10);
-        $deTaiGVs = $query->where(['da_huy' => 0])->orderBy('ma_de_tai', 'desc')->paginate($limit);
+        $deTaiGVs = $query->with(['giangViens', 'ngayDuaRa'])->where(['da_huy' => 0])->orderBy('ma_de_tai', 'desc')->paginate($limit);
 
         return response()->json([
             'success' => true,

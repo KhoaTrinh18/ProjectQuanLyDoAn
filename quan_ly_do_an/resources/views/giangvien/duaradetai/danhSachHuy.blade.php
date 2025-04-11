@@ -35,7 +35,7 @@
                                         <td class="text-center">{{ $deTai->so_luong_sv_toi_da }}</td>
                                         <td class="text-danger">đã hủy</td>
                                         <td class="text-center">
-                                            <a href="{{ route('thong_tin_de_tai.chi_tiet', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
+                                            <a href="{{ route('dua_ra_de_tai.khoi_phuc', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
                                                 class="btn btn-primary btn-sm">Khôi phục</a>
                                         </td>
                                     </tr>
