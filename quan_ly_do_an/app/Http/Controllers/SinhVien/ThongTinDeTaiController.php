@@ -30,9 +30,7 @@ class ThongTinDeTaiController extends Controller
                 $loaiDeTai = 'de_tai_sv';
             } else {
                 $phanCongSVDK = BangPhanCongSVDK::where('ma_sv', $sinhVien->ma_sv)->first();
-                $deTai = DeTaiGiangVien::with(['sinhViens' => function ($query) use ($phanCongSVDK) {
-                    $query->wherePivot('ma_gvhd', $phanCongSVDK->ma_gvhd);
-                }])->where('ma_de_tai', $phanCongSVDK->ma_de_tai)->first();
+                $deTai = DeTaiGiangVien::with('sinhViens')->where('ma_de_tai', $phanCongSVDK->ma_de_tai)->first();
                 $loaiDeTai = 'de_tai_gv';
             }
             return view('sinhvien.thongtindetai.thongTin', compact('deTai', 'loaiDeTai', 'daDangKy'));
