@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Duyệt đề tài sinh viên')
+@section('title', 'Hủy đề tài sinh viên')
 
 @section('content')
     <div class="container-fluid p-0">
@@ -7,7 +7,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <h2 style="font-weight: bold">Duyệt đề tài sinh viên</h2>
+                        <h2 style="font-weight: bold">Hủy đề tài sinh viên</h2>
                     </div>
                     <div class="card-body" style="font-size: 16px">
                         <h3 class="text-center mb-4" style="font-weight: bold">{{ $deTaiSV->ten_de_tai }}</h3>
@@ -28,13 +28,13 @@
                         <p><strong>Lĩnh vực:</strong> {{ $deTaiSV->linhVuc->ten_linh_vuc }}</p>
                         <p><strong>Mô tả:</strong> {!! $deTaiSV->mo_ta !!}</p>
 
-                        <form id="form_duyet">
+                        <form id="form_huy">
                             <input type="hidden" name="DeTai[ma_de_tai]" value="{{ $deTaiSV->ma_de_tai }}">
                             <div class="text-center">
                                 <a href="{{ route('de_tai_sinh_vien.danh_sach') }}" class="btn btn-secondary btn-lg">Quay
                                     lại</a>
-                                <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal"
-                                    data-bs-target="#confirmModal">Xác nhận duyệt</button>
+                                <button type="button" class="btn btn-danger btn-lg" data-bs-toggle="modal"
+                                    data-bs-target="#confirmModal">Xác nhận hủy</button>
                             </div>
                             <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel"
                                 aria-hidden="true">
@@ -45,12 +45,12 @@
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                 aria-label="Close"></button>
                                         </div>
-                                        <div class="modal-body">Bạn có chắc chắn muốn duyệt đề tài này không?
+                                        <div class="modal-body">Bạn có chắc chắn muốn hủy đề tài này không?
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary"
                                                 data-bs-dismiss="modal">Hủy</button>
-                                            <button type="submit" class="btn btn-primary" id="duyet">Xác
+                                            <button type="submit" class="btn btn-primary" id="huy">Xác
                                                 nhận</button>
                                         </div>
                                     </div>
@@ -67,18 +67,14 @@
 @section('scripts')
     <script>
         $(document).ready(function() {
-            $("#duyet").click(function(event) {
+            $("#huy").click(function(event) {
                 event.preventDefault();
 
-                let form = $("#form_duyet").get(0);
+                let form = $("#form_huy").get(0);
                 let formData = new FormData(form);
 
-                $(".error-message").text('').removeClass(
-                    "d-block").addClass("d-none");
-                $(".is-invalid").removeClass("is-invalid");
-
                 $.ajax({
-                    url: "{{ route('de_tai_sinh_vien.xac_nhan_duyet') }}",
+                    url: "{{ route('de_tai_sinh_vien.xac_nhan_huy') }}",
                     type: "POST",
                     data: formData,
                     contentType: false,
@@ -88,13 +84,13 @@
                     },
                     success: function(result) {
                         if (result.success) {
-                            alert("Duyệt thành công!");
+                            alert("Hủy thành công!");
                             window.location.href =
                                 "{{ route('de_tai_sinh_vien.danh_sach') }}";
                         }
                     },
                     error: function(xhr) {
-                        alert("Duyệt thất bại! Vui lòng thử lại.");
+                        alert("Hủy thất bại! Vui lòng thử lại.");
                     },
                 });
             });

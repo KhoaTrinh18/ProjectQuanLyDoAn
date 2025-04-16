@@ -24,13 +24,13 @@ class ThongTinDeTaiController extends Controller
         $daDangKy = $sinhVien->dang_ky;
 
         if ($daDangKy) {
-            if ($sinhVien->loai_sv == 1) {
-                $sinhVienDTSV = SinhVienDeTaiSV::where('ma_sv', $sinhVien->ma_sv)->first();
-                $deTai = DeTaiSinhVien::with('sinhViens')->where('ma_de_tai', $sinhVienDTSV->ma_de_tai)->first();
+            if ($sinhVien->loai_sv == 'de_xuat') {
+                $sinhVienDTSV = SinhVienDeTaiSV::where(['ma_sv' => $sinhVien->ma_sv, 'da_huy' => 0])->first();
+                $deTai = DeTaiSinhVien::with('sinhViens')->where(['ma_de_tai' => $sinhVienDTSV->ma_de_tai, 'da_huy' => 0])->first();
                 $loaiDeTai = 'de_tai_sv';
             } else {
                 $phanCongSVDK = BangPhanCongSVDK::where('ma_sv', $sinhVien->ma_sv)->first();
-                $deTai = DeTaiGiangVien::with('sinhViens')->where('ma_de_tai', $phanCongSVDK->ma_de_tai)->first();
+                $deTai = DeTaiGiangVien::with('sinhViens')->where(['ma_de_tai' => $phanCongSVDK->ma_de_tai, 'da_huy' => 0])->first();
                 $loaiDeTai = 'de_tai_gv';
             }
             return view('sinhvien.thongtindetai.thongTin', compact('deTai', 'loaiDeTai', 'daDangKy'));

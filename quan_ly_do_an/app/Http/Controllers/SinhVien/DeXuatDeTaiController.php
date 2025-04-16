@@ -122,7 +122,7 @@ class DeXuatDeTaiController extends Controller
             $sinhViens = SinhVien::whereIn('mssv', $mssvList)->get();
             SinhVien::whereIn('mssv', $mssvList)->update([
                 'dang_ky' => 1,
-                'loai_sv' => 1,
+                'loai_sv' => 'de_xuat',
             ]); 
 
             $sinhVienDTSVs = [];
@@ -133,7 +133,6 @@ class DeXuatDeTaiController extends Controller
                     'ngay_de_xuat' => now()->toDateString()
                 ];
             }
-            Log::info("sinh viên", $sinhVienDTSVs);
             SinhVienDeTaiSV::insert($sinhVienDTSVs);
             
             return response()->json([

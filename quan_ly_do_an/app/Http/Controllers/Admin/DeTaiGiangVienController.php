@@ -70,6 +70,11 @@ class DeTaiGiangVienController extends Controller
         ]);
     }
 
+    public function chiTiet($ma_de_tai) {
+        $deTaiGV = DeTaiGiangVien::with(['linhVuc', 'giangViens'])->where('ma_de_tai', $ma_de_tai)->firstOrFail();
+        return view('admin.detaigiangvien.chiTiet', compact('deTaiGV'));
+    }
+
     public function duyet($ma_de_tai) {
         $deTaiGV = DeTaiGiangVien::with(['linhVuc', 'giangViens'])->where('ma_de_tai', $ma_de_tai)->firstOrFail();
         return view('admin.detaigiangvien.duyet', compact('deTaiGV'));

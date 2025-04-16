@@ -127,6 +127,11 @@
                                 <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Phân công hướng dẫn</span>
                             </a>
                         </li>
+                        <li class="sidebar-item {{ request()->is('phan-cong-phan-bien*') ? 'active' : '' }}">
+                            <a class="sidebar-link" href="{{ route('phan_cong_phan_bien.danh_sach') }}">
+                                <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Phân công phản biện</span>
+                            </a>
+                        </li>
                         {{-- <li class="sidebar-item {{ request()->is('thiet-lap*') ? 'active' : '' }}">
                             <a class="sidebar-link" href="{{ route('thiet_lap.danh_sach') }}">
                                 <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Đề tài giảng viên</span>

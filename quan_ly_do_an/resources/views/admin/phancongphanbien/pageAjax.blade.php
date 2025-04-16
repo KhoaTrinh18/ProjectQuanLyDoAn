@@ -43,10 +43,10 @@
             <thead style="background: #222e3c;">
                 <tr>
                     <th scope="col" class="text-white">#</th>
-                    <th scope="col" class="text-white" style="width: 30%;">Tên đề tài</th>
+                    <th scope="col" class="text-white" style="width: 25%;">Tên đề tài</th>
                     <th scope="col" class="text-white">Sinh viên thực hiện</th>
                     <th scope="col" class="text-white">Giảng viên hướng dẫn</th>
-                    <th scope="col" class="text-white">Hành động</th>
+                    <th scope="col" class="text-white">Giảng viên phản biện</th>
                     <th scope="col" class="text-white">Trạng thái</th>
                     <th scope="col" class="text-white"></th>
                 </tr>
@@ -57,7 +57,7 @@
                         <td scope="row">
                             {{ $key + 1 }}</td>
                         <td
-                            style="width: 30%; word-wrap: break-word; overflow-wrap: break-word; white-space: normal; word-break: break-word;">
+                            style="width: 25%; word-wrap: break-word; overflow-wrap: break-word; white-space: normal; word-break: break-word;">
                             {{ $deTai->ten_de_tai }}
                         </td>
                         <td> {!! $deTai->sinhViens->pluck('ho_ten')->implode('<br>') !!} </td>
@@ -69,34 +69,28 @@
                             @endif
                         </td>
                         <td>
-                            @php
-                                $sinhVien = $deTai->sinhViens->first();
-                            @endphp
-
-                            @if ($sinhVien->loai_sv == 'de_xuat')
-                                Đề xuất
+                            @if ($deTai->giangVienPhanBiens->count() != 0)
+                                {!! $deTai->giangVienPhanBiens->pluck('ho_ten')->implode('<br>') !!}
                             @else
-                                Đăng ký
+                                Chưa có
                             @endif
                         </td>
                         <td>
-                            @if ($deTai->giangViens->count() != 0)
+                            @if ($deTai->giangVienPhanBiens->count() != 0)
                                 <span class="text-success">Đã phân công</span>
                             @else
                                 <span class="text-warning">Chưa phân công</span>
                             @endif
                         </td>
                         <td class="text-center">
-                            @if ($deTai->giangViens->count() != 0)
-                                <a href="{{ route('phan_cong_huong_dan.chi_tiet', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
+                            @if ($deTai->giangVienPhanBiens->count() != 0)
+                                <a href="{{ route('phan_cong_phan_bien.chi_tiet', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
                                     class="btn btn-secondary btn-sm">Xem</a>
-                                @if ($sinhVien->loai_sv == 'de_xuat')
-                                    <a href="{{ route('phan_cong_huong_dan.sua', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
-                                        class="btn btn-primary btn-sm">Sửa</a>
-                                @endif
+                                <a href="{{ route('phan_cong_phan_bien.sua', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
+                                    class="btn btn-primary btn-sm">Sửa</a>
                             @else
-                                <a href="{{ route('phan_cong_huong_dan.phan_cong', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
-                                    class="btn btn-primary btn-sm">Phân công hướng dẫn</a>
+                                <a href="{{ route('phan_cong_phan_bien.phan_cong', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
+                                    class="btn btn-primary btn-sm">Phân công phản biện</a>
                             @endif
                         </td>
                     </tr>

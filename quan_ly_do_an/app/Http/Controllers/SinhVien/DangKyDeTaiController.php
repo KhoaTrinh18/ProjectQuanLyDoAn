@@ -106,7 +106,7 @@ class DangKyDeTaiController extends Controller
         $maTaiKhoan = session()->get('ma_tai_khoan');
         $sinhVien = SinhVien::where('ma_tk', $maTaiKhoan)->first();
         $sinhVien->dang_ky = 1;
-        $sinhVien->loai_sv = 2;
+        $sinhVien->loai_sv = 'dang_ky';
         $sinhVien->save();
 
         $phanCongSVDKs = [];

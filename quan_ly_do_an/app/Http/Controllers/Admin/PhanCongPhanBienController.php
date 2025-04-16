@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Carbon\Carbon;
 use App\Models\{
+    BangDiemGVPBChoSVDX,
+    BangDiemGVPBChoSVDK,
     BangPhanCongSVDK,
     BangPhanCongSVDX,
     DeTaiGiangVien,
@@ -19,16 +21,17 @@ use App\Models\{
     ThietLap
 };
 
-class PhanCongHuongDanController extends Controller
+class PhanCongPhanBienController extends Controller
 {
     public function danhSach(Request $request)
     {
         $limit = $request->query('limit', 10);
 
-        $deTaiSVs = DeTaiSinhVien::with(['sinhViens', 'giangViens'])->where(['da_huy' => 0, 'trang_thai' => 2])->orderBy('ma_de_tai', 'desc')->get();
+        $maDeTaiDXs = BangPhanCongSVDX::distinct()->pluck('ma_de_tai');
+        $deTaiSVs = DeTaiSinhVien::with(['sinhViens', 'giangViens', 'giangVienPhanBiens'])->whereIn('ma_de_tai', $maDeTaiDXs)->orderBy('ma_de_tai', 'desc')->get();
 
-        $maDeTais = BangPhanCongSVDK::distinct()->pluck('ma_de_tai');
-        $deTaiGVs = DeTaiGiangVien::with(['sinhViens', 'giangViens'])->whereIn('ma_de_tai', $maDeTais)->orderBy('ma_de_tai', 'desc')->get();
+        $maDeTaiDKs = BangPhanCongSVDK::distinct()->pluck('ma_de_tai');
+        $deTaiGVs = DeTaiGiangVien::with(['sinhViens', 'giangViens', 'giangVienPhanBiens'])->whereIn('ma_de_tai', $maDeTaiDKs)->orderBy('ma_de_tai', 'desc')->get();
 
         $merged = $deTaiSVs->merge($deTaiGVs)->unique('ma_de_tai')->values();
 
@@ -41,25 +44,32 @@ class PhanCongHuongDanController extends Controller
             ['path' => request()->url(), 'query' => request()->query()]
         );
 
-        return view('admin.phanconghuongdan.danhSach', compact('deTais'));
+        return view('admin.phancongphanbien.danhSach', compact('deTais'));
     }
 
     public function pageAjax(Request $request)
     {
         $limit = $request->query('limit', 10);
 
+        $maDeTaiDXs = BangPhanCongSVDX::distinct()->pluck('ma_de_tai');
         $deTaiSVs = DeTaiSinhVien::query()
-            ->with(['sinhViens', 'giangViens'])
-            ->where(['da_huy' => 0, 'trang_thai' => 2])
+            ->with(['sinhViens', 'giangViens', 'giangVienPhanBiens'])
+            ->whereIn('ma_de_tai', $maDeTaiDXs)
             ->orderBy('ma_de_tai', 'desc');
 
         if ($request->filled('ten_de_tai')) {
             $deTaiSVs->where('ten_de_tai', 'like', '%' . $request->ten_de_tai . '%');
         }
 
-        if ($request->filled('giang_vien')) {
+        if ($request->filled('giang_vien_huong_dan')) {
             $deTaiSVs->whereHas('giangViens', function ($q) use ($request) {
-                $q->where('ho_ten', 'like', '%' . $request->giang_vien . '%');
+                $q->where('ho_ten', 'like', '%' . $request->giang_vien_huong_dan . '%');
+            });
+        }
+
+        if ($request->filled('giang_vien_phan_bien')) {
+            $deTaiSVs->whereHas('giangVienPhanBiens', function ($q) use ($request) {
+                $q->where('ho_ten', 'like', '%' . $request->giang_vien_phan_bien . '%');
             });
         }
 
@@ -71,27 +81,33 @@ class PhanCongHuongDanController extends Controller
 
         if ($request->filled('trang_thai')) {
             if ($request->trang_thai == 0) {
-                $deTaiSVs->whereDoesntHave('giangViens');
+                $deTaiSVs->whereDoesntHave('giangVienPhanBiens');
             } else {
-                $deTaiSVs->whereHas('giangViens');
+                $deTaiSVs->whereHas('giangVienPhanBiens');
             }
         }
 
         $deTaiSVs = $deTaiSVs->get();
 
-        $maDeTais = BangPhanCongSVDK::distinct()->pluck('ma_de_tai');
+        $maDeTaiDKs = BangPhanCongSVDK::distinct()->pluck('ma_de_tai');
         $deTaiGVs = DeTaiGiangVien::query()
-            ->with(['sinhViens', 'giangViens'])
-            ->whereIn('ma_de_tai', $maDeTais)
+            ->with(['sinhViens', 'giangViens', 'giangVienPhanBiens'])
+            ->whereIn('ma_de_tai', $maDeTaiDKs)
             ->orderBy('ma_de_tai', 'desc');
 
         if ($request->filled('ten_de_tai')) {
             $deTaiGVs->where('ten_de_tai', 'like', '%' . $request->ten_de_tai . '%');
         }
 
-        if ($request->filled('giang_vien')) {
+        if ($request->filled('giang_vien_huong_dan')) {
             $deTaiGVs->whereHas('giangViens', function ($q) use ($request) {
-                $q->where('ho_ten', 'like', '%' . $request->giang_vien . '%');
+                $q->where('ho_ten', 'like', '%' . $request->giang_vien_huong_dan . '%');
+            });
+        }
+
+        if ($request->filled('giang_vien_phan_bien')) {
+            $deTaiGVs->whereHas('giangVienPhanBiens', function ($q) use ($request) {
+                $q->where('ho_ten', 'like', '%' . $request->giang_vien_phan_bien . '%');
             });
         }
 
@@ -103,9 +119,9 @@ class PhanCongHuongDanController extends Controller
 
         if ($request->filled('trang_thai')) {
             if ($request->trang_thai == 0) {
-                $deTaiGVs->whereDoesntHave('giangViens');
+                $deTaiGVs->whereDoesntHave('giangVienPhanBiens');
             } else {
-                $deTaiGVs->whereHas('giangViens');
+                $deTaiGVs->whereHas('giangVienPhanBiens');
             }
         }
 
@@ -124,18 +140,18 @@ class PhanCongHuongDanController extends Controller
 
         return response()->json([
             'success' => true,
-            'html' => view('admin.phanconghuongdan.pageAjax', compact('deTais'))->render()
+            'html' => view('admin.phancongphanbien.pageAjax', compact('deTais'))->render()
         ]);
     }
-    
+
     public function chiTiet($ma_de_tai)
     {
-        $deTai = DeTaiSinhVien::with(['giangViens', 'sinhViens'])
+        $deTai = DeTaiSinhVien::with(['giangViens', 'sinhViens', 'giangVienPhanBiens'])
             ->where('ma_de_tai', $ma_de_tai)
             ->first();
 
         if (!$deTai) {
-            $deTai = DeTaiGiangVien::with(['giangViens', 'sinhViens'])
+            $deTai = DeTaiGiangVien::with(['giangViens', 'sinhViens', 'giangVienPhanBiens'])
                 ->where('ma_de_tai', $ma_de_tai)
                 ->first();
         }
@@ -144,17 +160,17 @@ class PhanCongHuongDanController extends Controller
             abort(404, 'Đề tài không tồn tại');
         }
 
-        return view('admin.phanconghuongdan.chiTiet', compact('deTai'));
+        return view('admin.phancongphanbien.chiTiet', compact('deTai'));
     }
 
     public function phanCong($ma_de_tai)
     {
-        $deTai = DeTaiSinhVien::with(['giangViens', 'sinhViens'])
+        $deTai = DeTaiSinhVien::with(['giangViens', 'sinhViens', 'giangVienPhanBiens'])
             ->where('ma_de_tai', $ma_de_tai)
             ->first();
 
         if (!$deTai) {
-            $deTai = DeTaiGiangVien::with(['giangViens', 'sinhViens'])
+            $deTai = DeTaiGiangVien::with(['giangViens', 'sinhViens', 'giangVienPhanBiens'])
                 ->where('ma_de_tai', $ma_de_tai)
                 ->first();
         }
@@ -165,7 +181,7 @@ class PhanCongHuongDanController extends Controller
 
         $giangViens = GiangVien::get();
 
-        return view('admin.phanconghuongdan.phanCong', compact('deTai', 'giangViens'));
+        return view('admin.phancongphanbien.phanCong', compact('deTai', 'giangViens'));
     }
 
     public function xacNhanPhanCong(Request $request)
@@ -177,26 +193,12 @@ class PhanCongHuongDanController extends Controller
         $data = $request->input('DeTai', []);
 
         $validator = Validator::make($data, [
-            'giang_vien.*' => [
-                'sometimes'
+            'ma_gvpb' => [
+                'required'
             ]
+        ], [
+            'ma_gvpb.required' => 'Bạn phải chọn ít nhất một giảng viên.',
         ]);
-        $giangVienList = [];
-        $validator->after(function ($validator) use ($request, &$giangVienList) {
-            $giangVienList = array_filter($request->input('DeTai', [])['giang_vien'], function ($value) {
-                return trim(strip_tags($value)) !== "";
-            });
-
-            if (empty($giangVienList)) {
-                $validator->errors()->add('giangvien', 'Bạn phải chọn ít nhất một giảng viên.');
-            }
-
-            // foreach ($giangVienList as $index => $giangVien) {
-            //     if ($giangVien == null) {
-            //         $validator->errors()->add("giangvien.$index", "Giảng viên không được để trống.");
-            //     }
-            // }
-        });
 
         if ($validator->fails()) {
             return response()->json([
@@ -206,13 +208,25 @@ class PhanCongHuongDanController extends Controller
         }
 
         $deTai = DeTaiSinhVien::where('ma_de_tai', $data['ma_de_tai'])->first();
-        foreach ($deTai->sinhViens as $sinhVien) {
-            foreach ($giangVienList as $giangVien) {
-                $phanCong = new BangPhanCongSVDX();
-                $phanCong->ma_sv = $sinhVien->ma_sv;
-                $phanCong->ma_gvhd = $giangVien;
-                $phanCong->ma_de_tai = $data['ma_de_tai'];
-                $phanCong->save();
+        if ($deTai) {
+            $phanCongs = BangPhanCongSVDX::where('ma_de_tai', $data['ma_de_tai'])->get();
+            foreach ($phanCongs as $phanCong) {
+                $phanCongPhanBien = new BangDiemGVPBChoSVDX();
+                $phanCongPhanBien->ma_sv = $phanCong->ma_sv;
+                $phanCongPhanBien->ma_gvhd = $phanCong->ma_gvhd;
+                $phanCongPhanBien->ma_de_tai = $data['ma_de_tai'];
+                $phanCongPhanBien->ma_gvpb = $data['ma_gvpb'];
+                $phanCongPhanBien->save();
+            }
+        } else {
+            $phanCongs = BangPhanCongSVDK::where('ma_de_tai', $data['ma_de_tai'])->get();
+            foreach ($phanCongs as $phanCong) {
+                $phanCongPhanBien = new BangDiemGVPBChoSVDK();
+                $phanCongPhanBien->ma_sv = $phanCong->ma_sv;
+                $phanCongPhanBien->ma_gvhd = $phanCong->ma_gvhd;
+                $phanCongPhanBien->ma_de_tai = $data['ma_de_tai'];
+                $phanCongPhanBien->ma_gvpb = $data['ma_gvpb'];
+                $phanCongPhanBien->save();
             }
         }
 
@@ -248,6 +262,8 @@ class PhanCongHuongDanController extends Controller
 
         $data = $request->input('DeTai', []);
 
+        Log::info('đề tài', [$data]);
+
         $validator = Validator::make($data, [
             'giang_vien.*' => [
                 'sometimes'
@@ -262,12 +278,6 @@ class PhanCongHuongDanController extends Controller
             if (empty($giangVienList)) {
                 $validator->errors()->add('giangvien', 'Bạn phải chọn ít nhất một giảng viên.');
             }
-
-            // foreach ($giangVienList as $index => $giangVien) {
-            //     if ($giangVien == null) {
-            //         $validator->errors()->add("giangvien.$index", "Giảng viên không được để trống.");
-            //     }
-            // }
         });
 
         if ($validator->fails()) {
@@ -278,8 +288,6 @@ class PhanCongHuongDanController extends Controller
         }
 
         $deTai = DeTaiSinhVien::where('ma_de_tai', $data['ma_de_tai'])->first();
-
-        BangPhanCongSVDX::where('ma_de_tai', $data['ma_de_tai'])->delete();
         foreach ($deTai->sinhViens as $sinhVien) {
             foreach ($giangVienList as $giangVien) {
                 $phanCong = new BangPhanCongSVDX();

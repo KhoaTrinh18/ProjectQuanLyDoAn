@@ -9,9 +9,10 @@ use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use App\Models\{
     DeTaiSinhVien,
-    GiangVien,
+    SinhVien,
     LinhVuc,
     GiangVienDeTai,
+    SinhVienDeTaiSV,
     ThietLap
 };
 
@@ -72,12 +73,20 @@ class DeTaiSinhVienController extends Controller
         ]);
     }
 
-    public function duyet($ma_de_tai) {
+    public function chiTiet($ma_de_tai)
+    {
+        $deTaiSV = DeTaiSinhVien::with(['linhVuc', 'sinhViens', 'ngayDeXuat'])->where('ma_de_tai', $ma_de_tai)->firstOrFail();
+        return view('admin.detaisinhvien.chiTiet', compact('deTaiSV'));
+    }
+
+    public function duyet($ma_de_tai)
+    {
         $deTaiSV = DeTaiSinhVien::with(['linhVuc', 'sinhViens', 'ngayDeXuat'])->where('ma_de_tai', $ma_de_tai)->firstOrFail();
         return view('admin.detaisinhvien.duyet', compact('deTaiSV'));
     }
 
-    public function xacNhanDuyet(Request $request) {
+    public function xacNhanDuyet(Request $request)
+    {
         if (!$request->isMethod('post')) {
             return redirect()->back()->with('error', 'Bạn không thể truy cập trực tiếp trang này!');
         }
@@ -87,6 +96,38 @@ class DeTaiSinhVienController extends Controller
         $deTaiSV = DeTaiSinhVien::where('ma_de_tai', $data['ma_de_tai'])->first();
         $deTaiSV->trang_thai = 2;
         $deTaiSV->save();
+
+        return response()->json(['success' => true]);
+    }
+
+    public function huy($ma_de_tai)
+    {
+        $deTaiSV = DeTaiSinhVien::with(['linhVuc', 'sinhViens', 'ngayDeXuat'])->where('ma_de_tai', $ma_de_tai)->firstOrFail();
+        return view('admin.detaisinhvien.huy', compact('deTaiSV'));
+    }
+
+    public function xacNhanHuy(Request $request)
+    {
+        if (!$request->isMethod('post')) {
+            return redirect()->back()->with('error', 'Bạn không thể truy cập trực tiếp trang này!');
+        }
+
+        $data = $request->input('DeTai', []);
+
+        $deTaiSV = DeTaiSinhVien::where('ma_de_tai', $data['ma_de_tai'])->first();
+        $deTaiSV->da_huy = 1;
+        $deTaiSV->save();
+
+        $sinhViens = $deTaiSV->sinhViens->pluck('ma_sv');
+        $sinhVienList = SinhVien::whereIn('ma_sv', $sinhViens)->get();
+        foreach ($sinhVienList as $sinhVien) {
+            $sinhVien->dang_ky = 0;
+            $sinhVien->loai_sv = null;
+            $sinhVien->save();
+        }
+
+        SinhVienDeTaiSV::where('ma_de_tai', $data['ma_de_tai'])
+            ->update(['da_huy' => 1]);
 
         return response()->json(['success' => true]);
     }

@@ -11,11 +11,15 @@
                     </div>
                     <div class="card-body">
                         <p style="font-size: 16px"><strong>Tên đề tài:</strong> {{ $deTai->ten_de_tai }}</p>
-                        <form id="form_cham_diem">
+                        <form id="form_sua_diem">
                             <input type="hidden" name="ma_de_tai" value="{{ $deTai->ma_de_tai }}">
                             @foreach ($deTai->sinhViens as $i => $sinhVien)
                                 @php
-                                    $phanCong = $phanCongSVDK->where('ma_sv', $sinhVien->ma_sv)->first();
+                                    if ($deTai->so_luong_sv_dang_ky) {
+                                        $phanCong = $phanCongSVDK->where('ma_sv', $sinhVien->ma_sv)->first();
+                                    } else {
+                                        $phanCong = $phanCongSVDX->where('ma_sv', $sinhVien->ma_sv)->first();
+                                    }
                                 @endphp
                                 <input type="hidden" name="ChamDiem[{{ $i }}][ma_sv]"
                                     value="{{ $sinhVien->ma_sv }}">
@@ -51,7 +55,7 @@
                             <div class="text-center">
                                 <a href="{{ route('cham_diem_de_tai.danh_sach_huong_dan') }}"
                                     class="btn btn-secondary btn-lg">Quay lại</a>
-                                <button class="btn btn-primary btn-lg" type="submit" id="chamDiem">Cập nhật điểm</button>
+                                <button class="btn btn-primary btn-lg" type="submit" id="suaDiem">Cập nhật điểm</button>
                             </div>
                         </form>
                     </div>
@@ -64,10 +68,10 @@
 @section('scripts')
     <script>
         $(document).ready(function() {
-            $("#chamDiem").click(function(event) {
+            $("#suaDiem").click(function(event) {
                 event.preventDefault();
 
-                let form = $("#form_cham_diem").get(0);
+                let form = $("#form_sua_diem").get(0);
                 let formData = new FormData(form);
                 $('.nhan_xet').each(function(index) {
                     let name = $(this).attr('name');
@@ -80,7 +84,7 @@
                 $(".note-editor").css("border", "");
 
                 $.ajax({
-                    url: "{{ route('cham_diem_de_tai.xac_nhan_cham_diem_huong_dan') }}",
+                    url: "{{ route('cham_diem_de_tai.xac_nhan_sua_diem_huong_dan') }}",
                     type: "POST",
                     data: formData,
                     contentType: false,
@@ -94,7 +98,6 @@
                             window.location.href =
                                 "{{ route('cham_diem_de_tai.danh_sach_huong_dan') }}";
                         } else {
-                            console.log(result.errors);
                             $.each(result.errors, function(field, messages) {
                                 let fieldName = field.replace(/\./g, '][').replace(
                                     /^(.+?)\]\[/, '$1[') + ']';

@@ -9,10 +9,10 @@ use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use App\Models\{
     BangPhanCongSVDK,
+    BangPhanCongSVDX,
     DeTaiGiangVien,
-    GiangVien,
-    SinhVien,
-    GiangVienDeTaiGV
+    DeTaiSinhVien,
+    GiangVien
 };
 
 class ChamDiemDeTaiController extends Controller
@@ -21,22 +21,40 @@ class ChamDiemDeTaiController extends Controller
     {
         $maTaiKhoan = session()->get('ma_tai_khoan');
         $giangVien = GiangVien::where('ma_tk', $maTaiKhoan)->first();
-        $maDeTais = GiangVienDeTaiGV::where('ma_gv', $giangVien->ma_gv)->pluck('ma_de_tai');
-        $deTais = DeTaiGiangVien::with(['linhVuc', 'sinhViens' => function ($query) use ($giangVien) {
-            $query->wherePivot('ma_gvhd', $giangVien->ma_gv);
-        }])
+
+        $phanCongSVDK = BangPhanCongSVDK::where('ma_gvhd', $giangVien->ma_gv)->get();
+        $maDeTais = $phanCongSVDK->pluck('ma_de_tai');
+        $deTaiGVs = DeTaiGiangVien::with(['linhVuc', 'sinhViens'])
             ->whereIn('ma_de_tai', $maDeTais)
             ->where(['da_huy' => 0, 'trang_thai' => 2])
-            ->where('so_luong_sv_dang_ky', '>', 0)
             ->orderBy('ma_de_tai', 'desc')
             ->get();
-        $phanCongSVDK = BangPhanCongSVDK::where('ma_gvhd', $giangVien->ma_gv)->get();
-        return view('giangvien.chamdiemdetai.danhSachHuongDan', compact('deTais', 'phanCongSVDK'));
+
+        $phanCongSVDX = BangPhanCongSVDX::where('ma_gvhd', $giangVien->ma_gv)->get();
+        $maDeTais = $phanCongSVDX->pluck('ma_de_tai');
+        $deTaiSVs = DeTaiSinhVien::with(['linhVuc', 'sinhViens'])
+            ->whereIn('ma_de_tai', $maDeTais)
+            ->where(['da_huy' => 0, 'trang_thai' => 2])
+            ->orderBy('ma_de_tai', 'desc')
+            ->get();
+
+        $deTais = $deTaiSVs->merge($deTaiGVs)->unique('ma_de_tai')->values();
+
+        return view('giangvien.chamdiemdetai.danhSachHuongDan', compact('deTais', 'phanCongSVDK', 'phanCongSVDX'));
     }
 
     public function chiTietHuongDan($ma_de_tai)
     {
-        $deTai = DeTaiGiangVien::with(['linhVuc', 'giangViens', 'sinhViens'])->where('ma_de_tai', $ma_de_tai)->firstOrFail();
+        $deTai = DeTaiGiangVien::with(['linhVuc', 'giangViens', 'sinhViens'])->where('ma_de_tai', $ma_de_tai)->first();
+
+        if (!$deTai) {
+            $deTai = DeTaiSinhVien::with(['linhVuc', 'giangViens', 'sinhViens'])->where('ma_de_tai', $ma_de_tai)->first();
+        }
+
+        if (!$deTai) {
+            abort(404, 'Đề tài không tồn tại');
+        }
+
         return view('giangvien.chamdiemdetai.chiTietHuongDan', compact('deTai'));
     }
 
@@ -45,9 +63,16 @@ class ChamDiemDeTaiController extends Controller
     {
         $maTaiKhoan = session()->get('ma_tai_khoan');
         $giangVien = GiangVien::where('ma_tk', $maTaiKhoan)->first();
-        $deTai = DeTaiGiangVien::with(['sinhViens' => function ($query) use ($giangVien) {
-            $query->wherePivot('ma_gvhd', $giangVien->ma_gv);
-        }])->where('ma_de_tai', $ma_de_tai)->firstOrFail();
+        $deTai = DeTaiGiangVien::with('sinhViens')->where('ma_de_tai', $ma_de_tai)->first();
+
+        if (!$deTai) {
+            $deTai = DeTaiSinhVien::with('sinhViens')->where('ma_de_tai', $ma_de_tai)->first();
+        }
+
+        if (!$deTai) {
+            abort(404, 'Đề tài không tồn tại');
+        }
+
         return view('giangvien.chamdiemdetai.chamDiemHuongDan', compact('deTai'));
     }
 
@@ -99,18 +124,27 @@ class ChamDiemDeTaiController extends Controller
         try {
             $maTaiKhoan = session()->get('ma_tai_khoan');
             $giangVien = GiangVien::where('ma_tk', $maTaiKhoan)->first();
+
             foreach ($data as $chamDiem) {
-                BangPhanCongSVDK::where(['ma_de_tai' => $ma_de_tai, 'ma_gvhd' => $giangVien->ma_gv])
+                $updated = BangPhanCongSVDK::where(['ma_de_tai' => $ma_de_tai, 'ma_gvhd' => $giangVien->ma_gv, 'ma_sv' => $chamDiem['ma_sv']])
+                    ->update([
+                        'diem_GVHD' => $chamDiem['diem'],
+                        'nhan_xet' => $chamDiem['nhan_xet'],
+                    ]);
+
+                if ($updated === 0) {
+                    break;
+                }
+            }
+
+            foreach ($data as $chamDiem) {
+                $updated = BangPhanCongSVDX::where(['ma_de_tai' => $ma_de_tai, 'ma_gvhd' => $giangVien->ma_gv, 'ma_sv' => $chamDiem['ma_sv']])
                     ->where('ma_sv', $chamDiem['ma_sv'])
                     ->update([
                         'diem_GVHD' => $chamDiem['diem'],
                         'nhan_xet' => $chamDiem['nhan_xet'],
                     ]);
             }
-
-            $deTaiGV = DeTaiGiangVien::where('ma_de_tai', $ma_de_tai)->first();
-            $deTaiGV->da_cham_diem = 1;
-            $deTaiGV->save();
 
             return response()->json([
                 'success' => true,
@@ -128,11 +162,20 @@ class ChamDiemDeTaiController extends Controller
     {
         $maTaiKhoan = session()->get('ma_tai_khoan');
         $giangVien = GiangVien::where('ma_tk', $maTaiKhoan)->first();
-        $deTai = DeTaiGiangVien::with(['sinhViens' => function ($query) use ($giangVien) {
-            $query->wherePivot('ma_gvhd', $giangVien->ma_gv);
-        }])->where('ma_de_tai', $ma_de_tai)->firstOrFail();
+        $deTai = DeTaiGiangVien::with('sinhViens')->where('ma_de_tai', $ma_de_tai)->first();
+
+        if (!$deTai) {
+            $deTai = DeTaiSinhVien::with('sinhViens')->where('ma_de_tai', $ma_de_tai)->first();
+        }
+
+        if (!$deTai) {
+            abort(404, 'Đề tài không tồn tại');
+        }
+
         $phanCongSVDK = BangPhanCongSVDK::where(['ma_de_tai' => $ma_de_tai, 'ma_gvhd' => $giangVien->ma_gv])->get();
-        return view('giangvien.chamdiemdetai.suaDiemHuongDan', compact('deTai', 'phanCongSVDK'));
+        $phanCongSVDX = BangPhanCongSVDX::where(['ma_de_tai' => $ma_de_tai, 'ma_gvhd' => $giangVien->ma_gv])->get();
+
+        return view('giangvien.chamdiemdetai.suaDiemHuongDan', compact('deTai', 'phanCongSVDK', 'phanCongSVDX'));
     }
 
     public function xacNhanSuaDiemHuongDan(Request $request)
@@ -183,9 +226,23 @@ class ChamDiemDeTaiController extends Controller
         try {
             $maTaiKhoan = session()->get('ma_tai_khoan');
             $giangVien = GiangVien::where('ma_tk', $maTaiKhoan)->first();
+
             foreach ($data as $chamDiem) {
-                BangPhanCongSVDK::where(['ma_de_tai' => $ma_de_tai, 'ma_gvhd' => $giangVien->ma_gv])
-                    ->where('ma_sv', $chamDiem['ma_sv'])
+                $updated = BangPhanCongSVDK::where(['ma_de_tai' => $ma_de_tai, 'ma_gvhd' => $giangVien->ma_gv,  'ma_sv' => $chamDiem['ma_sv']])
+                    ->update([
+                        'diem_GVHD' => $chamDiem['diem'],
+                        'nhan_xet' => $chamDiem['nhan_xet'],
+                    ]);
+
+                if ($updated === 0) {
+                    break;
+                }
+            }
+           
+            foreach ($data as $chamDiem) {
+                $bangPhanCong = BangPhanCongSVDX::where(['ma_de_tai' => $ma_de_tai, 'ma_gvhd' => $giangVien->ma_gv, 'ma_sv' => $chamDiem['ma_sv']])->get();
+
+                $updated = BangPhanCongSVDX::where(['ma_de_tai' => $ma_de_tai, 'ma_gvhd' => $giangVien->ma_gv, 'ma_sv' => $chamDiem['ma_sv']])
                     ->update([
                         'diem_GVHD' => $chamDiem['diem'],
                         'nhan_xet' => $chamDiem['nhan_xet'],

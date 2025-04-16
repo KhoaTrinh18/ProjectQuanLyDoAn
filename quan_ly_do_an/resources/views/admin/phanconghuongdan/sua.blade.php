@@ -58,7 +58,7 @@
 
                         <p><strong>Lĩnh vực:</strong> {{ $deTai->linhVuc->ten_linh_vuc }}</p>
                         <p><strong>Mô tả:</strong> {!! $deTai->mo_ta !!}</p>
-                        <form id="form_phan_cong">
+                        <form id="form_cap_nhat">
                             <div class="d-flex align-items-center">
                                 <label for="so_luong_giang_vien"><strong>Chọn số lượng giảng viên:</strong></label>
                                 <select id="so_luong_giang_vien" class="form-select ms-2" style="width: 70px">
@@ -79,24 +79,24 @@
                                     class="btn btn-secondary btn-lg">Quay
                                     lại</a>
                                 <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal"
-                                    data-bs-target="#confirmModal">Xác nhận phân công</button>
+                                    data-bs-target="#confirmModal">Xác nhận cập nhật</button>
                             </div>
                             <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel"
                                 aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="confirmModalLabel">Xác nhận đăng ký</h5>
+                                            <h5 class="modal-title" id="confirmModalLabel">Xác nhận cập nhật giảng viên</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                 aria-label="Close"></button>
                                         </div>
-                                        <div class="modal-body">Bạn có chắc chắn muốn phân công giảng viên cho đề tài này
+                                        <div class="modal-body">Bạn có chắc chắn muốn cập nhật giảng viên cho đề tài này
                                             không?
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary"
                                                 data-bs-dismiss="modal">Hủy</button>
-                                            <button type="submit" class="btn btn-primary" id="phanCong">Xác
+                                            <button type="submit" class="btn btn-primary" id="capNhat">Xác
                                                 nhận</button>
                                         </div>
                                     </div>
@@ -188,10 +188,10 @@
                 });
             }
 
-            $("#phanCong").click(function(event) {
+            $("#capNhat").click(function(event) {
                 event.preventDefault();
 
-                let form = $("#form_phan_cong").get(0);
+                let form = $("#form_cap_nhat").get(0);
                 let formData = new FormData(form);
 
                 $(".error-message").text('').removeClass(
@@ -199,7 +199,7 @@
                 $(".is-invalid").removeClass("is-invalid");
 
                 $.ajax({
-                    url: "{{ route('phan_cong_huong_dan.xac_nhan_phan_cong') }}",
+                    url: "{{ route('phan_cong_huong_dan.xac_nhan_sua') }}",
                     type: "POST",
                     data: formData,
                     contentType: false,

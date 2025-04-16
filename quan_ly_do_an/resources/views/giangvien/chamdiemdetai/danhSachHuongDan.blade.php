@@ -15,8 +15,8 @@
                                 <tr>
                                     <th scope="col" class="text-white">#</th>
                                     <th scope="col" class="text-white" style="width: 40%;">Tên đề tài</th>
-                                    <th scope="col" class="text-white">Lĩnh vực</th>
                                     <th scope="col" class="text-white">Sinh viên thực hiện</th>
+                                    <th scope="col" class="text-white">Giảng viên hướng dẫn</th>
                                     <th scope="col" class="text-white">Trạng thái</th>
                                     <th scope="col" class="text-white"></th>
                                 </tr>
@@ -24,9 +24,18 @@
                             <tbody id="table-body">
                                 @foreach ($deTais as $key => $deTai)
                                     @php
-                                        $phanCong = $phanCongSVDK->where('ma_de_tai', $deTai->ma_de_tai)->first();
-                                        if($phanCong->diem_GVHD) {
-                                            $daChamDiem = 1;
+                                        if ($deTai->so_luong_sv_dang_ky) {
+                                            $phanCong = $phanCongSVDK->where('ma_de_tai', $deTai->ma_de_tai)->first();
+                                        } else {
+                                            $phanCong = $phanCongSVDX->where('ma_de_tai', $deTai->ma_de_tai)->first();
+                                        }
+
+                                        if ($phanCong) {
+                                            if ($phanCong->diem_GVHD) {
+                                                $daChamDiem = 1;
+                                            } else {
+                                                $daChamDiem = 0;
+                                            }
                                         } else {
                                             $daChamDiem = 0;
                                         }
@@ -38,9 +47,11 @@
                                             style="width: 40%; word-wrap: break-word; overflow-wrap: break-word; white-space: normal; word-break: break-word;">
                                             {{ $deTai->ten_de_tai }}
                                         </td>
-                                        <td>{{ $deTai->linhVuc->ten_linh_vuc }}</td>
                                         <td>
                                             {!! $deTai->sinhViens->pluck('ho_ten')->implode('<br>') !!}
+                                        </td>
+                                        <td>
+                                            {!! $deTai->giangViens->pluck('ho_ten')->implode('<br>') !!}
                                         </td>
                                         <td class="text-center">
                                             @if ($daChamDiem)

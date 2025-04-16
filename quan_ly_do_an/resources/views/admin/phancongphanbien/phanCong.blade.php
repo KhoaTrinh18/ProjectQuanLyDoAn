@@ -40,6 +40,22 @@
                             </ul>
                         @endif
 
+                        @if ($deTai->giangVienPhanBiens->count() == 0)
+                            <p><strong>Giảng viên phản biện:</strong> Chưa có</p>
+                        @elseif ($deTai->giangVienPhanBiens->count() == 1)
+                            @php $giangVien = $deTai->giangVienPhanBiens->first(); @endphp
+                            <p><strong>Giảng viên phản biện:</strong> {{ $giangVien->ho_ten }} - Email:
+                                {{ $giangVien->email }} - Số điện thoại: {{ $giangVien->so_dien_thoai }}
+                            @else
+                            <p><strong>Giảng viên phản biện:</strong></p>
+                            <ul>
+                                @foreach ($deTai->giangVienPhanBiens as $giangVien)
+                                    <li>{{ $giangVien->ho_ten }} - Email: {{ $giangVien->email }} - Số điện thoại:
+                                        {{ $giangVien->so_dien_thoai }}
+                                @endforeach
+                            </ul>
+                        @endif
+
                         @if ($deTai->sinhViens->first()->loai_sv == 'dang_ky')
                             @if ($deTai->giangViens->count() == 1)
                                 @php $giangVien = $deTai->giangViens->first(); @endphp
@@ -60,22 +76,20 @@
                         <p><strong>Mô tả:</strong> {!! $deTai->mo_ta !!}</p>
                         <form id="form_phan_cong">
                             <div class="d-flex align-items-center">
-                                <label for="so_luong_giang_vien"><strong>Chọn số lượng giảng viên:</strong></label>
-                                <select id="so_luong_giang_vien" class="form-select ms-2" style="width: 70px">
-                                    <option value="1" selected>1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                    <option value="5">5</option>
+                                <label for="DeTai[ma_gvpb]"><strong>Giảng viên phản biện:</strong></label>
+                                <select name="DeTai[ma_gvpb]" class="form-select ms-2" style="width: 250px">
+                                    <option value="" selected>Chọn giảng viên</option>
+                                    @foreach ($giangViens as $giangVien)
+                                        <option value="{{ $giangVien->ma_gv }}">{{ $giangVien->ho_ten }}
+                                        </option>
+                                    @endforeach
                                 </select>
                             </div>
-
-                            <div id="giang_vien_selects"></div>
-                            <span class="error-message text-danger d-hidden error-giangvien m-0 mt-2"></span>
+                            <span class="error-message text-danger d-hidden error-ma_gvpb m-0 mt-2"></span>
 
                             <input type="hidden" name="DeTai[ma_de_tai]" value="{{ $deTai->ma_de_tai }}">
                             <div class="text-center">
-                                <a href="{{ route('phan_cong_huong_dan.danh_sach') }}"
+                                <a href="{{ route('phan_cong_phan_bien.danh_sach') }}"
                                     class="btn btn-secondary btn-lg">Quay
                                     lại</a>
                                 <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal"
@@ -86,11 +100,12 @@
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="confirmModalLabel">Xác nhận đăng ký</h5>
+                                            <h5 class="modal-title" id="confirmModalLabel">Xác nhận phân công</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                 aria-label="Close"></button>
                                         </div>
-                                        <div class="modal-body">Bạn có chắc chắn muốn phân công giảng viên cho đề tài này
+                                        <div class="modal-body">Bạn có chắc chắn muốn phân công giảng viên phản biện cho đề
+                                            tài này
                                             không?
                                         </div>
                                         <div class="modal-footer">
@@ -113,81 +128,6 @@
 @section('scripts')
     <script>
         $(document).ready(function() {
-            var selectedGiangViens = [];
-
-            $('#so_luong_giang_vien').change(function() {
-                var soLuong = $(this).val();
-                var giangVienOptions = @json($giangViens);
-                var giangVienSelects = $('#giang_vien_selects').empty();
-
-                for (var i = 0; i < soLuong; i++) {
-                    var selectWrapper = $(
-                        '<div class="mt-2 d-flex align-items-center">'
-                    );
-                    var label = $('<label>').attr('for', 'giang_vien_' + i).text('Giảng viên ' + (i + 1) +
-                        ':').css({
-                        'width': '110px',
-                        'font-weight': 'bold'
-                    });
-                    var select = $('<select>')
-                        .attr({
-                            name: 'DeTai[giang_vien][' + i + ']',
-                        })
-                        .addClass('form-select ms-2')
-                        .css('width', '250px');
-
-                    select.append('<option value="">Chọn giảng viên</option>');
-
-                    giangVienOptions.forEach(function(giangVien) {
-                        var option = $('<option>')
-                            .val(giangVien.ma_gv)
-                            .text(giangVien.ho_ten)
-                            .prop('disabled', selectedGiangViens.includes(giangVien.ma_gv));
-
-                        select.append(option);
-                    });
-
-                    select.change(function() {
-                        updateSelectedGiangViens();
-                        updateGiangViensSelects();
-                    });
-
-                    selectWrapper.append(label).append(select)
-                    selectWrapper.append(
-                        '<span class="error-message text-danger d-hidden error-giangvien-[' + i +
-                        '] ms-2"></span>');
-                    giangVienSelects.append(selectWrapper);
-                }
-            });
-
-            function updateSelectedGiangViens() {
-                selectedGiangViens = [];
-                $('#giang_vien_selects select').each(function() {
-                    var selectedValue = $(this).val();
-                    if (selectedValue) {
-                        selectedGiangViens.push(selectedValue);
-                    }
-                });
-            }
-
-            function updateGiangViensSelects() {
-                $('#giang_vien_selects select').each(function() {
-                    var currentSelect = $(this);
-                    var currentValue = currentSelect.val();
-
-                    currentSelect.find('option').prop('disabled', false);
-
-                    selectedGiangViens.forEach(function(giangVienId) {
-                        currentSelect.find('option[value="' + giangVienId + '"]').prop('disabled',
-                            true);
-                    });
-
-                    if (currentValue) {
-                        currentSelect.find('option[value="' + currentValue + '"]').prop('disabled', false);
-                    }
-                });
-            }
-
             $("#phanCong").click(function(event) {
                 event.preventDefault();
 
@@ -199,7 +139,7 @@
                 $(".is-invalid").removeClass("is-invalid");
 
                 $.ajax({
-                    url: "{{ route('phan_cong_huong_dan.xac_nhan_phan_cong') }}",
+                    url: "{{ route('phan_cong_phan_bien.xac_nhan_phan_cong') }}",
                     type: "POST",
                     data: formData,
                     contentType: false,
@@ -211,7 +151,7 @@
                         if (result.success) {
                             alert("Phân công thành công!");
                             window.location.href =
-                                "{{ route('phan_cong_huong_dan.danh_sach') }}";
+                                "{{ route('phan_cong_phan_bien.danh_sach') }}";
                         } else {
                             $("#confirmModal").modal('hide');
 
@@ -236,8 +176,6 @@
                     },
                 });
             });
-
-            $('#so_luong_giang_vien').val(1).trigger('change');
         });
     </script>
 @endsection

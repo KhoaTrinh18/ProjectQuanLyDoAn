@@ -11,13 +11,6 @@
                     </div>
                     <div class="card-body" style="font-size: 16px">
                         <h3 class="text-center mb-4" style="font-weight: bold">{{ $deTai->ten_de_tai }}</h3>
-                        <p><strong>Trạng thái:</strong>
-                            @if ($deTai->da_cham_diem)
-                                <span class="text-success">Đã chấm điểm</span>
-                            @else
-                                <span class="text-success">Chưa chấm điểm</span>
-                            @endif
-                        </p>
 
                         @if ($deTai->sinhViens->count() == 1)
                             @php $sinhVien = $deTai->sinhViens->first(); @endphp
@@ -31,25 +24,42 @@
                             </ul>
                         @endif
 
-                        @if ($deTai->giangViens->count() == 1)
+                        @if ($deTai->giangViens->count() == 0)
+                            <p><strong>Giảng viên hướng dẫn:</strong> Chưa có</p>
+                        @elseif ($deTai->giangViens->count() == 1)
                             @php $giangVien = $deTai->giangViens->first(); @endphp
-                            <p><strong>Giảng viên ra đề tài:</strong> {{ $giangVien->ho_ten }} - Email:
-                                {{ $giangVien->email }} - Số điện thoại: {{ $giangVien->so_dien_thoai }}</p>
-                        @else
+                            <p><strong>Giảng viên hướng dẫn:</strong> {{ $giangVien->ho_ten }} - Email:
+                                {{ $giangVien->email }} - Số điện thoại: {{ $giangVien->so_dien_thoai }}
+                            @else
                             <p><strong>Giảng viên hướng dẫn:</strong></p>
                             <ul>
                                 @foreach ($deTai->giangViens as $giangVien)
-                                    <li>{{ $giangVien->ho_ten }} - Email: {{ $giangVien->email }} - SĐT:
-                                        {{ $giangVien->so_dien_thoai }}</li>
+                                    <li>{{ $giangVien->ho_ten }} - Email: {{ $giangVien->email }} - Số điện thoại:
+                                        {{ $giangVien->so_dien_thoai }}
                                 @endforeach
                             </ul>
                         @endif
-                        
+
+                        @if ($deTai->sinhViens->first()->loai_sv == 'dang_ky')
+                            @if ($deTai->giangViens->count() == 1)
+                                @php $giangVien = $deTai->giangViens->first(); @endphp
+                                <p><strong>Giảng viên ra đề tài:</strong> {{ $giangVien->ho_ten }} - Email:
+                                    {{ $giangVien->email }} - Số điện thoại: {{ $giangVien->so_dien_thoai }}
+                                @else
+                                <p><strong>Giảng viên ra đề tài:</strong></p>
+                                <ul>
+                                    @foreach ($deTai->giangViens as $giangVien)
+                                        <li>{{ $giangVien->ho_ten }} - Email: {{ $giangVien->email }} - Số điện thoại:
+                                            {{ $giangVien->so_dien_thoai }}
+                                    @endforeach
+                                </ul>
+                            @endif
+                        @endif
+
                         <p><strong>Lĩnh vực:</strong> {{ $deTai->linhVuc->ten_linh_vuc }}</p>
                         <p><strong>Mô tả:</strong> {!! $deTai->mo_ta !!}</p>
                         <div class="text-center">
-                            <a href="{{ route('cham_diem_de_tai.danh_sach_huong_dan') }}"
-                                class="btn btn-secondary btn-lg">Quay
+                            <a href="{{ route('phan_cong_huong_dan.danh_sach') }}" class="btn btn-secondary btn-lg">Quay
                                 lại</a>
                         </div>
                     </div>

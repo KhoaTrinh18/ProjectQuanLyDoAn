@@ -26,6 +26,10 @@ class DeTaiSinhVien extends Model
         return $this->belongsToMany(GiangVien::class, 'bang_phan_cong_svdx', 'ma_de_tai', 'ma_gvhd')->distinct();
     }
 
+    public function giangVienPhanBiens(){
+        return $this->belongsToMany(GiangVien::class, 'bang_diem_gvpb_cho_svdx', 'ma_de_tai', 'ma_gvpb')->distinct();
+    }
+
     public function ngayDeXuat()
     {
         return $this->hasOne(SinhVienDeTaiSV::class, 'ma_de_tai', 'ma_de_tai');
