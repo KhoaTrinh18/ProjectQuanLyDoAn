@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Thiết lập thời gian')
+@section('title', 'Thêm mới thiết lập')
 
 @section('content')
     <div class="container-fluid p-0">
@@ -8,7 +8,7 @@
                 <div class="card">
 
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <h2 style="font-weight: bold">Thiết lập thời gian</h2>
+                        <h2 style="font-weight: bold">Thêm mới thiết lập</h2>
                     </div>
                     <div class="card-body">
                         <form id="form_thiet_lap">

@@ -5,26 +5,24 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use App\Models\{
     DeTaiGiangVien,
-    GiangVien,
-    LinhVuc,
-    GiangVienDeTai,
-    ThietLap
+    GiangVienDeTaiGV
 };
 
 class DeTaiGiangVienController extends Controller
 {
-    public function danhSach(Request $request) {
+    public function danhSach(Request $request)
+    {
         $limit = $request->query('limit', 10);
 
-        $deTaiGVs = DeTaiGiangVien::with(['giangViens', 'ngayDuaRa'])->where(['da_huy' => 0])->orderBy('ma_de_tai', 'desc')->paginate($limit);
+        $deTaiGVs = DeTaiGiangVien::where(['da_huy' => 0])->orderBy('ma_de_tai', 'desc')->paginate($limit);
         return view('admin.detaigiangvien.danhSach', compact('deTaiGVs'));
     }
 
-    public function pageAjax(Request $request) {
+    public function pageAjax(Request $request)
+    {
         $query = DeTaiGiangVien::query();
 
         if ($request->filled('ten_de_tai')) {
@@ -62,7 +60,7 @@ class DeTaiGiangVienController extends Controller
         }
 
         $limit = $request->input('limit', 10);
-        $deTaiGVs = $query->with(['giangViens', 'ngayDuaRa'])->where(['da_huy' => 0])->orderBy('ma_de_tai', 'desc')->paginate($limit);
+        $deTaiGVs = $query->where(['da_huy' => 0])->orderBy('ma_de_tai', 'desc')->paginate($limit);
 
         return response()->json([
             'success' => true,
@@ -70,17 +68,20 @@ class DeTaiGiangVienController extends Controller
         ]);
     }
 
-    public function chiTiet($ma_de_tai) {
-        $deTaiGV = DeTaiGiangVien::with(['linhVuc', 'giangViens'])->where('ma_de_tai', $ma_de_tai)->firstOrFail();
+    public function chiTiet($ma_de_tai)
+    {
+        $deTaiGV = DeTaiGiangVien::where('ma_de_tai', $ma_de_tai)->firstOrFail();
         return view('admin.detaigiangvien.chiTiet', compact('deTaiGV'));
     }
 
-    public function duyet($ma_de_tai) {
-        $deTaiGV = DeTaiGiangVien::with(['linhVuc', 'giangViens'])->where('ma_de_tai', $ma_de_tai)->firstOrFail();
+    public function duyet($ma_de_tai)
+    {
+        $deTaiGV = DeTaiGiangVien::where('ma_de_tai', $ma_de_tai)->firstOrFail();
         return view('admin.detaigiangvien.duyet', compact('deTaiGV'));
     }
 
-    public function xacNhanDuyet(Request $request) {
+    public function xacNhanDuyet(Request $request)
+    {
         if (!$request->isMethod('post')) {
             return redirect()->back()->with('error', 'Bạn không thể truy cập trực tiếp trang này!');
         }
@@ -90,6 +91,30 @@ class DeTaiGiangVienController extends Controller
         $deTaiGV = DeTaiGiangVien::where('ma_de_tai', $data['ma_de_tai'])->first();
         $deTaiGV->trang_thai = 2;
         $deTaiGV->save();
+
+        return response()->json(['success' => true]);
+    }
+
+    public function huy($ma_de_tai)
+    {
+        $deTaiGV = DeTaiGiangVien::where('ma_de_tai', $ma_de_tai)->firstOrFail();
+        return view('admin.detaigiangvien.huy', compact('deTaiGV'));
+    }
+
+    public function xacNhanHuy(Request $request)
+    {
+        if (!$request->isMethod('post')) {
+            return redirect()->back()->with('error', 'Bạn không thể truy cập trực tiếp trang này!');
+        }
+
+        $data = $request->input('DeTai', []);
+
+        $deTaiGV = DeTaiGiangVien::where('ma_de_tai', $data['ma_de_tai'])->first();
+        $deTaiGV->da_huy = 1;
+        $deTaiGV->save();
+
+        GiangVienDeTaiGV::where('ma_de_tai', $data['ma_de_tai'])
+            ->update(['da_huy' => 1]);
 
         return response()->json(['success' => true]);
     }

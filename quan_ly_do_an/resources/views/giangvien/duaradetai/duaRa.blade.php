@@ -54,7 +54,8 @@
                             <div class="text-center">
                                 <a href="{{ route('dua_ra_de_tai.danh_sach') }}" class="btn btn-secondary btn-lg">Quay
                                     lại</a>
-                                <button class="btn btn-primary btn-lg" type="submit" id="duaRa">Xác nhận đưa ra</button>
+                                <button class="btn btn-primary btn-lg" type="submit" id="duaRa">Xác nhận đưa
+                                    ra</button>
                             </div>
                         </form>
                     </div>
@@ -90,11 +91,18 @@
                     },
                     success: function(result) {
                         if (result.success) {
-                            alert("Đưa ra thành công!");
-                            window.location.href = "{{ route('dua_ra_de_tai.danh_sach') }}";
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Thành công!',
+                                text: 'Đưa ra thành công!',
+                                confirmButtonText: 'OK',
+                                timer: 1000,
+                                showConfirmButton: false
+                            }).then(() => {
+                                window.location.href =
+                                    "{{ route('dua_ra_de_tai.danh_sach') }}";
+                            });
                         } else {
-                            // $("#confirmModal").modal('hide');
-
                             $.each(result.errors, function(field, messages) {
                                 console.log(result);
                                 let inputField = $("[name='DeTai[" + field + "]']");
@@ -114,9 +122,15 @@
                             });
                         }
                     },
-                    error: function(xhr, status, error) {
-                        console.error("Lỗi khi gửi dữ liệu:", error);
-                        alert("Lỗi khi gửi dữ liệu! Vui lòng thử lại.");
+                    error: function(xhr) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Thất bại!',
+                            text: 'Đưa ra thất bại! Vui lòng thử lại',
+                            confirmButtonText: 'OK',
+                            timer: 1000,
+                            showConfirmButton: false
+                        })
                     }
                 });
             });

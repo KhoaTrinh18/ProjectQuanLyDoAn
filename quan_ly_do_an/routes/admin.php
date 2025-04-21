@@ -6,7 +6,9 @@ use App\Http\Controllers\Admin\{
     DeTaiGiangVienController,
     DeTaiSinhVienController,
     PhanCongHuongDanController,
-    PhanCongPhanBienController
+    PhanCongPhanBienController,
+    HoiDongController,
+    PhanCongHoiDongController
 };
 use App\Http\Middleware\KiemTraDangNhap;
 
@@ -20,6 +22,11 @@ Route::middleware([KiemTraDangNhap::class])->group(function () {
     Route::get('/de-tai-giang-vien/duyet/{ma_de_tai}', [DeTaiGiangVienController::class, 'duyet'])->name('de_tai_giang_vien.duyet');
     Route::post('/de-tai-giang-vien/xac-nhan-duyet', [DeTaiGiangVienController::class, 'xacNhanDuyet'])->name('de_tai_giang_vien.xac_nhan_duyet');
     Route::get('/de-tai-giang-vien/xac-nhan-duyet', function () {
+        return redirect()->back()->with('error', 'Sai đường dẫn');
+    });
+    Route::get('/de-tai-giang-vien/huy/{ma_de_tai}', [DeTaiGiangVienController::class, 'huy'])->name('de_tai_giang_vien.huy');
+    Route::post('/de-tai-giang-vien/xac-nhan-huy', [DeTaiGiangVienController::class, 'xacNhanHuy'])->name('de_tai_giang_vien.xac_nhan_huy');
+    Route::get('/de-tai-giang-vien/xac-nhan-huy', function () {
         return redirect()->back()->with('error', 'Sai đường dẫn');
     });
 
@@ -62,6 +69,39 @@ Route::middleware([KiemTraDangNhap::class])->group(function () {
     Route::get('/phan-cong-phan-bien/sua/{ma_de_tai}', [PhanCongPhanBienController::class, 'sua'])->name('phan_cong_phan_bien.sua');
     Route::post('/phan-cong-phan-bien/xac-nhan-sua', [PhanCongPhanBienController::class, 'xacNhanSua'])->name('phan_cong_phan_bien.xac_nhan_sua');
     Route::get('/phan-cong-phan-bien/xac-nhan-sua', function () {
+        return redirect()->back()->with('error', 'Sai đường dẫn');
+    });
+
+    Route::get('/hoi-dong/danh-sach', [HoiDongController::class, 'danhSach'])->name('hoi_dong.danh_sach');
+    Route::get('/hoi-dong/page-ajax', [HoiDongController::class, 'pageAjax'])->name('hoi_dong.page_ajax');
+    Route::get('/hoi-dong/chi-tiet/{ma_hoi_dong}', [HoiDongController::class, 'chiTiet'])->name('hoi_dong.chi_tiet');
+    Route::get('/hoi-dong/them', [HoiDongController::class, 'them'])->name('hoi_dong.them');
+    Route::post('/hoi-dong/xac-nhan-them', [HoiDongController::class, 'xacNhanThem'])->name('hoi_dong.xac_nhan_them');
+    Route::get('/hoi-dong/xac-nhan-them', function () {
+        return redirect()->back()->with('error', 'Sai đường dẫn');
+    });
+    Route::get('/hoi-dong/huy/{ma_hoi_dong}', [HoiDongController::class, 'huy'])->name('hoi_dong.huy');
+    Route::post('/hoi-dong/xac-nhan-huy', [HoiDongController::class, 'xacNhanHuy'])->name('hoi_dong.xac_nhan_huy');
+    Route::get('/hoi-dong/xac-nhan-huy', function () {
+        return redirect()->back()->with('error', 'Sai đường dẫn');
+    });
+    Route::get('/hoi-dong/sua/{ma_hoi_dong}', [HoiDongController::class, 'sua'])->name('hoi_dong.sua');
+    Route::post('/hoi-dong/xac-nhan-sua', [HoiDongController::class, 'xacNhanSua'])->name('hoi_dong.xac_nhan_sua');
+    Route::get('/hoi-dong/xac-nhan-sua', function () {
+        return redirect()->back()->with('error', 'Sai đường dẫn');
+    });
+
+    Route::get('/phan-cong-hoi-dong/danh-sach', [PhanCongHoiDongController::class, 'danhSach'])->name('phan_cong_hoi_dong.danh_sach');
+    Route::get('/phan-cong-hoi-dong/page-ajax', [PhanCongHoiDongController::class, 'pageAjax'])->name('phan_cong_hoi_dong.page_ajax');
+    Route::get('/phan-cong-hoi-dong/chi-tiet/{ma_de_tai}', [PhanCongHoiDongController::class, 'chiTiet'])->name('phan_cong_hoi_dong.chi_tiet');
+    Route::get('/phan-cong-hoi-dong/phan-cong/{ma_de_tai}', [PhanCongHoiDongController::class, 'phanCong'])->name('phan_cong_hoi_dong.phan_cong');
+    Route::post('/phan-cong-hoi-dong/xac-nhan-phan-cong', [PhanCongHoiDongController::class, 'xacNhanPhanCong'])->name('phan_cong_hoi_dong.xac_nhan_phan_cong');
+    Route::get('/phan-cong-hoi-dong/xac-nhan-phan-cong', function () {
+        return redirect()->back()->with('error', 'Sai đường dẫn');
+    });
+    Route::get('/phan-cong-hoi-dong/sua/{ma_de_tai}', [PhanCongHoiDongController::class, 'sua'])->name('phan_cong_hoi_dong.sua');
+    Route::post('/phan-cong-hoi-dong/xac-nhan-sua', [PhanCongHoiDongController::class, 'xacNhanSua'])->name('phan_cong_hoi_dong.xac_nhan_sua');
+    Route::get('/phan-cong-hoi-dong/xac-nhan-sua', function () {
         return redirect()->back()->with('error', 'Sai đường dẫn');
     });
 });

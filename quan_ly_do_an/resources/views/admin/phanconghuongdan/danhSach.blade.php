@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Danh sách đề tài')
+@section('title', 'Phân công hướng dẫn')
 
 @section('content')
     <div class="container-fluid p-0">
@@ -20,14 +20,14 @@
                                 <div class="d-flex align-items-center justify-content-between mt-2">
                                     <label for="giang_vien">Giảng viên hướng dẫn:</label>
                                     <input type="text" name="giang_vien" class="form-control ms-2 shadow-none"
-                                        placeholder="Giảng viên" style="width: 240px">
+                                        placeholder="Tên giảng viên" style="width: 240px">
                                 </div>
                             </div>
                             <div class="d-flex flex-column ms-3" style="width: 400px">
                                 <div class="d-flex align-items-center justify-content-between">
                                     <label for="sinh_vien">Sinh viên thực hiện:</label>
                                     <input type="text" name="sinh_vien" class="form-control ms-2 shadow-none"
-                                        placeholder="Sinh viên" style="width: 240px">
+                                        placeholder="Tên sinh viên" style="width: 240px">
                                 </div>
                                 <div class="d-flex align-items-center justify-content-between mt-2">
                                     <label for="trang_thai">Trạng thái:</label>

@@ -13,10 +13,7 @@ use App\Models\{
     BangPhanCongSVDX,
     DeTaiGiangVien,
     DeTaiSinhVien,
-    GiangVien,
-    LinhVuc,
-    GiangVienDeTai,
-    ThietLap
+    GiangVien
 };
 
 class PhanCongHuongDanController extends Controller
@@ -25,10 +22,10 @@ class PhanCongHuongDanController extends Controller
     {
         $limit = $request->query('limit', 10);
 
-        $deTaiSVs = DeTaiSinhVien::with(['sinhViens', 'giangViens'])->where(['da_huy' => 0, 'trang_thai' => 2])->orderBy('ma_de_tai', 'desc')->get();
+        $deTaiSVs = DeTaiSinhVien::where(['da_huy' => 0, 'trang_thai' => 2])->orderBy('ma_de_tai', 'desc')->get();
 
         $maDeTais = BangPhanCongSVDK::distinct()->pluck('ma_de_tai');
-        $deTaiGVs = DeTaiGiangVien::with(['sinhViens', 'giangViens'])->whereIn('ma_de_tai', $maDeTais)->orderBy('ma_de_tai', 'desc')->get();
+        $deTaiGVs = DeTaiGiangVien::whereIn('ma_de_tai', $maDeTais)->orderBy('ma_de_tai', 'desc')->get();
 
         $merged = $deTaiSVs->merge($deTaiGVs)->unique('ma_de_tai')->values();
 
@@ -49,7 +46,6 @@ class PhanCongHuongDanController extends Controller
         $limit = $request->query('limit', 10);
 
         $deTaiSVs = DeTaiSinhVien::query()
-            ->with(['sinhViens', 'giangViens'])
             ->where(['da_huy' => 0, 'trang_thai' => 2])
             ->orderBy('ma_de_tai', 'desc');
 
@@ -81,7 +77,6 @@ class PhanCongHuongDanController extends Controller
 
         $maDeTais = BangPhanCongSVDK::distinct()->pluck('ma_de_tai');
         $deTaiGVs = DeTaiGiangVien::query()
-            ->with(['sinhViens', 'giangViens'])
             ->whereIn('ma_de_tai', $maDeTais)
             ->orderBy('ma_de_tai', 'desc');
 
@@ -127,17 +122,13 @@ class PhanCongHuongDanController extends Controller
             'html' => view('admin.phanconghuongdan.pageAjax', compact('deTais'))->render()
         ]);
     }
-    
+
     public function chiTiet($ma_de_tai)
     {
-        $deTai = DeTaiSinhVien::with(['giangViens', 'sinhViens'])
-            ->where('ma_de_tai', $ma_de_tai)
-            ->first();
+        $deTai = DeTaiSinhVien::where('ma_de_tai', $ma_de_tai)->first();
 
         if (!$deTai) {
-            $deTai = DeTaiGiangVien::with(['giangViens', 'sinhViens'])
-                ->where('ma_de_tai', $ma_de_tai)
-                ->first();
+            $deTai = DeTaiGiangVien::where('ma_de_tai', $ma_de_tai)->first();
         }
 
         if (!$deTai) {
@@ -149,14 +140,10 @@ class PhanCongHuongDanController extends Controller
 
     public function phanCong($ma_de_tai)
     {
-        $deTai = DeTaiSinhVien::with(['giangViens', 'sinhViens'])
-            ->where('ma_de_tai', $ma_de_tai)
-            ->first();
+        $deTai = DeTaiSinhVien::where('ma_de_tai', $ma_de_tai)->first();
 
         if (!$deTai) {
-            $deTai = DeTaiGiangVien::with(['giangViens', 'sinhViens'])
-                ->where('ma_de_tai', $ma_de_tai)
-                ->first();
+            $deTai = DeTaiGiangVien::where('ma_de_tai', $ma_de_tai)->first();
         }
 
         if (!$deTai) {
@@ -190,12 +177,6 @@ class PhanCongHuongDanController extends Controller
             if (empty($giangVienList)) {
                 $validator->errors()->add('giangvien', 'Bạn phải chọn ít nhất một giảng viên.');
             }
-
-            // foreach ($giangVienList as $index => $giangVien) {
-            //     if ($giangVien == null) {
-            //         $validator->errors()->add("giangvien.$index", "Giảng viên không được để trống.");
-            //     }
-            // }
         });
 
         if ($validator->fails()) {
@@ -221,14 +202,10 @@ class PhanCongHuongDanController extends Controller
 
     public function sua($ma_de_tai)
     {
-        $deTai = DeTaiSinhVien::with(['giangViens', 'sinhViens'])
-            ->where('ma_de_tai', $ma_de_tai)
-            ->first();
+        $deTai = DeTaiSinhVien::where('ma_de_tai', $ma_de_tai)->first();
 
         if (!$deTai) {
-            $deTai = DeTaiGiangVien::with(['giangViens', 'sinhViens'])
-                ->where('ma_de_tai', $ma_de_tai)
-                ->first();
+            $deTai = DeTaiGiangVien::where('ma_de_tai', $ma_de_tai)->first();
         }
 
         if (!$deTai) {
@@ -262,12 +239,6 @@ class PhanCongHuongDanController extends Controller
             if (empty($giangVienList)) {
                 $validator->errors()->add('giangvien', 'Bạn phải chọn ít nhất một giảng viên.');
             }
-
-            // foreach ($giangVienList as $index => $giangVien) {
-            //     if ($giangVien == null) {
-            //         $validator->errors()->add("giangvien.$index", "Giảng viên không được để trống.");
-            //     }
-            // }
         });
 
         if ($validator->fails()) {

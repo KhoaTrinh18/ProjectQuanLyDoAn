@@ -62,7 +62,7 @@
                             {{ $deTaiGV->ten_de_tai }}
                         </td>
                         <td> {!! $deTaiGV->giangViens->pluck('ho_ten')->implode('<br>') !!} </td>
-                        <td> {{ $deTaiGV->ngayDuaRa->ngay_dua_ra }} </td>
+                        <td> {{ \Carbon\Carbon::parse($deTaiGV->ngayDuaRa->ngay_dua_ra)->format('d-m-Y') }} </td>
                         <td>
                             @if ($deTaiGV->trang_thai == 1)
                                 <span class="text-warning">Chờ duyệt</span>
@@ -75,7 +75,9 @@
                                 <a href="{{ route('de_tai_giang_vien.duyet', ['ma_de_tai' => $deTaiGV->ma_de_tai]) }}"
                                     class="btn btn-primary btn-sm">Duyệt</a>
                             @else
-                                <a href="{{ route('de_tai_giang_vien.duyet', ['ma_de_tai' => $deTaiGV->ma_de_tai]) }}"
+                                <a href="{{ route('de_tai_giang_vien.huy', ['ma_de_tai' => $deTaiGV->ma_de_tai]) }}"
+                                    class="btn btn-danger btn-sm">Hủy</a>
+                                <a href="{{ route('de_tai_giang_vien.chi_tiet', ['ma_de_tai' => $deTaiGV->ma_de_tai]) }}"
                                     class="btn btn-secondary btn-sm">Xem</a>
                             @endif
                         </td>

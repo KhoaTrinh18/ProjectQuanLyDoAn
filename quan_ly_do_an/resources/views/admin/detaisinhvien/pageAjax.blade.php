@@ -62,7 +62,7 @@
                             {{ $deTaiSV->ten_de_tai }}
                         </td>
                         <td> {!! $deTaiSV->sinhViens->pluck('ho_ten')->implode('<br>') !!} </td>
-                        <td> {{ $deTaiSV->ngayDeXuat->ngay_de_xuat }} </td>
+                        <td> {{ \Carbon\Carbon::parse($deTaiSV->ngayDeXuat->ngay_de_xuat)->format('d-m-Y') }} </td>
                         <td>
                             @if ($deTaiSV->trang_thai == 1)
                                 <span class="text-warning">Chờ duyệt</span>

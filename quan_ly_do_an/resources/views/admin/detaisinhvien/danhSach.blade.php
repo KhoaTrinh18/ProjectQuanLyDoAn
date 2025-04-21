@@ -8,9 +8,6 @@
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h2 style="font-weight: bold">Danh sách đề tài sinh viên</h2>
-                        {{-- <div>
-                            <a href="{{ route('thiet_lap.them') }}" class="btn btn-success btn-lg">Thêm mới</a>
-                        </div> --}}
                     </div>
                     <div class="card-body">
                         <form class="d-flex mb-3" id="form_tim_kiem">
@@ -35,7 +32,7 @@
                                 <div class="d-flex align-items-center justify-content-between">
                                     <label for="giang_vien">Sinh viên:</label>
                                     <input type="text" name="sinh_vien" class="form-control ms-2 w-75 shadow-none"
-                                        placeholder="Sinh viên">
+                                        placeholder="Tên sinh viên">
                                 </div>
                                 <div class="d-flex align-items-center justify-content-between mt-2">
                                     <label for="trang_thai">Trạng thái:</label>

@@ -26,11 +26,11 @@ class ThongTinDeTaiController extends Controller
         if ($daDangKy) {
             if ($sinhVien->loai_sv == 'de_xuat') {
                 $sinhVienDTSV = SinhVienDeTaiSV::where(['ma_sv' => $sinhVien->ma_sv, 'da_huy' => 0])->first();
-                $deTai = DeTaiSinhVien::with('sinhViens')->where(['ma_de_tai' => $sinhVienDTSV->ma_de_tai, 'da_huy' => 0])->first();
+                $deTai = DeTaiSinhVien::where(['ma_de_tai' => $sinhVienDTSV->ma_de_tai, 'da_huy' => 0])->first();
                 $loaiDeTai = 'de_tai_sv';
             } else {
                 $phanCongSVDK = BangPhanCongSVDK::where('ma_sv', $sinhVien->ma_sv)->first();
-                $deTai = DeTaiGiangVien::with('sinhViens')->where(['ma_de_tai' => $phanCongSVDK->ma_de_tai, 'da_huy' => 0])->first();
+                $deTai = DeTaiGiangVien::where(['ma_de_tai' => $phanCongSVDK->ma_de_tai, 'da_huy' => 0])->first();
                 $loaiDeTai = 'de_tai_gv';
             }
             return view('sinhvien.thongtindetai.thongTin', compact('deTai', 'loaiDeTai', 'daDangKy'));
@@ -45,10 +45,10 @@ class ThongTinDeTaiController extends Controller
         $sinhVien = SinhVien::where('ma_tk', $maTaiKhoan)->first();
         if ($sinhVien->loai_sv == 1) {
             $sinhVienDTSV = SinhVienDeTaiSV::where('ma_sv', $sinhVien->ma_sv)->first();
-            $deTai = DeTaiSinhVien::with('linhVuc')->where('ma_de_tai', $sinhVienDTSV->ma_de_tai)->first();
+            $deTai = DeTaiSinhVien::where('ma_de_tai', $sinhVienDTSV->ma_de_tai)->first();
         } else {
             $phanCongSVDK = BangPhanCongSVDK::where('ma_sv', $sinhVien->ma_sv)->first();
-            $deTai = DeTaiGiangVien::with(['linhVuc', 'giangViens'])->where('ma_de_tai', $phanCongSVDK->ma_de_tai)->first();
+            $deTai = DeTaiGiangVien::where('ma_de_tai', $phanCongSVDK->ma_de_tai)->first();
         }
         return view('sinhvien.thongtindetai.chiTiet', compact('deTai'));
     }
@@ -85,13 +85,13 @@ class ThongTinDeTaiController extends Controller
 
     public function danhSachDeTaiHuy()
     {
-        $deTais = DeTaiSinhVien::with('linhVuc')->where('da_huy', 1)->orderBy('ma_de_tai', 'desc')->get();
+        $deTais = DeTaiSinhVien::where('da_huy', 1)->orderBy('ma_de_tai', 'desc')->get();
         return view('sinhvien.thongtindetai.deTaiHuy', compact('deTais'));
     }
 
     public function chiTietDeTaiHuy($ma_de_tai)
     {
-        $deTai = DeTaiSinhVien::with('linhVuc')->where('ma_de_tai', $ma_de_tai)->first();
+        $deTai = DeTaiSinhVien::where('ma_de_tai', $ma_de_tai)->first();
         return view('sinhvien.thongtindetai.chiTietDeTaiHuy', compact('deTai'));
     }
 

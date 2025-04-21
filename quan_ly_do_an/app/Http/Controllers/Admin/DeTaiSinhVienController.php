@@ -10,10 +10,7 @@ use Carbon\Carbon;
 use App\Models\{
     DeTaiSinhVien,
     SinhVien,
-    LinhVuc,
-    GiangVienDeTai,
-    SinhVienDeTaiSV,
-    ThietLap
+    SinhVienDeTaiSV
 };
 
 class DeTaiSinhVienController extends Controller
@@ -22,7 +19,7 @@ class DeTaiSinhVienController extends Controller
     {
         $limit = $request->query('limit', 10);
 
-        $deTaiSVs = DeTaiSinhVien::with(['sinhViens', 'ngayDeXuat'])->where(['da_huy' => 0])->orderBy('ma_de_tai', 'desc')->paginate($limit);
+        $deTaiSVs = DeTaiSinhVien::where(['da_huy' => 0])->orderBy('ma_de_tai', 'desc')->paginate($limit);
         return view('admin.detaisinhvien.danhSach', compact('deTaiSVs'));
     }
 
@@ -65,7 +62,7 @@ class DeTaiSinhVienController extends Controller
         }
 
         $limit = $request->input('limit', 10);
-        $deTaiSVs = $query->with(['sinhViens', 'ngayDeXuat'])->where(['da_huy' => 0])->orderBy('ma_de_tai', 'desc')->paginate($limit);
+        $deTaiSVs = $query->where(['da_huy' => 0])->orderBy('ma_de_tai', 'desc')->paginate($limit);
 
         return response()->json([
             'success' => true,
@@ -75,13 +72,13 @@ class DeTaiSinhVienController extends Controller
 
     public function chiTiet($ma_de_tai)
     {
-        $deTaiSV = DeTaiSinhVien::with(['linhVuc', 'sinhViens', 'ngayDeXuat'])->where('ma_de_tai', $ma_de_tai)->firstOrFail();
+        $deTaiSV = DeTaiSinhVien::where('ma_de_tai', $ma_de_tai)->firstOrFail();
         return view('admin.detaisinhvien.chiTiet', compact('deTaiSV'));
     }
 
     public function duyet($ma_de_tai)
     {
-        $deTaiSV = DeTaiSinhVien::with(['linhVuc', 'sinhViens', 'ngayDeXuat'])->where('ma_de_tai', $ma_de_tai)->firstOrFail();
+        $deTaiSV = DeTaiSinhVien::where('ma_de_tai', $ma_de_tai)->firstOrFail();
         return view('admin.detaisinhvien.duyet', compact('deTaiSV'));
     }
 
@@ -102,7 +99,7 @@ class DeTaiSinhVienController extends Controller
 
     public function huy($ma_de_tai)
     {
-        $deTaiSV = DeTaiSinhVien::with(['linhVuc', 'sinhViens', 'ngayDeXuat'])->where('ma_de_tai', $ma_de_tai)->firstOrFail();
+        $deTaiSV = DeTaiSinhVien::where('ma_de_tai', $ma_de_tai)->firstOrFail();
         return view('admin.detaisinhvien.huy', compact('deTaiSV'));
     }
 

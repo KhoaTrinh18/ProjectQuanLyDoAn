@@ -24,12 +24,13 @@
                                 @endforeach
                             </ul>
                         @endif
-                        
-                        <p><strong>Ngày đưa ra:</strong> {{ $deTaiGV->ngayDuaRa->ngay_dua_ra }}</p>
+
+                        <p><strong>Ngày đưa ra:</strong>
+                            {{ \Carbon\Carbon::parse($deTaiGV->ngayDuaRa->ngay_dua_ra)->format('d-m-Y') }}</p>
                         <p><strong>Lĩnh vực:</strong> {{ $deTaiGV->linhVuc->ten_linh_vuc }}</p>
                         <p><strong>Mô tả:</strong> {!! $deTaiGV->mo_ta !!}</p>
 
-                        <form id="form_dang_ky">
+                        <form id="form_duyet">
                             <input type="hidden" name="DeTai[ma_de_tai]" value="{{ $deTaiGV->ma_de_tai }}">
                             <div class="text-center">
                                 <a href="{{ route('de_tai_giang_vien.danh_sach') }}" class="btn btn-secondary btn-lg">Quay
@@ -41,20 +42,21 @@
                             </div>
                             <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel"
                                 aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="confirmModalLabel">Xác nhận đăng ký</h5>
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content rounded-4 shadow-sm border-0">
+                                        <div class="modal-header bg-light border-bottom-0">
+                                            <h5 class="modal-title fw-semibold text-primary" id="confirmModalLabel">Xác nhận
+                                                duyệt</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
+                                                aria-label="Đóng"></button>
                                         </div>
-                                        <div class="modal-body">Bạn có chắc chắn muốn duyệt đề tài này không?
+                                        <div class="modal-body text-center fs-5 text-secondary">
+                                            Bạn có chắc chắn muốn duyệt đề tài này không?
                                         </div>
-                                        <div class="modal-footer">
+                                        <div class="modal-footer bg-light border-top-0">
                                             <button type="button" class="btn btn-secondary"
                                                 data-bs-dismiss="modal">Hủy</button>
-                                            <button type="submit" class="btn btn-primary" id="dangKy">Xác
-                                                nhận</button>
+                                            <button type="submit" class="btn btn-primary" id="duyet">Xác nhận</button>
                                         </div>
                                     </div>
                                 </div>
@@ -70,10 +72,10 @@
 @section('scripts')
     <script>
         $(document).ready(function() {
-            $("#dangKy").click(function(event) {
+            $("#duyet").click(function(event) {
                 event.preventDefault();
 
-                let form = $("#form_dang_ky").get(0);
+                let form = $("#form_duyet").get(0);
                 let formData = new FormData(form);
 
                 $(".error-message").text('').removeClass(
@@ -91,13 +93,29 @@
                     },
                     success: function(result) {
                         if (result.success) {
-                            alert("Duyệt thành công!");
-                            window.location.href =
-                            "{{ route('de_tai_giang_vien.danh_sach') }}";
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Thành công!',
+                                text: 'Duyệt thành công!',
+                                confirmButtonText: 'OK',
+                                timer: 1000,
+                                showConfirmButton: false
+                            }).then(() => {
+                                window.location.href =
+                                    "{{ route('de_tai_giang_vien.danh_sach') }}";
+                            });
+
                         }
                     },
                     error: function(xhr) {
-                        alert("Đăng ký thất bại! Vui lòng thử lại.");
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Thất bại!',
+                            text: 'Duyệt thất bại! Vui lòng thử lại',
+                            confirmButtonText: 'OK',
+                            timer: 1000,
+                            showConfirmButton: false
+                        })
                     },
                 });
             });

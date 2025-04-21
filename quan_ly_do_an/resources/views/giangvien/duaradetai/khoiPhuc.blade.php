@@ -61,12 +61,28 @@
                     },
                     success: function(result) {
                         if (result.success) {
-                            alert("Khôi phục thành công!");
-                            window.location.href = "{{ route('dua_ra_de_tai.danh_sach_huy') }}";
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Thành công!',
+                                text: 'Khôi phục thành công!',
+                                confirmButtonText: 'OK',
+                                timer: 1000,
+                                showConfirmButton: false
+                            }).then(() => {
+                                window.location.href =
+                                    "{{ route('dua_ra_de_tai.danh_sach_huy') }}";
+                            });
                         }
                     },
                     error: function(xhr) {
-                        alert("Hủy thất bại! Vui lòng thử lại.");
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Thất bại!',
+                            text: 'Khôi phục thất bại! Vui lòng thử lại',
+                            confirmButtonText: 'OK',
+                            timer: 1000,
+                            showConfirmButton: false
+                        })
                     },
                 });
             });

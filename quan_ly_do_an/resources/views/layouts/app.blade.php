@@ -18,6 +18,8 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-bs4.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.7.10/dist/css/tempus-dominus.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     @yield('style')
 </head>
 
@@ -92,10 +94,22 @@
                         <li class="sidebar-header">
                             Chấm điểm
                         </li>
-                        <li class="sidebar-item {{ request()->is('cham-diem-de-tai*') ? 'active' : '' }}">
-                            <a class="sidebar-link" href="{{ route('cham_diem_de_tai.danh_sach_huong_dan') }}">
+                        <li class="sidebar-item {{ request()->is('cham-diem-huong-dan*') ? 'active' : '' }}">
+                            <a class="sidebar-link" href="{{ route('cham_diem_huong_dan.danh_sach') }}">
                                 <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Đề
                                     tài hướng dẫn</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item {{ request()->is('cham-diem-phan-bien*') ? 'active' : '' }}">
+                            <a class="sidebar-link" href="{{ route('cham_diem_phan_bien.danh_sach') }}">
+                                <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Đề
+                                    tài phản biện</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item {{ request()->is('cham-diem-hoi-dong*') ? 'active' : '' }}">
+                            <a class="sidebar-link" href="{{ route('cham_diem_hoi_dong.danh_sach') }}">
+                                <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Đề
+                                    tài hội đồng</span>
                             </a>
                         </li>
                     </ul>
@@ -132,11 +146,16 @@
                                 <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Phân công phản biện</span>
                             </a>
                         </li>
-                        {{-- <li class="sidebar-item {{ request()->is('thiet-lap*') ? 'active' : '' }}">
-                            <a class="sidebar-link" href="{{ route('thiet_lap.danh_sach') }}">
-                                <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Đề tài giảng viên</span>
+                        <li class="sidebar-item {{ request()->is('hoi-dong*') ? 'active' : '' }}">
+                            <a class="sidebar-link" href="{{ route('hoi_dong.danh_sach') }}">
+                                <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Hội đồng</span>
                             </a>
-                        </li> --}}
+                        </li>
+                        <li class="sidebar-item {{ request()->is('phan-cong-hoi-dong*') ? 'active' : '' }}">
+                            <a class="sidebar-link" href="{{ route('phan_cong_hoi_dong.danh_sach') }}">
+                                <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Phân công hội đồng</span>
+                            </a>
+                        </li>
                         <li class="sidebar-header">
                             Thông tin
                         </li>
@@ -180,6 +199,9 @@
     <script src="{{ asset('js/app.js') }}"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-bs4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.7.10/dist/js/tempus-dominus.min.js"></script>
+    <script src="https://unpkg.com/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
     <script>
         $(document).ready(function() {
             $("#dangXuatBtn").click(function() {

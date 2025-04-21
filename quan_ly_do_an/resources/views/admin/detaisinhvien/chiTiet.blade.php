@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Duyệt đề tài sinh viên')
+@section('title', 'Chi tiết đề tài sinh viên')
 
 @section('content')
     <div class="container-fluid p-0">
@@ -7,7 +7,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <h2 style="font-weight: bold">Duyệt đề tài sinh viên</h2>
+                        <h2 style="font-weight: bold">Chi tiết đề tài sinh viên</h2>
                     </div>
                     <div class="card-body" style="font-size: 16px">
                         <h3 class="text-center mb-4" style="font-weight: bold">{{ $deTaiSV->ten_de_tai }}</h3>
@@ -24,7 +24,7 @@
                             </ul>
                         @endif
 
-                        <p><strong>Ngày đề xuất:</strong> {{ $deTaiSV->ngayDeXuat->ngay_de_xuat }}</p>
+                        <p><strong>Ngày đề xuất:</strong> {{ \Carbon\Carbon::parse($deTaiSV->ngayDeXuat->ngay_de_xuat)->format('d-m-Y') }}</p>
                         <p><strong>Lĩnh vực:</strong> {{ $deTaiSV->linhVuc->ten_linh_vuc }}</p>
                         <p><strong>Mô tả:</strong> {!! $deTaiSV->mo_ta !!}</p>
 

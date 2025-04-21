@@ -59,21 +59,22 @@
                             </div>
                             <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel"
                                 aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="confirmModalLabel">Xác nhận đăng ký</h5>
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content rounded-4 shadow-sm border-0">
+                                        <div class="modal-header bg-light border-bottom-0">
+                                            <h5 class="modal-title fw-semibold text-primary" id="confirmModalLabel">Xác nhận
+                                                đăng ký</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
+                                                aria-label="Đóng"></button>
                                         </div>
-                                        <div class="modal-body">Sau khi đăng ký nếu bạn muốn hủy thì phải liên hệ với giảng
+                                        <div class="modal-body text-center fs-5 text-secondary">
+                                            Sau khi đăng ký nếu bạn muốn hủy thì phải liên hệ với giảng
                                             viên ra đề tài để hủy. Bạn có chắc chắn muốn đăng ký đề tài này không?
                                         </div>
-                                        <div class="modal-footer">
+                                        <div class="modal-footer bg-light border-top-0">
                                             <button type="button" class="btn btn-secondary"
                                                 data-bs-dismiss="modal">Hủy</button>
-                                            <button type="submit" class="btn btn-primary" id="dangKy">Xác
-                                                nhận</button>
+                                            <button type="submit" class="btn btn-primary" id="dangKy">Xác nhận</button>
                                         </div>
                                     </div>
                                 </div>
@@ -110,12 +111,28 @@
                     },
                     success: function(result) {
                         if (result.success) {
-                            alert("Đăng ký thành công!");
-                            window.location.href = "{{ route('dang_ky_de_tai.danh_sach') }}";
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Thành công!',
+                                text: 'Đăng ký thành công!',
+                                confirmButtonText: 'OK',
+                                timer: 1000,
+                                showConfirmButton: false
+                            }).then(() => {
+                                window.location.href =
+                                    "{{ route('dang_ky_de_tai.danh_sach') }}";
+                            });
                         }
                     },
                     error: function(xhr) {
-                        alert("Đăng ký thất bại! Vui lòng thử lại.");
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Thất bại!',
+                            text: 'Đăng ký thất bại! Vui lòng thử lại',
+                            confirmButtonText: 'OK',
+                            timer: 1000,
+                            showConfirmButton: false
+                        })
                     },
                 });
             });

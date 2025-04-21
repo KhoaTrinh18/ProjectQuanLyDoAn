@@ -22,8 +22,7 @@ class ThongTinDeTaiController extends Controller
         $maTaiKhoan = session()->get('ma_tai_khoan');
         $giangVien = GiangVien::where('ma_tk', $maTaiKhoan)->first();
         $maDeTais = GiangVienDeTaiGV::where('ma_gv', $giangVien->ma_gv)->pluck('ma_de_tai');
-        $deTais = DeTaiGiangVien::with('linhVuc')
-            ->whereIn('ma_de_tai', $maDeTais)
+        $deTais = DeTaiGiangVien::whereIn('ma_de_tai', $maDeTais)
             ->where(['da_huy' => 0, 'trang_thai' => 2])
             ->orderBy('ma_de_tai', 'desc')
             ->get();
@@ -32,11 +31,7 @@ class ThongTinDeTaiController extends Controller
 
     public function chiTietDuyet($ma_de_tai)
     {
-        $maTaiKhoan = session()->get('ma_tai_khoan');
-        $giangVien = GiangVien::where('ma_tk', $maTaiKhoan)->first();
-        $deTai = DeTaiGiangVien::with(['linhVuc', 'giangViens', 'sinhViens' => function ($query) use ($giangVien) {
-            $query->wherePivot('ma_gvhd', $giangVien->ma_gv);
-        }])->where('ma_de_tai', $ma_de_tai)->firstOrFail();
+        $deTai = DeTaiGiangVien::where('ma_de_tai', $ma_de_tai)->firstOrFail();
         return view('giangvien.thongtindetai.chiTiet', compact('deTai'));
     }
 

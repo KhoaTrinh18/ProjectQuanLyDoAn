@@ -53,7 +53,7 @@ class DangNhapController extends Controller
             Session::put('role', 'sinhvien');
             $route = route('dang_ky_de_tai.danh_sach');
         } else if ($taiKhoanGV->loai_tk == 'giang_vien') {
-            $giangVien = GiangVien::with('hocVi')->where('ma_tk', $taiKhoanGV->ma_tk)->first();
+            $giangVien = GiangVien::where('ma_tk', $taiKhoanGV->ma_tk)->first();
             if($giangVien->hocVi->ten_hoc_vi == "Thạc sĩ") {
                 $hocVi = "ThS. ";
             } else {

@@ -1,9 +1,11 @@
 <?php
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GiangVien\{
+    ChamDiemHoiDongController,
     DuaRaDeTaiController,
     ThongTinDeTaiController,
-    ChamDiemDeTaiController
+    ChamDiemHuongDanController,
+    ChamDiemPhanBienController,
 };
 use App\Http\Middleware\KiemTraDangNhap;
 
@@ -15,9 +17,9 @@ Route::middleware([KiemTraDangNhap::class. ':giangvien'])->group(function () {
     });
     Route::get('/dua-ra-de-tai/danh-sach', [DuaRaDeTaiController::class, 'danhSach'])->name('dua_ra_de_tai.danh_sach');
     Route::get('/dua-ra-de-tai/chi-tiet/{ma_de_tai}', [DuaRaDeTaiController::class, 'chiTiet'])->name('dua_ra_de_tai.chi_tiet');
-    Route::get('/dua-ra-de-tai/chinh-sua/{ma_de_tai}', [DuaRaDeTaiController::class, 'chinhSua'])->name('dua_ra_de_tai.chinh_sua');
-    Route::post('/dua-ra-de-tai/xac-nhan-chinh-sua', [DuaRaDeTaiController::class, 'xacNhanChinhSua'])->name('dua_ra_de_tai.xac_nhan_chinh_sua');
-    Route::get('/dua-ra-de-tai/xac-nhan-chinh-sua', function() {
+    Route::get('/dua-ra-de-tai/sua/{ma_de_tai}', [DuaRaDeTaiController::class, 'sua'])->name('dua_ra_de_tai.sua');
+    Route::post('/dua-ra-de-tai/xac-nhan-sua', [DuaRaDeTaiController::class, 'xacNhanSua'])->name('dua_ra_de_tai.xac_nhan_sua');
+    Route::get('/dua-ra-de-tai/xac-nhan-sua', function() {
         return redirect()->back()->with('error', 'Sai đường dẫn');
     });
     Route::get('/dua-ra-de-tai/huy/{ma_de_tai}', [DuaRaDeTaiController::class, 'huy'])->name('dua_ra_de_tai.huy');
@@ -39,16 +41,42 @@ Route::middleware([KiemTraDangNhap::class. ':giangvien'])->group(function () {
         return redirect()->back()->with('error', 'Sai đường dẫn');
     });
 
-    Route::get('/cham-diem-de-tai/danh-sach-huong-dan', [ChamDiemDeTaiController::class, 'danhSachHuongDan'])->name('cham_diem_de_tai.danh_sach_huong_dan');
-    Route::get('/cham-diem-de-tai/chi-tiet-huong-dan/{ma_de_tai}', [ChamDiemDeTaiController::class, 'chiTietHuongDan'])->name('cham_diem_de_tai.chi_tiet_huong_dan');
-    Route::get('/cham-diem-de-tai/cham-diem-huong-dan/{ma_de_tai}', [ChamDiemDeTaiController::class, 'chamDiemHuongDan'])->name('cham_diem_de_tai.cham_diem_huong_dan');
-    Route::post('/cham-diem-de-tai/xac-nhan-cham-diem-huong-dan', [ChamDiemDeTaiController::class, 'xacNhanChamDiemHuongDan'])->name('cham_diem_de_tai.xac_nhan_cham_diem_huong_dan');
-    Route::get('/thong-tin-de-tai/xac-nhan-cham-diem-huong-dan', function() {
+    Route::get('/cham-diem-huong-dan/danh-sach', [ChamDiemHuongDanController::class, 'danhSach'])->name('cham_diem_huong_dan.danh_sach');
+    Route::get('/cham-diem-huong-dan/chi-tiet/{ma_de_tai}', [ChamDiemHuongDanController::class, 'chiTiet'])->name('cham_diem_huong_dan.chi_tiet');
+    Route::get('/cham-diem-huong-dan/cham-diem/{ma_de_tai}', [ChamDiemHuongDanController::class, 'chamDiem'])->name('cham_diem_huong_dan.cham_diem');
+    Route::post('/cham-diem-huong-dan/xac-nhan-cham-diem', [ChamDiemHuongDanController::class, 'xacNhanChamDiem'])->name('cham_diem_huong_dan.xac_nhan_cham_diem');
+    Route::get('/cham-diem-huong-dan/xac-nhan-cham-diem', function() {
         return redirect()->back()->with('error', 'Sai đường dẫn');
     });
-    Route::get('/cham-diem-de-tai/sua-diem-huong-dan/{ma_de_tai}', [ChamDiemDeTaiController::class, 'suaDiemHuongDan'])->name('cham_diem_de_tai.sua_diem_huong_dan');
-    Route::post('/cham-diem-de-tai/xac-nhan-sua-diem-huong-dan', [ChamDiemDeTaiController::class, 'xacNhanSuaDiemHuongDan'])->name('cham_diem_de_tai.xac_nhan_sua_diem_huong_dan');
-    Route::get('/thong-tin-de-tai/xac-nhan-sua-diem-huong-dan', function() {
+    Route::get('/cham-diem-huong-dan/sua-diem/{ma_de_tai}', [ChamDiemHuongDanController::class, 'suaDiem'])->name('cham_diem_huong_dan.sua_diem');
+    Route::post('/cham-diem-huong-dan/xac-nhan-sua-diem', [ChamDiemHuongDanController::class, 'xacNhanSuaDiem'])->name('cham_diem_huong_dan.xac_nhan_sua_diem');
+    Route::get('/cham-diem-huong-dan/xac-nhan-sua-diem', function() {
+        return redirect()->back()->with('error', 'Sai đường dẫn');
+    });
+
+    Route::get('/cham-diem-phan-bien/danh-sach', [ChamDiemPhanBienController::class, 'danhSach'])->name('cham_diem_phan_bien.danh_sach');
+    Route::get('/cham-diem-phan-bien/chi-tiet/{ma_de_tai}', [ChamDiemPhanBienController::class, 'chiTiet'])->name('cham_diem_phan_bien.chi_tiet');
+    Route::get('/cham-diem-phan-bien/cham-diem/{ma_de_tai}', [ChamDiemPhanBienController::class, 'chamDiem'])->name('cham_diem_phan_bien.cham_diem');
+    Route::post('/cham-diem-phan-bien/xac-nhan-cham-diem', [ChamDiemPhanBienController::class, 'xacNhanChamDiem'])->name('cham_diem_phan_bien.xac_nhan_cham_diem');
+    Route::get('/cham-diem-phan-bien/xac-nhan-cham-diem', function() {
+        return redirect()->back()->with('error', 'Sai đường dẫn');
+    });
+    Route::get('/cham-diem-phan-bien/sua-diem/{ma_de_tai}', [ChamDiemPhanBienController::class, 'suaDiem'])->name('cham_diem_phan_bien.sua_diem');
+    Route::post('/cham-diem-phan-bien/xac-nhan-sua-diem', [ChamDiemPhanBienController::class, 'xacNhanSuaDiem'])->name('cham_diem_phan_bien.xac_nhan_sua_diem');
+    Route::get('/cham-diem-phan-bien/xac-nhan-sua-diem', function() {
+        return redirect()->back()->with('error', 'Sai đường dẫn');
+    });
+
+    Route::get('/cham-diem-hoi-dong/danh-sach', [ChamDiemHoiDongController::class, 'danhSach'])->name('cham_diem_hoi_dong.danh_sach');
+    Route::get('/cham-diem-hoi-dong/chi-tiet/{ma_de_tai}', [ChamDiemHoiDongController::class, 'chiTiet'])->name('cham_diem_hoi_dong.chi_tiet');
+    Route::get('/cham-diem-hoi-dong/cham-diem/{ma_de_tai}', [ChamDiemHoiDongController::class, 'chamDiem'])->name('cham_diem_hoi_dong.cham_diem');
+    Route::post('/cham-diem-hoi-dong/xac-nhan-cham-diem', [ChamDiemHoiDongController::class, 'xacNhanChamDiem'])->name('cham_diem_hoi_dong.xac_nhan_cham_diem');
+    Route::get('/cham-diem-hoi-dong/xac-nhan-cham-diem', function() {
+        return redirect()->back()->with('error', 'Sai đường dẫn');
+    });
+    Route::get('/cham-diem-hoi-dong/sua-diem/{ma_de_tai}', [ChamDiemHoiDongController::class, 'suaDiem'])->name('cham_diem_hoi_dong.sua_diem');
+    Route::post('/cham-diem-hoi-dong/xac-nhan-sua-diem', [ChamDiemHoiDongController::class, 'xacNhanSuaDiem'])->name('cham_diem_hoi_dong.xac_nhan_sua_diem');
+    Route::get('/cham-diem-hoi-dong/xac-nhan-sua-diem', function() {
         return redirect()->back()->with('error', 'Sai đường dẫn');
     });
 });

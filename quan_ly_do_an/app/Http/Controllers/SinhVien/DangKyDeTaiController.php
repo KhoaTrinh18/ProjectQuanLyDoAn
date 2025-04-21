@@ -27,7 +27,7 @@ class DangKyDeTaiController extends Controller
         $daDangKy = $sinhVien->dang_ky;
 
         $linhVucs = LinhVuc::orderBy('ma_linh_vuc', 'desc')->get();
-        $deTais = DeTaiGiangVien::with('linhVuc')->where(['da_huy' => 0, 'trang_thai' => 2])->orderBy('ma_de_tai', 'desc')->paginate($limit);
+        $deTais = DeTaiGiangVien::where(['da_huy' => 0, 'trang_thai' => 2])->orderBy('ma_de_tai', 'desc')->paginate($limit);
 
         $taikhoan = TaiKhoanSV::where('ma_tk', $maTaiKhoan)->first();
         $thietLap = ThietLap::where('nam_hoc', $taikhoan->nam_hoc)->first();
@@ -68,7 +68,7 @@ class DangKyDeTaiController extends Controller
         }
 
         $limit = $request->input('limit', 10);
-        $deTais = $query->with('linhVuc')->where(['da_huy' => 0, 'trang_thai' => 2])->orderBy('ma_de_tai', 'desc')->paginate($limit);
+        $deTais = $query->where(['da_huy' => 0, 'trang_thai' => 2])->orderBy('ma_de_tai', 'desc')->paginate($limit);
 
         $maTaiKhoan = session()->get('ma_tai_khoan');
         $sinhVien = SinhVien::where('ma_tk', $maTaiKhoan)->first();
@@ -86,7 +86,7 @@ class DangKyDeTaiController extends Controller
         $sinhVien = SinhVien::where('ma_tk', $maTaiKhoan)->first();
         $daDangKy = $sinhVien->dang_ky;
 
-        $deTai = DeTaiGiangVien::with(['linhVuc', 'giangViens', 'sinhViens'])->where('ma_de_tai', $ma_de_tai)->firstOrFail();
+        $deTai = DeTaiGiangVien::where('ma_de_tai', $ma_de_tai)->firstOrFail();
 
         return view('sinhvien.dangkydetai.dangKy', compact('deTai', 'daDangKy'));
     }

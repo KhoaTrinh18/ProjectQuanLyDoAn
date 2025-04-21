@@ -70,12 +70,28 @@
                     },
                     success: function(result) {
                         if (result.success) {
-                            alert("Hủy thành công!");
-                            window.location.href = "{{ route('dua_ra_de_tai.danh_sach') }}";
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Thành công!',
+                                text: 'Hủy thành công!',
+                                confirmButtonText: 'OK',
+                                timer: 1000,
+                                showConfirmButton: false
+                            }).then(() => {
+                                window.location.href =
+                                    "{{ route('dua_ra_de_tai.danh_sach') }}";
+                            });
                         }
                     },
                     error: function(xhr) {
-                        alert("Hủy thất bại! Vui lòng thử lại.");
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Thất bại!',
+                            text: 'Hủy thất bại! Vui lòng thử lại',
+                            confirmButtonText: 'OK',
+                            timer: 1000,
+                            showConfirmButton: false
+                        })
                     },
                 });
             });

@@ -103,17 +103,20 @@
                                     </button>
                                 </div>
                                 <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel"
-                                    aria-hidden="true" style="font-size: 16px">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="confirmModalLabel">Xác nhận đề xuất</h5>
+                                    aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content rounded-4 shadow-sm border-0">
+                                            <div class="modal-header bg-light border-bottom-0">
+                                                <h5 class="modal-title fw-semibold text-primary" id="confirmModalLabel">Xác
+                                                    nhận
+                                                    đăng ký</h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                    aria-label="Close"></button>
+                                                    aria-label="Đóng"></button>
                                             </div>
-                                            <div class="modal-body">Bạn có chắc chắn muốn đề xuất đề tài này không?
+                                            <div class="modal-body text-center fs-5 text-secondary">
+                                                Sau khi đề xuất thì bạn không thể đăng ký đề tài khác. Bạn có chắc chắn muốn đề xuất đề tài này không?
                                             </div>
-                                            <div class="modal-footer">
+                                            <div class="modal-footer bg-light border-top-0">
                                                 <button type="button" class="btn btn-secondary"
                                                     data-bs-dismiss="modal">Hủy</button>
                                                 <button type="submit" class="btn btn-primary" id="deXuat">Xác
@@ -157,8 +160,18 @@
                     },
                     success: function(result) {
                         if (result.success) {
-                            alert("Đề xuất thành công!");
-                            location.reload();
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Thành công!',
+                                text: 'Đề xuất thành công!',
+                                confirmButtonText: 'OK',
+                                timer: 1000,
+                                showConfirmButton: false
+                            }).then(() => {
+                                window.location.href =
+                                    "{{ route('thong_tin_de_tai.thong_tin') }}";
+                            });
+
                         } else {
                             $("#confirmModal").modal('hide');
 
@@ -182,9 +195,15 @@
                             });
                         }
                     },
-                    error: function(xhr, status, error) {
-                        console.error("Lỗi khi gửi dữ liệu:", error);
-                        alert("Lỗi khi gửi dữ liệu! Vui lòng thử lại.");
+                    error: function(xhr) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Thất bại!',
+                            text: 'Đề xuất thất bại! Vui lòng thử lại',
+                            confirmButtonText: 'OK',
+                            timer: 1000,
+                            showConfirmButton: false
+                        })
                     }
                 });
             });

@@ -52,8 +52,8 @@
                                             @else
                                                 <a href="{{ route('dua_ra_de_tai.huy', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
                                                     class="btn btn-danger btn-sm">hủy</a>
-                                                <a href="{{ route('dua_ra_de_tai.chinh_sua', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
-                                                    class="btn btn-primary btn-sm">Chỉnh sửa</a>
+                                                <a href="{{ route('dua_ra_de_tai.sua', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
+                                                    class="btn btn-primary btn-sm">Sửa</a>
                                             @endif
                                         </td>
                                     </tr>

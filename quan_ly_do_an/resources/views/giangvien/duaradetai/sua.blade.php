@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Chỉnh sửa đề tài')
+@section('title', 'Cập nhật đề tài')
 
 @section('content')
     <div class="container-fluid p-0">
@@ -7,10 +7,10 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <h2 style="font-weight: bold">Chỉnh sửa đề tài</h2>
+                        <h2 style="font-weight: bold">Cập nhật đề tài</h2>
                     </div>
                     <div class="card-body">
-                        <form id="form_dua_ra">
+                        <form id="form_cap_nhat">
                             <input type="hidden" name="DeTai[ma_de_tai]" value="{{ $deTai->ma_de_tai }}">
                             <div class="d-flex mb-3">
                                 <label for="DeTai[ten_de_tai]"
@@ -61,8 +61,8 @@
                                 <a href="{{ route('dua_ra_de_tai.danh_sach') }}" class="btn btn-secondary btn-lg">
                                     Quay lại
                                 </a>
-                                <button class="btn btn-primary btn-lg" type="submit" id="chinhSua">
-                                    Xác nhận chỉnh sửa
+                                <button class="btn btn-primary btn-lg" type="submit" id="sua">
+                                    Xác nhận cập nhật
                                 </button>
                             </div>
                         </form>
@@ -76,10 +76,10 @@
 @section('scripts')
     <script>
         $(document).ready(function() {
-            $("#chinhSua").click(function(event) {
+            $("#sua").click(function(event) {
                 event.preventDefault();
 
-                let form = $("#form_dua_ra").get(0);
+                let form = $("#form_cap_nhat").get(0);
                 let formData = new FormData(form);
                 formData.set("DeTai[mo_ta]", $("#mo_ta").summernote("code"));
 
@@ -88,7 +88,7 @@
                 $(".note-editor").css("border", "");
 
                 $.ajax({
-                    url: "{{ route('dua_ra_de_tai.xac_nhan_chinh_sua') }}",
+                    url: "{{ route('dua_ra_de_tai.xac_nhan_sua') }}",
                     type: "POST",
                     data: formData,
                     contentType: false,
@@ -98,8 +98,17 @@
                     },
                     success: function(result) {
                         if (result.success) {
-                            alert("Chỉnh sửa thành công!");
-                            window.location.href = "{{ route('dua_ra_de_tai.danh_sach') }}";
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Thành công!',
+                                text: 'Cập nhật thành công!',
+                                confirmButtonText: 'OK',
+                                timer: 1000,
+                                showConfirmButton: false
+                            }).then(() => {
+                                window.location.href =
+                                    "{{ route('dua_ra_de_tai.danh_sach') }}";
+                            });
                         } else {
                             $.each(result.errors, function(field, messages) {
                                 let inputField = $("[name='DeTai[" + field + "]']");
@@ -113,9 +122,15 @@
                             });
                         }
                     },
-                    error: function(xhr, status, error) {
-                        console.error("Lỗi khi gửi dữ liệu:", error);
-                        alert("Lỗi khi gửi dữ liệu! Vui lòng thử lại.");
+                    error: function(xhr) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Thất bại!',
+                            text: 'Cập nhật thất bại! Vui lòng thử lại',
+                            confirmButtonText: 'OK',
+                            timer: 1000,
+                            showConfirmButton: false
+                        })
                     }
                 });
             });

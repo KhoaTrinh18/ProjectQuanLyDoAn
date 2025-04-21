@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Sửa điểm đề tài hướng dẫn')
+@section('title', 'Chấm điểm đề tài phản biện')
 
 @section('content')
     <div class="container-fluid p-0">
@@ -7,20 +7,13 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <h2 style="font-weight: bold">Sửa điểm đề tài hướng dẫn</h2>
+                        <h2 style="font-weight: bold">Chấm điểm đề tài phản biện</h2>
                     </div>
                     <div class="card-body">
                         <p style="font-size: 16px"><strong>Tên đề tài:</strong> {{ $deTai->ten_de_tai }}</p>
-                        <form id="form_sua_diem">
+                        <form id="form_cham_diem">
                             <input type="hidden" name="ma_de_tai" value="{{ $deTai->ma_de_tai }}">
-                            @foreach ($deTai->sinhViens as $i => $sinhVien)
-                                @php
-                                    if ($deTai->so_luong_sv_dang_ky) {
-                                        $phanCong = $phanCongSVDK->where('ma_sv', $sinhVien->ma_sv)->first();
-                                    } else {
-                                        $phanCong = $phanCongSVDX->where('ma_sv', $sinhVien->ma_sv)->first();
-                                    }
-                                @endphp
+                            @foreach ($deTai->sinhVienPhanBiens as $i => $sinhVien)
                                 <input type="hidden" name="ChamDiem[{{ $i }}][ma_sv]"
                                     value="{{ $sinhVien->ma_sv }}">
                                 <p style="font-size: 16px"><strong>Sinh viên {{ $i + 1 }}:</strong>
@@ -33,8 +26,7 @@
                                     </label>
                                     <div class="ms-2 w-100">
                                         <input type="text" class="form-control form-control-lg shadow-none text-center"
-                                            name="ChamDiem[{{ $i }}][diem]" style="width: 90px" maxlength="4"
-                                            value="{{ $phanCong->diem_GVHD }}">
+                                            name="ChamDiem[{{ $i }}][diem]" style="width: 90px" maxlength="4">
                                         <span
                                             class="error-message text-danger d-none mt-2 error-ChamDiem{{ $i }}diem"></span>
                                     </div>
@@ -46,16 +38,17 @@
                                         Nhận xét
                                     </label>
                                     <div class="ms-2 w-100">
-                                        <textarea class="form-control form-control-lg shadow-none nhan_xet" name="ChamDiem[{{ $i }}][nhan_xet]">{{ $phanCong->nhan_xet }}</textarea>
+                                        <textarea class="form-control form-control-lg shadow-none nhan_xet" name="ChamDiem[{{ $i }}][nhan_xet]"></textarea>
                                         <span
                                             class="error-message text-danger d-none mt-2 error-ChamDiem{{ $i }}nhan_xet"></span>
                                     </div>
                                 </div>
                             @endforeach
                             <div class="text-center">
-                                <a href="{{ route('cham_diem_de_tai.danh_sach_huong_dan') }}"
+                                <a href="{{ route('cham_diem_phan_bien.danh_sach') }}"
                                     class="btn btn-secondary btn-lg">Quay lại</a>
-                                <button class="btn btn-primary btn-lg" type="submit" id="suaDiem">Cập nhật điểm</button>
+                                <button class="btn btn-primary btn-lg" type="submit" id="chamDiem">Xác nhận chấm
+                                    điểm</button>
                             </div>
                         </form>
                     </div>
@@ -68,10 +61,10 @@
 @section('scripts')
     <script>
         $(document).ready(function() {
-            $("#suaDiem").click(function(event) {
+            $("#chamDiem").click(function(event) {
                 event.preventDefault();
 
-                let form = $("#form_sua_diem").get(0);
+                let form = $("#form_cham_diem").get(0);
                 let formData = new FormData(form);
                 $('.nhan_xet').each(function(index) {
                     let name = $(this).attr('name');
@@ -79,12 +72,13 @@
                     formData.set(name, content);
                 });
 
-                $(".error-message").text('').removeClass("d-block").addClass("d-none");
+                $(".error-message").text('').removeClass(
+                    "d-block").addClass("d-none");
                 $(".is-invalid").removeClass("is-invalid");
                 $(".note-editor").css("border", "");
 
                 $.ajax({
-                    url: "{{ route('cham_diem_de_tai.xac_nhan_sua_diem_huong_dan') }}",
+                    url: "{{ route('cham_diem_phan_bien.xac_nhan_cham_diem') }}",
                     type: "POST",
                     data: formData,
                     contentType: false,
@@ -94,14 +88,24 @@
                     },
                     success: function(result) {
                         if (result.success) {
-                            alert("Cập nhật điểm thành công!");
-                            window.location.href =
-                                "{{ route('cham_diem_de_tai.danh_sach_huong_dan') }}";
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Thành công!',
+                                text: 'Chấm điểm thành công!',
+                                confirmButtonText: 'OK',
+                                timer: 1000,
+                                showConfirmButton: false
+                            }).then(() => {
+                                window.location.href =
+                                    "{{ route('cham_diem_phan_bien.danh_sach') }}";
+                            });
                         } else {
+                            console.log(result.errors);
                             $.each(result.errors, function(field, messages) {
                                 let fieldName = field.replace(/\./g, '][').replace(
                                     /^(.+?)\]\[/, '$1[') + ']';
                                 let inputField = $("[name='" + fieldName + "']");
+                                console.log(fieldName);
                                 if (inputField.hasClass('nhan_xet')) {
                                     inputField.siblings(".note-editor").css("border",
                                         "1px solid red");
@@ -115,10 +119,16 @@
                             });
                         }
                     },
-                    error: function(xhr, status, error) {
-                        console.error("Lỗi khi gửi dữ liệu:", error);
-                        alert("Lỗi khi gửi dữ liệu! Vui lòng thử lại.");
-                    }
+                    error: function(xhr) {
+                        Swal.fire({
+                                icon: 'error',
+                                title: 'Thất bại!',
+                                text: 'Chấm điểm thất bại! Vui lòng thử lại',
+                                confirmButtonText: 'OK',
+                                timer: 1000,
+                                showConfirmButton: false
+                            })
+                    },
                 });
             });
 
