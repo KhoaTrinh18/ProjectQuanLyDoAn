@@ -7,7 +7,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 use App\Models\{
+    DeTaiGiangVien,
     DeTaiSinhVien,
     SinhVien,
     SinhVienDeTaiSV
@@ -79,7 +81,33 @@ class DeTaiSinhVienController extends Controller
     public function duyet($ma_de_tai)
     {
         $deTaiSV = DeTaiSinhVien::where('ma_de_tai', $ma_de_tai)->firstOrFail();
-        return view('admin.detaisinhvien.duyet', compact('deTaiSV'));
+        $tenDeTaiMoi = $deTaiSV->ten_de_tai;
+
+        $tatCaDeTaiSV = DeTaiSinhVien::where('ma_de_tai', '!=', $ma_de_tai)->where([
+            'trang_thai' => 2,
+            'da_huy' => 0
+        ])->pluck('ten_de_tai');
+
+        $tatCaDeTaiGV = DeTaiGiangVien::where('so_luong_sv_dang_ky', '>=', 0)->where([
+            'trang_thai' => 2,
+            'da_huy' => 0
+        ])->pluck('ten_de_tai');
+
+        $tatCaDeTai = $tatCaDeTaiSV->merge($tatCaDeTaiGV);
+
+        $trungLap = [];
+
+        foreach ($tatCaDeTai as $deTaiCu) {
+            similar_text(Str::lower($tenDeTaiMoi), Str::lower($deTaiCu), $percent);
+            if ($percent >= 70) {
+                $trungLap[] = [
+                    'de_tai' => $deTaiCu,
+                    'percent' => round($percent),
+                ];
+            }
+        }
+
+        return view('admin.detaisinhvien.duyet', compact('deTaiSV', 'trungLap'));
     }
 
     public function xacNhanDuyet(Request $request)
@@ -93,6 +121,21 @@ class DeTaiSinhVienController extends Controller
         $deTaiSV = DeTaiSinhVien::where('ma_de_tai', $data['ma_de_tai'])->first();
         $deTaiSV->trang_thai = 2;
         $deTaiSV->save();
+
+        return response()->json(['success' => true]);
+    }
+
+    public function xacNhanKhongDuyet(Request $request)
+    {
+        if (!$request->isMethod('post')) {
+            return redirect()->back()->with('error', 'Bạn không thể truy cập trực tiếp trang này!');
+        }
+
+        $data = $request->input('DeTai', []);
+
+        $deTaiGV = DeTaiSinhVien::where('ma_de_tai', $data['ma_de_tai'])->first();
+        $deTaiGV->trang_thai = 0;
+        $deTaiGV->save();
 
         return response()->json(['success' => true]);
     }

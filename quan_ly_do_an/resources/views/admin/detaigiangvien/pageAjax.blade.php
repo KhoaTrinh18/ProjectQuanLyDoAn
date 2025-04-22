@@ -66,8 +66,10 @@
                         <td>
                             @if ($deTaiGV->trang_thai == 1)
                                 <span class="text-warning">Chờ duyệt</span>
-                            @else
+                            @elseif ($deTaiGV->trang_thai == 2)
                                 <span class="text-success">Đã duyệt</span>
+                            @else
+                                <span class="text-danger">Không duyệt</span>
                             @endif
                         </td>
                         <td class="text-center">

@@ -42,7 +42,7 @@
                                             @elseif ($deTai->trang_thai == 2)
                                                 <span class="text-success">Đã duyệt</span>
                                             @else
-                                                <span class="text-danger">Không được duyệt</span>
+                                                <span class="text-danger">Không duyệt</span>
                                             @endif
                                         </td>
                                         <td class="text-center">
