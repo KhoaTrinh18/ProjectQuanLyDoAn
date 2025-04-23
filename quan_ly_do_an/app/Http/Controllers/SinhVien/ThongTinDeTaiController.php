@@ -12,7 +12,8 @@ use App\Models\{
     SinhVien,
     DeTaiGiangVien,
     DeTaiSinhVien,
-    SinhVienDeTaiSV
+    SinhVienDeTaiSV,
+    ThietLap
 };
 
 class ThongTinDeTaiController extends Controller
@@ -33,7 +34,16 @@ class ThongTinDeTaiController extends Controller
                 $deTai = DeTaiGiangVien::where(['ma_de_tai' => $phanCongSVDK->ma_de_tai, 'da_huy' => 0])->first();
                 $loaiDeTai = 'de_tai_gv';
             }
-            return view('sinhvien.thongtindetai.thongTin', compact('deTai', 'loaiDeTai', 'daDangKy'));
+
+            $thietLap = ThietLap::where('trang_thai', 2)->first();
+            $ngayHomNay = Carbon::now()->toDateString();
+            if(Carbon::parse($thietLap->ngay_thuc_hien)->lt($ngayHomNay)) {
+                $ngayThucHien = 1;
+            } else {
+                $ngayThucHien = 0;
+            }
+
+            return view('sinhvien.thongtindetai.thongTin', compact('deTai', 'loaiDeTai', 'daDangKy', 'ngayThucHien'));
         } else {
             return view('sinhvien.thongtindetai.thongTin', compact('daDangKy'));
         }
@@ -43,13 +53,15 @@ class ThongTinDeTaiController extends Controller
     {
         $maTaiKhoan = session()->get('ma_tai_khoan');
         $sinhVien = SinhVien::where('ma_tk', $maTaiKhoan)->first();
-        if ($sinhVien->loai_sv == 1) {
-            $sinhVienDTSV = SinhVienDeTaiSV::where('ma_sv', $sinhVien->ma_sv)->first();
-            $deTai = DeTaiSinhVien::where('ma_de_tai', $sinhVienDTSV->ma_de_tai)->first();
+
+        if ($sinhVien->loai_sv == 'de_xuat') {
+            $sinhVienDTSV = SinhVienDeTaiSV::where(['ma_sv' => $sinhVien->ma_sv, 'da_huy' => 0])->first();
+            $deTai = DeTaiSinhVien::where(['ma_de_tai' => $sinhVienDTSV->ma_de_tai, 'da_huy' => 0])->first();
         } else {
             $phanCongSVDK = BangPhanCongSVDK::where('ma_sv', $sinhVien->ma_sv)->first();
-            $deTai = DeTaiGiangVien::where('ma_de_tai', $phanCongSVDK->ma_de_tai)->first();
+            $deTai = DeTaiGiangVien::where(['ma_de_tai' => $phanCongSVDK->ma_de_tai, 'da_huy' => 0])->first();
         }
+
         return view('sinhvien.thongtindetai.chiTiet', compact('deTai'));
     }
 

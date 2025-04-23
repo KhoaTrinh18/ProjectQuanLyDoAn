@@ -217,7 +217,7 @@ class PhanCongHoiDongController extends Controller
                 }
             }
         } else {
-            $phanCongs = BangPhanCongSVDK::where('ma_de_tai', $data['ma_de_tai'])->get();
+            $phanCongs = BangDiemGVPBChoSVDK::where('ma_de_tai', $data['ma_de_tai'])->get();
             foreach ($phanCongs as $phanCong) {
                 foreach ($hoiDong->giangViens as $giangVien) {
                     $phanCongHoiDong = new BangDiemGVTHDChoSVDK();

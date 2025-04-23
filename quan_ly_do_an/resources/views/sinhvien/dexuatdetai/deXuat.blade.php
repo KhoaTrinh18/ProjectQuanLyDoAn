@@ -6,11 +6,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="card">
-                    @if ($hetHan == 1)
-                        <div class="card-header d-flex justify-content-center align-items-center flex-column">
-                            <h2 style="font-weight: bold"><i>Đã hết hạn thời gian đề xuất!</i></h2>
-                        </div>
-                    @elseif ($daDangKy)
+                    @if ($daDangKy)
                         <div class="card-header d-flex justify-content-center align-items-center">
                             <h2 style="font-weight: bold"><i>Bạn đã đăng ký hoặc đề xuất đề tài!</i></h2>
                         </div>
@@ -114,7 +110,8 @@
                                                     aria-label="Đóng"></button>
                                             </div>
                                             <div class="modal-body text-center fs-5 text-secondary">
-                                                Sau khi đề xuất thì bạn không thể đăng ký đề tài khác. Bạn có chắc chắn muốn đề xuất đề tài này không?
+                                                Sau khi đề xuất thì bạn không thể đăng ký đề tài khác. Bạn có chắc chắn muốn
+                                                đề xuất đề tài này không?
                                             </div>
                                             <div class="modal-footer bg-light border-top-0">
                                                 <button type="button" class="btn btn-secondary"
@@ -223,6 +220,20 @@
                     }
                 }
             });
+
+            const deadline = new Date("{{ $ngayHetHan }}");
+
+            const interval = setInterval(() => {
+                const now = new Date();
+                if (now >= deadline) {
+                    $(".card-body").remove();
+                    $(".card-header").html(
+                        '<h2 class="text-danger fw-bold"><i>Đã hết hạn thời gian đề xuất!</i></h2>'
+                    );
+
+                    clearInterval(interval);
+                }
+            }, 10);
         });
     </script>
 @endsection

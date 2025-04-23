@@ -202,6 +202,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.7.10/dist/js/tempus-dominus.min.js"></script>
     <script src="https://unpkg.com/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
     <script>
         $(document).ready(function() {
             $("#dangXuatBtn").click(function() {

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\SinhVien;
 
+use App\Events\HetHanEvent;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Log;
@@ -28,14 +29,9 @@ class DeXuatDeTaiController extends Controller
 
         $taikhoan = TaiKhoanSV::where('ma_tk', $maTaiKhoan)->first();
         $thietLap = ThietLap::where('nam_hoc', $taikhoan->nam_hoc)->first();
-        $ngayHetHan = Carbon::create(2024, 5, 1)->toDateString();
-        if(Carbon::parse($thietLap->ngay_ket_thuc_dang_ky)->lt($ngayHetHan)) {
-            $hetHan = 1;
-        } else {
-            $hetHan = 0;
-        }
+        $ngayHetHan = Carbon::create($thietLap->ngay_ket_thuc_dang_ky)->setTime(23, 59, 59)->toIso8601String();
 
-        return view('sinhvien.dexuatdetai.deXuat', compact('linhVucs', 'daDangKy', 'hetHan'));
+        return view('sinhvien.dexuatdetai.deXuat', compact('linhVucs', 'daDangKy', 'ngayHetHan'));
     }
 
     public function xacNhanDeXuat(Request $request)

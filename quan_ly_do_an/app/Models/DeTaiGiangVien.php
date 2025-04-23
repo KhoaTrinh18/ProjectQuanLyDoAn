@@ -23,9 +23,14 @@ class DeTaiGiangVien extends Model
         return $this->belongsToMany(GiangVien::class, 'giang_vien_de_tai_gv', 'ma_de_tai', 'ma_gv');
     }
 
+    public function giangVienHuongDans()
+    {
+        return $this->belongsToMany(GiangVien::class, 'bang_phan_cong_svdk', 'ma_de_tai', 'ma_gvhd')->withPivot(['diem_gvhd', 'nhan_xet']);
+    }
+
     public function giangVienPhanBiens()
     {
-        return $this->belongsToMany(GiangVien::class, 'bang_diem_gvpb_cho_svdk', 'ma_de_tai', 'ma_gvpb')->distinct();
+        return $this->belongsToMany(GiangVien::class, 'bang_diem_gvpb_cho_svdk', 'ma_de_tai', 'ma_gvpb')->distinct()->withPivot(['diem_gvpb', 'nhan_xet']);
     }
 
     public function HoiDongs()
