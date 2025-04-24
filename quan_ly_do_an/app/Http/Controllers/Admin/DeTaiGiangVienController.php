@@ -33,15 +33,19 @@ class DeTaiGiangVienController extends Controller
 
         if ($request->filled('ngay_dua_ra_dau') && $request->filled('ngay_dua_ra_cuoi')) {
             $query->whereHas('ngayDuaRa', function ($q) use ($request) {
-                $q->whereBetween('ngay_dua_ra', [$request->ngay_dua_ra_dau, $request->ngay_dua_ra_cuoi]);
+                $ngay_dua_ra_dau = Carbon::createFromFormat('d-m-Y', $request->ngay_dua_ra_dau);
+                $ngay_dua_ra_cuoi = Carbon::createFromFormat('d-m-Y', $request->ngay_dua_ra_cuoi);
+                $q->whereBetween('ngay_dua_ra', [$ngay_dua_ra_dau->toDateString(), $ngay_dua_ra_cuoi->toDateString()]);
             });
         } elseif ($request->filled('ngay_dua_ra_dau')) {
             $query->whereHas('ngayDuaRa', function ($q) use ($request) {
-                $q->whereDate('ngay_dua_ra', '>=', $request->ngay_dua_ra_dau);
+                $ngay_dua_ra_dau = Carbon::createFromFormat('d-m-Y', $request->ngay_dua_ra_dau);
+                $q->whereDate('ngay_dua_ra', '>=', $ngay_dua_ra_dau->toDateString());
             });
         } elseif ($request->filled('ngay_dua_ra_cuoi')) {
             $query->whereHas('ngayDuaRa', function ($q) use ($request) {
-                $q->whereDate('ngay_dua_ra', '<=', $request->ngay_dua_ra_cuoi);
+                $ngay_dua_ra_cuoi = Carbon::createFromFormat('d-m-Y', $request->ngay_dua_ra_cuoi);
+                $q->whereDate('ngay_dua_ra', '<=', $ngay_dua_ra_cuoi->toDateString());
             });
         }
 
@@ -62,7 +66,7 @@ class DeTaiGiangVienController extends Controller
         }
 
         $limit = $request->input('limit', 10);
-        $deTaiGVs = $query->where(['da_huy' => 0])->orderBy('ma_de_tai', 'desc')->paginate($limit);
+        $deTaiGVs = $query->where('da_huy', 0)->orderBy('ma_de_tai', 'desc')->paginate($limit);
 
         return response()->json([
             'success' => true,

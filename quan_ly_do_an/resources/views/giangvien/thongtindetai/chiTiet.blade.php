@@ -32,26 +32,29 @@
                             <p><strong>Sinh viên đã đăng ký:
                                 </strong>chưa có</p>
                         @elseif ($deTai->so_luong_sv_dang_ky == 1)
-                            <form class="d-flex align-item-center" id="form_huy_sv">
+                            <form class="d-flex align-items-center" id="form_huy_sv">
                                 <p class="m-0"><strong>Sinh viên đã đăng ký:
-                                    </strong>{{ $deTai->sinhViens->first()->ho_ten }} ({{ $deTai->sinhViens->first()->mssv }})
+                                    </strong>{{ $deTai->sinhViens->first()->ho_ten }}
+                                    ({{ $deTai->sinhViens->first()->mssv }})
                                 </p>
                                 <button class="btn btn-danger btn-sm ms-2" type="button" data-bs-toggle="modal"
                                     data-bs-target="#confirmModal">Hủy đăng
                                     ký</button>
                                 <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel"
                                     aria-hidden="true">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="confirmModalLabel">Xác nhận hủy đăng ký</h5>
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content rounded-4 shadow-sm border-0">
+                                            <div class="modal-header bg-light border-bottom-0">
+                                                <h5 class="modal-title fw-semibold text-primary" id="confirmModalLabel">Xác
+                                                    nhận
+                                                    không duyệt</h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                    aria-label="Close"></button>
+                                                    aria-label="Đóng"></button>
                                             </div>
-                                            <div class="modal-body"> Bạn có chắc muốn hủy đăng ký của sinh viên
+                                            <div class="modal-body fs-5 text-secondary" > Bạn có chắc muốn hủy đăng ký của sinh viên
                                                 {{ $deTai->sinhViens->first()->ho_ten }}
                                             </div>
-                                            <div class="modal-footer">
+                                            <div class="modal-footer  bg-light border-top-0">
                                                 <button type="button" class="btn btn-secondary"
                                                     data-bs-dismiss="modal">Hủy</button>
                                                 <input type="hidden" name="ma_sv"
@@ -70,7 +73,8 @@
                                 @foreach ($deTai->sinhViens as $sinhVien)
                                     <li class="mt-2">
                                         <div class="d-flex align-items-center">
-                                            <p class="student-name m-0">{{ $sinhVien->ho_ten }} ({{ $sinhVien->mssv }})</p>
+                                            <p class="student-name m-0">{{ $sinhVien->ho_ten }} ({{ $sinhVien->mssv }})
+                                            </p>
                                             <button class="btn btn-danger btn-sm ms-2 huy-dang-ky-btn"
                                                 data-ma-sv="{{ $sinhVien->ma_sv }}" data-ho-ten="{{ $sinhVien->ho_ten }}"
                                                 data-bs-toggle="modal" data-bs-target="#confirmModal">
@@ -110,7 +114,8 @@
                         @endif
 
                         <div class="text-center">
-                            <a href="{{ route('thong_tin_de_tai.danh_sach_duyet') }}" class="btn btn-secondary btn-lg">Quay
+                            <a href="{{ route('thong_tin_de_tai.danh_sach_duyet') }}"
+                                class="btn btn-secondary btn-lg">Quay
                                 lại</a>
                         </div>
                     </div>
@@ -148,13 +153,28 @@
                     },
                     success: function(result) {
                         if (result.success) {
-                            alert("Hủy sinh viên thành công!");
-                            window.location.href =
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Thành công!',
+                                text: 'Hủy thành công!',
+                                confirmButtonText: 'OK',
+                                timer: 1000,
+                                showConfirmButton: false
+                            }).then(() => {
+                                window.location.href =
                                 "{{ route('thong_tin_de_tai.danh_sach_duyet') }}";
+                            });
                         }
                     },
                     error: function(xhr) {
-                        alert("Hủy thất bại! Vui lòng thử lại.");
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Thất bại!',
+                            text: 'Hủy thất bại! Vui lòng thử lại',
+                            confirmButtonText: 'OK',
+                            timer: 1000,
+                            showConfirmButton: false
+                        })
                     },
                 });
             });

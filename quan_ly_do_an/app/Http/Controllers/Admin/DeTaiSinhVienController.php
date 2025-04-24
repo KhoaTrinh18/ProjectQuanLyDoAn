@@ -35,15 +35,19 @@ class DeTaiSinhVienController extends Controller
 
         if ($request->filled('ngay_de_xuat_dau') && $request->filled('ngay_de_xuat_cuoi')) {
             $query->whereHas('ngayDeXuat', function ($q) use ($request) {
-                $q->whereBetween('ngay_de_xuat', [$request->ngay_de_xuat_dau, $request->ngay_de_xuat_cuoi]);
+                $ngay_de_xuat_dau = Carbon::createFromFormat('d-m-Y', $request->ngay_de_xuat_dau);
+                $ngay_de_xuat_cuoi = Carbon::createFromFormat('d-m-Y', $request->ngay_de_xuat_cuoi);
+                $q->whereBetween('ngay_de_xuat', [$ngay_de_xuat_dau->toDateString(), $ngay_de_xuat_cuoi->toDateString()]);
             });
         } elseif ($request->filled('ngay_de_xuat_dau')) {
             $query->whereHas('ngayDeXuat', function ($q) use ($request) {
-                $q->whereDate('ngay_de_xuat', '>=', $request->ngay_de_xuat_dau);
+                $ngay_de_xuat_dau = Carbon::createFromFormat('d-m-Y', $request->ngay_de_xuat_dau);
+                $q->whereDate('ngay_de_xuat', '>=', $ngay_de_xuat_dau->toDateString());
             });
         } elseif ($request->filled('ngay_de_xuat_cuoi')) {
             $query->whereHas('ngayDeXuat', function ($q) use ($request) {
-                $q->whereDate('ngay_de_xuat', '<=', $request->ngay_de_xuat_cuoi);
+                $ngay_de_xuat_cuoi = Carbon::createFromFormat('d-m-Y', $request->ngay_de_xuat_cuoi);
+                $q->whereDate('ngay_de_xuat', '<=', $ngay_de_xuat_cuoi->toDateString());
             });
         }
 

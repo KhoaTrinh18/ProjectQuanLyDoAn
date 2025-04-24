@@ -16,4 +16,8 @@ class BoMon extends Model
     public function hoiDongs() {
         return $this->hasMany(HoiDong::class, 'ma_bo_mon', 'ma_bo_mon');
     }
+
+    public function giangViens() {
+        return $this->hasMany(GiangVien::class, 'ma_bo_mon', 'ma_bo_mon');
+    }
 }

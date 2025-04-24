@@ -16,6 +16,7 @@
                                     <th scope="col" class="text-white">#</th>
                                     <th scope="col" class="text-white" style="width: 40%;">Tên đề tài</th>
                                     <th scope="col" class="text-white">Lĩnh vực</th>
+                                    <th scope="col" class="text-white">Giảng viên ra đề tài</th>
                                     <th scope="col" class="text-white">Số lượng sinh viên đăng ký</th>
                                     <th scope="col" class="text-white"></th>
                                 </tr>
@@ -30,6 +31,7 @@
                                             {{ $deTai->ten_de_tai }}
                                         </td>
                                         <td>{{ $deTai->linhVuc->ten_linh_vuc }}</td>
+                                        <td>{!! $deTai->giangViens->pluck('ho_ten')->implode('<br>') !!}</td>
                                         <td class="text-center">
                                             @if ($deTai->so_luong_sv_dang_ky < $deTai->so_luong_sv_toi_da)
                                                 <span

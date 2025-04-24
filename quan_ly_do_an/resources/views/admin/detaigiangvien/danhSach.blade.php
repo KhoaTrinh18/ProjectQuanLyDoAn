@@ -11,20 +11,36 @@
                     </div>
                     <div class="card-body">
                         <form class="d-flex mb-3" id="form_tim_kiem">
-                            <div class="d-flex flex-column" style="width: 440px">
+                            <div class="d-flex flex-column" style="width: 480px">
                                 <div class="d-flex align-items-center justify-content-between">
-                                    <label for="ten_de_tai">Tên đề tài:</label>
-                                    <input type="text" name="ten_de_tai" class="form-control ms-2 w-75 shadow-none"
+                                    <label for="ten_de_tai" style="width: 150px">Tên đề tài:</label>
+                                    <input type="text" name="ten_de_tai" class="form-control ms-2 w-100 shadow-none"
                                         placeholder="Tên đề tài">
                                 </div>
-                                <div class="d-flex align-items-center justify-content-between mt-2">
-                                    <label for="ma_linh_vuc">Ngày đưa ra:</label>
-                                    <div class="d-flex align-items-center ms-2 w-75">
-                                        <input type="date" class="form-control shadow-none"
-                                            name="ngay_dua_ra_dau" >
+                                <div class="d-flex align-items-center mt-2">
+                                    <label for="ngay_dua_ra" style="width: 150px">Ngày ra đề tài:</label>
+                                    <div class="d-flex align-items-center ms-2 w-100">
+                                        <div class="input-group" id="datetimepicker1" data-td-target-input="nearest"
+                                            data-td-target="#ngayDuaRaDau">
+                                            <input type="text" class="form-control form-control-lg shadow-none"
+                                                name="ngay_dua_ra_dau" id="ngayDuaRaDau" data-td-target="#ngayDuaRaDau"
+                                                readonly />
+                                            <span class="input-group-text" data-td-toggle="datetimepicker1"
+                                                data-td-target="#ngayDuaRaDau">
+                                                <i class="bi bi-calendar-event"></i>
+                                            </span>
+                                        </div>
                                         <span class="mx-2">-</span>
-                                        <input type="date" class="form-control shadow-none"
-                                            name="ngay_dua_ra_cuoi" >
+                                        <div class="input-group" id="datetimepicker2" data-td-target-input="nearest"
+                                            data-td-target="#ngayDuaRaCuoi">
+                                            <input type="text" class="form-control form-control-lg shadow-none"
+                                                name="ngay_dua_ra_cuoi" id="ngayDuaRaCuoi" data-td-target="#ngayDuaRaCuoi"
+                                                readonly />
+                                            <span class="input-group-text" data-td-toggle="datetimepicker2"
+                                                data-td-target="#ngayDuaRaCuoi">
+                                                <i class="bi bi-calendar-event"></i>
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -38,7 +54,7 @@
                                     <label for="trang_thai">Trạng thái:</label>
                                     <select class="form-select ms-2 w-75 shadow-none" name="trang_thai">
                                         <option value="" selected>Chọn trạng thái</option>
-                                        <option value="0">Không được duyệt</option>
+                                        <option value="0">Không duyệt</option>
                                         <option value="1">Chờ duyệt</option>
                                         <option value="2">Đã duyệt</option>
                                     </select>
@@ -146,6 +162,86 @@
 
                 fetchData(1, {});
             });
+
+            const element1 = document.getElementById('datetimepicker1');
+            if (element1) {
+                new tempusDominus.TempusDominus(element1, {
+                    display: {
+                        components: {
+                            calendar: true,
+                            date: true,
+                            month: true,
+                            year: true,
+                            decades: true,
+                            clock: false,
+                            hours: false,
+                            minutes: false,
+                            seconds: false
+                        },
+                        icons: {
+                            time: 'bi bi-clock',
+                            date: 'bi bi-calendar',
+                            up: 'bi bi-chevron-up',
+                            down: 'bi bi-chevron-down',
+                            previous: 'bi bi-chevron-left',
+                            next: 'bi bi-chevron-right',
+                            today: 'bi bi-calendar-check',
+                            clear: 'bi bi-trash',
+                            close: 'bi bi-x-circle'
+                        },
+                        buttons: {
+                            today: true,
+                            clear: true,
+                            close: true
+                        },
+                    },
+                    localization: {
+                        locale: 'vi',
+                        format: 'dd-MM-yyyy'
+                    },
+                    useCurrent: false,
+                });
+            }
+
+            const element2 = document.getElementById('datetimepicker2');
+            if (element2) {
+                new tempusDominus.TempusDominus(element2, {
+                    display: {
+                        components: {
+                            calendar: true,
+                            date: true,
+                            month: true,
+                            year: true,
+                            decades: true,
+                            clock: false,
+                            hours: false,
+                            minutes: false,
+                            seconds: false
+                        },
+                        icons: {
+                            time: 'bi bi-clock',
+                            date: 'bi bi-calendar',
+                            up: 'bi bi-chevron-up',
+                            down: 'bi bi-chevron-down',
+                            previous: 'bi bi-chevron-left',
+                            next: 'bi bi-chevron-right',
+                            today: 'bi bi-calendar-check',
+                            clear: 'bi bi-trash',
+                            close: 'bi bi-x-circle'
+                        },
+                        buttons: {
+                            today: true,
+                            clear: true,
+                            close: true
+                        },
+                    },
+                    localization: {
+                        locale: 'vi',
+                        format: 'dd-MM-yyyy'
+                    },
+                    useCurrent: false,
+                });
+            }
         });
     </script>
 @endsection

@@ -6,11 +6,11 @@
         <div class="row">
             <div class="col-12">
                 <div class="card">
-                    @if ($daDangKy)
+                    {{-- @if ($daDangKy)
                         <div class="card-header d-flex justify-content-center align-items-center">
                             <h2 style="font-weight: bold"><i>Bạn đã đăng ký hoặc đề xuất đề tài!</i></h2>
                         </div>
-                    @else
+                    @else --}}
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <h2 style="font-weight: bold">Đề xuất đề tài</h2>
                         </div>
@@ -62,10 +62,10 @@
                                         class="p-2 d-flex align-items-center justify-content-center text-white rounded bg-secondary flex-column"
                                         style="width: 250px">
                                         Sinh viên làm chung
-                                        <p>(nếu có)</p>
+                                        <p class="m-0">(nếu có)</p>
                                     </label>
                                     <div class="ms-2 w-100">
-                                        <div class="d-flex mt-2 align-items-center">
+                                        <div class="d-flex align-items-center">
                                             <input type="text" class="form-control form-control-lg shadow-none me-2"
                                                 placeholder="Nhập MSSV" name="DeTai[mssv][0]" style="width: 150px">
                                             <span class="error-message text-danger d-none error-mssv-0"></span>
@@ -124,7 +124,7 @@
                                 </div>
                             </form>
                         </div>
-                    @endif
+                    {{-- @endif --}}
                 </div>
             </div>
         </div>

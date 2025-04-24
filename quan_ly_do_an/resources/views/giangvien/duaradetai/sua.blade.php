@@ -57,6 +57,41 @@
                                     <span class="error-message text-danger d-none mt-2 error-mo_ta"></span>
                                 </div>
                             </div>
+                            <div class="d-flex mb-3">
+                                <label for="DeTai[slsv_toi_da]"
+                                    class="p-2 d-flex align-items-center justify-content-center text-white rounded bg-secondary flex-column"
+                                    style="width: 250px">
+                                    Số lượng sinh viên tối đa
+                                </label>
+                                <div class="ms-2 w-100">
+                                    <select name="DeTai[slsv_toi_da]" class="form-select form-select-lg shadow-none"
+                                        style="width: 70px">
+                                        @for ($i = 1; $i <= 6; $i++)
+                                            <option value="{{ $i }}" {{ $i == $deTai->so_luong_sv_toi_da ? 'selected' : '' }}>
+                                                {{ $i }}</option>
+                                        @endfor
+                                    </select>
+                                    <span class="error-message text-danger d-none mt-2 error-slsv_toi_da"></span>
+                                </div>
+                            </div>
+                            <div class="d-flex mb-3">
+                                <label for="DeTai[giang_vien][]"
+                                    class="p-2 d-flex align-items-center justify-content-center text-white rounded bg-secondary flex-column"
+                                    style="width: 250px">
+                                    Giảng viên (nếu có)
+                                </label>
+                                <div class="ms-2 w-100">
+                                    <select id="so_luong_giang_vien" class="form-select form-select-lg shadow-none"
+                                        style="width: 70px">
+                                        @for ($i = 1; $i <= 5; $i++)
+                                            <option value="{{ $i }}" {{ $i == 1 ? 'selected' : '' }}>
+                                                {{ $i }}</option>
+                                        @endfor
+                                    </select>
+                                    <div id="giang_vien_selects"></div>
+                                    <span class="error-message text-danger d-none mt-2 error-giang_vien"></span>
+                                </div>
+                            </div>
                             <div class="text-center">
                                 <a href="{{ route('dua_ra_de_tai.danh_sach') }}" class="btn btn-secondary btn-lg">
                                     Quay lại
@@ -76,6 +111,90 @@
 @section('scripts')
     <script>
         $(document).ready(function() {
+
+            $('#so_luong_giang_vien').change(function() {
+                var soLuong = $(this).val();
+                var chuyenNganhs = @json($chuyenNganhs);
+                var giangVienSelects = $('#giang_vien_selects').empty();
+                var giangViensDT = @json($giangViensDT);
+
+                for (var i = 0; i < soLuong; i++) {
+                    var selectWrapper = $('<div class="mt-2 d-flex align-items-center">');
+
+                    var select = $('<select>')
+                        .attr({
+                            name: 'DeTai[giang_vien][' + i + ']',
+                        })
+                        .addClass('form-select form-select-lg shadow-none')
+                        .css('width', '250px');
+
+                    select.append('<option value="">Chọn giảng viên ' + (i + 1) + '</option>');
+
+                    chuyenNganhs.forEach(function(cn) {
+                        var optgroup = $('<optgroup>')
+                            .attr('label', cn.ten_bo_mon);
+                        cn.giang_viens.forEach(function(gv) {
+                            var option = $('<option>')
+                                .val(gv.ma_gv)
+                                .text(gv.ho_ten);
+                            if (giangViensDT[i] == gv.ma_gv) {
+                                option.prop('selected', true);
+                            }
+                            optgroup.append(option);
+                        });
+
+                        select.append(optgroup);
+                    });
+
+                    selectWrapper.append(select);
+                    selectWrapper.append(
+                        '<span class="error-message text-danger d-hidden error-giangvien-[' + i +
+                        '] ms-2"></span>'
+                    );
+                    giangVienSelects.append(selectWrapper);
+                }
+
+                bindAllSelects();
+                updateSelectedGiangViens();
+                updateAllSelects();
+            });
+
+
+            function updateSelectedGiangViens() {
+                selectedGiangViens = [];
+
+                $('#giang_vien_selects select').each(function() {
+                    var val = $(this).val();
+                    if (val) selectedGiangViens.push(val);
+                });
+            }
+
+            function updateAllSelects() {
+                $('#giang_vien_selects select').each(function() {
+                    var currentSelect = $(this);
+                    var currentValue = currentSelect.val();
+
+                    currentSelect.find('option').prop('disabled', false);
+
+                    selectedGiangViens.forEach(function(id) {
+                        if (id !== currentValue) {
+                            currentSelect.find('option[value="' + id + '"]:not(:selected)').prop(
+                                'disabled', true);
+                        }
+                    });
+                });
+            }
+
+            function bindAllSelects() {
+                $('#giang_vien_selects select')
+                    .off('change').on('change', function() {
+                        updateSelectedGiangViens();
+                        updateAllSelects();
+                    });
+            }
+
+            $('#so_luong_giang_vien').val(@json($giangViensDT->count())).trigger('change');
+
             $("#sua").click(function(event) {
                 event.preventDefault();
 

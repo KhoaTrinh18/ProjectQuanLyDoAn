@@ -9,7 +9,8 @@
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h2 style="font-weight: bold">Danh sách đề tài</h2>
                         <div>
-                            <a href="{{ route('dua_ra_de_tai.danh_sach_huy') }}" class="btn btn-secondary btn-lg">Danh sách hủy</a>
+                            <a href="{{ route('dua_ra_de_tai.danh_sach_huy') }}" class="btn btn-secondary btn-lg">Danh sách
+                                hủy</a>
                             <a href="{{ route('dua_ra_de_tai.dua_ra') }}" class="btn btn-success btn-lg">Đưa ra</a>
                         </div>
                     </div>
@@ -18,8 +19,9 @@
                             <thead style="background: #222e3c;">
                                 <tr>
                                     <th scope="col" class="text-white">#</th>
-                                    <th scope="col" class="text-white" style="width: 40%;">Tên đề tài</th>
+                                    <th scope="col" class="text-white" style="width: 25%;">Tên đề tài</th>
                                     <th scope="col" class="text-white">Lĩnh vực</th>
+                                    <th scope="col" class="text-white">Giảng viên ra đề tài</th>
                                     <th scope="col" class="text-white">Số lượng sinh viên tối đa</th>
                                     <th scope="col" class="text-white">Trạng thái</th>
                                     <th scope="col" class="text-white"></th>
@@ -31,10 +33,11 @@
                                         <td scope="row">
                                             {{ $key + 1 }}</td>
                                         <td
-                                            style="width: 40%; word-wrap: break-word; overflow-wrap: break-word; white-space: normal; word-break: break-word;">
+                                            style="width: 25%; word-wrap: break-word; overflow-wrap: break-word; white-space: normal; word-break: break-word;">
                                             {{ $deTai->ten_de_tai }}
                                         </td>
                                         <td>{{ $deTai->linhVuc->ten_linh_vuc }}</td>
+                                        <td>{!! $deTai->giangViens->pluck('ho_ten')->implode('<br>') !!}</td>
                                         <td class="text-center">{{ $deTai->so_luong_sv_toi_da }}</td>
                                         <td>
                                             @if ($deTai->trang_thai == 1)
@@ -46,10 +49,9 @@
                                             @endif
                                         </td>
                                         <td class="text-center">
-                                            @if ($deTai->trang_thai != 1)
-                                                <a href="{{ route('dua_ra_de_tai.chi_tiet', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
-                                                    class="btn btn-secondary btn-sm">Xem</a>
-                                            @else
+                                            <a href="{{ route('dua_ra_de_tai.chi_tiet', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
+                                                class="btn btn-secondary btn-sm">Xem</a>
+                                            @if ($deTai->trang_thai == 1)
                                                 <a href="{{ route('dua_ra_de_tai.huy', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
                                                     class="btn btn-danger btn-sm">hủy</a>
                                                 <a href="{{ route('dua_ra_de_tai.sua', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
@@ -74,4 +76,3 @@
         </div>
     </div>
 @endsection
-

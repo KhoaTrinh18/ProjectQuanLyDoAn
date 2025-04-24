@@ -33,15 +33,15 @@ class HoiDongController extends Controller
         $query = HoiDong::query();
 
         if ($request->filled('ngay_to_chuc_dau') && $request->filled('ngay_to_chuc_cuoi')) {
-            $ngay_to_chu_dau = Carbon::createFromFormat('d-m-Y', $request->ngay_to_chuc_dau);
-            $ngay_to_chu_cuoi = Carbon::createFromFormat('d-m-Y', $request->ngay_to_chuc_cuoi);
-            $query->whereBetween('ngay', [$ngay_to_chu_dau, $ngay_to_chu_cuoi]);
+            $ngay_to_chuc_dau = Carbon::createFromFormat('d-m-Y', $request->ngay_to_chuc_dau);
+            $ngay_to_chuc_cuoi = Carbon::createFromFormat('d-m-Y', $request->ngay_to_chuc_cuoi);
+            $query->whereBetween('ngay', [$ngay_to_chuc_dau, $ngay_to_chuc_cuoi]);
         } elseif ($request->filled('ngay_to_chuc_dau')) {
-            $ngay_to_chu_dau = Carbon::createFromFormat('d-m-Y', $request->ngay_to_chuc_dau);
-            $query->whereDate('ngay', '>=', $ngay_to_chu_dau);
+            $ngay_to_chuc_dau = Carbon::createFromFormat('d-m-Y', $request->ngay_to_chuc_dau);
+            $query->whereDate('ngay', '>=', $ngay_to_chuc_dau);
         } elseif ($request->filled('ngay_to_chuc_cuoi')) {
-            $ngay_to_chu_cuoi = Carbon::createFromFormat('d-m-Y', $request->ngay_to_chuc_cuoi);
-            $query->whereDate('ngay', '<=', $ngay_to_chu_cuoi);
+            $ngay_to_chuc_cuoi = Carbon::createFromFormat('d-m-Y', $request->ngay_to_chuc_cuoi);
+            $query->whereDate('ngay', '<=', $ngay_to_chuc_cuoi);
         }
 
         if ($request->filled('nam_hoc')) {
@@ -54,7 +54,7 @@ class HoiDongController extends Controller
 
         return response()->json([
             'success' => true,
-            'html' => view('admin.hoidong.pageAjax', compact('hoiDongs', 'thietLaps', 'chuyenNghanhs'))->render(),
+            'html' => view('admin.hoidong.pageAjax', compact('hoiDongs', 'thietLaps'))->render(),
         ]);
     }
 
