@@ -89,7 +89,8 @@
                                             @foreach ($deTai->giangVienHuongDans as $gv)
                                                 <li class="mb-2">
                                                     {{ $gv->ho_ten }}<br>
-                                                    <strong>Điểm: </strong><i>{{ $gv->pivot->diem_gvhd ? number_format($gv->pivot->diem_gvhd, 2) : 'Chưa có' }}</i><br>
+                                                    <strong>Điểm:
+                                                    </strong><i>{{ $gv->pivot->diem_gvhd ? number_format($gv->pivot->diem_gvhd, 2) : 'Chưa có' }}</i><br>
                                                     <strong>Nhận xét: </strong>{!! $gv->pivot->nhan_xet ?? '<em>Chưa có</em>' !!}
                                                 </li>
                                             @endforeach
@@ -98,13 +99,14 @@
                                 @endif
 
                                 @if ($deTai->giangVienPhanBiens->isEmpty())
-                                    <p><strong>Giảng viên Phản biện: </strong>Chưa có</p>
+                                    <p><strong>Giảng viên phản biện: </strong>Chưa có</p>
                                 @else
                                     @php $gv = $deTai->giangVienPhanBiens->first(); @endphp
                                     <p class="mb-0"><strong>Giảng viên phản biện: </strong>{{ $gv->ho_ten }}</p>
                                     <ul>
                                         <li><strong>Điểm:
-                                            </strong><i>{{ $gv->pivot->diem_gvpb ? number_format($gv->pivot->diem_gvpb, 2) : 'Chưa có' }}</i></li>
+                                            </strong><i>{{ $gv->pivot->diem_gvpb ? number_format($gv->pivot->diem_gvpb, 2) : 'Chưa có' }}</i>
+                                        </li>
                                         <li><strong>Nhận xét: </strong>{!! $gv->pivot->nhan_xet ?? '<em>Chưa có</em>' !!}</li>
                                     </ul>
                                 @endif
@@ -131,7 +133,8 @@
                                         }
                                     @endphp
                                     <p><strong>Hội đồng:</strong> {{ $hoiDong->ten_hoi_dong }}</p>
-                                    <p><strong>Ngày tổ chức:</strong> {{ \Carbon\Carbon::parse($hoiDong->ngay)->format('H:i d-m-Y') }}</p>
+                                    <p><strong>Ngày tổ chức:</strong>
+                                        {{ \Carbon\Carbon::parse($hoiDong->ngay)->format('H:i d-m-Y') }}</p>
                                     <p><strong>Phòng:</strong> {{ $hoiDong->phong }}</p>
                                     <p class="mb-0"><strong>Chủ tịch: </strong>{{ $chuTich->ho_ten }}</p>
                                     <ul class="mb-3">
@@ -176,18 +179,47 @@
                                 <form id="form_huy">
                                     <input type="hidden" name="ma_de_tai" value="{{ $deTai->ma_de_tai }}">
                                     <div class="text-center">
-                                        <button type="submit" class="btn btn-danger btn-lg" id="huy">Hủy</button>
-                                        <a class="btn btn-lg btn-primary">Sửa</a>
+                                        <button type="button" class="btn btn-danger btn-lg" data-bs-toggle="modal"
+                                            data-bs-target="#cancelModal">Hủy</button>
+                                        <a class="btn btn-lg btn-primary"
+                                            href="{{ route('thong_tin_de_tai.sua', ['ma_de_tai' => $deTai->ma_de_tai]) }}">Sửa</a>
+                                    </div>
+                                    <div class="modal fade" id="cancelModal" tabindex="-1"
+                                        aria-labelledby="cancelModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content rounded-4 shadow-sm border-0">
+                                                <div class="modal-header bg-light border-bottom-0">
+                                                    <h5 class="modal-title fw-semibold text-primary" id="cancelModalLabel">
+                                                        Xác nhận
+                                                        hủy</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Đóng"></button>
+                                                </div>
+                                                <div class="modal-body text-center fs-5 text-secondary">
+                                                    Bạn có chắc chắn không muốn hủy đề tài này?
+                                                </div>
+                                                <div class="modal-footer bg-light border-top-0">
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-bs-dismiss="modal">Hủy</button>
+                                                    <button type="submit" class="btn btn-primary" id="huy">Xác
+                                                        nhận</button>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </form>
                                 <h5 class="text-center mt-4" style="font-weight: bold"><i>Sinh viên có thể hủy hoặc sửa khi
                                         chưa
                                         duyệt đề tài đã đề xuất trong thời gian quy định!</i>
                                 </h5>
-                            @else
+                            @elseif ($loaiDeTai == 'de_tai_sv' && $deTai->trang_thai == 2)
                                 <h5 class="text-center" style="font-weight: bold"><i>Khi đề tài đã duyệt, sinh viên muốn hủy
                                         phải liên hệ với
                                         trưởng khoa trong thời gian quy định!</i>
+                                </h5>
+                            @else
+                                <h5 class="text-center" style="font-weight: bold"><i>Sau khi đăng ký đề tài, sinh viên muốn
+                                        hủy phải liên hệ với giảng viên trong thời gian quy định!</i>
                                 </h5>
                             @endif
                         </div>
@@ -218,12 +250,27 @@
                     },
                     success: function(result) {
                         if (result.success) {
-                            alert("Hủy thành công!");
-                            location.reload();
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Thành công!',
+                                text: 'Hủy thành công!',
+                                confirmButtonText: 'OK',
+                                timer: 1000,
+                                showConfirmButton: false
+                            }).then(() => {
+                                location.reload();
+                            });
                         }
                     },
                     error: function(xhr) {
-                        alert("Hủy thất bại! Vui lòng thử lại.");
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Thất bại!',
+                            text: 'Hủy thất bại! Vui lòng thử lại',
+                            confirmButtonText: 'OK',
+                            timer: 1000,
+                            showConfirmButton: false
+                        })
                     },
                 });
             });

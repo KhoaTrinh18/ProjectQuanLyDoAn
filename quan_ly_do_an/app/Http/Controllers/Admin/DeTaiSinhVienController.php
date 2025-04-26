@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Jobs\SendEmailJob;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
@@ -136,10 +137,40 @@ class DeTaiSinhVienController extends Controller
         }
 
         $data = $request->input('DeTai', []);
+        $lyDoTuChoi = $request->input('lyDoTuChoi');
 
-        $deTaiGV = DeTaiSinhVien::where('ma_de_tai', $data['ma_de_tai'])->first();
-        $deTaiGV->trang_thai = 0;
-        $deTaiGV->save();
+        $validator = Validator::make(
+            ['lyDoTuChoi' => $lyDoTuChoi],  
+            [
+                'lyDoTuChoi' => 'required',  
+            ],
+            [
+                'lyDoTuChoi.required' => 'Lý do từ chối không được để trống.',
+            ]
+        );
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()->toArray(),
+            ]);
+        }
+
+        $deTaiSV = DeTaiSinhVien::where('ma_de_tai', $data['ma_de_tai'])->first();
+        $deTaiSV->trang_thai = 0;
+        $deTaiSV->save();
+
+        $ngayDeXuat = $deTaiSV->ngayDeXuat->ngay_de_xuat;
+
+        foreach ($deTaiSV->sinhViens as $sinhVien) {
+            if ($sinhVien && $sinhVien->email) {
+                $emailList[] = $sinhVien->email;
+            }
+        }
+
+        if(!empty($emailList)) {
+            SendEmailJob::dispatch($emailList, $deTaiSV, $ngayDeXuat, $lyDoTuChoi);
+        }
 
         return response()->json(['success' => true]);
     }

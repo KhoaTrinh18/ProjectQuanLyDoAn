@@ -6,11 +6,11 @@
         <div class="row">
             <div class="col-12">
                 <div class="card">
-                    {{-- @if ($daDangKy)
+                    @if ($daDangKy)
                         <div class="card-header d-flex justify-content-center align-items-center">
                             <h2 style="font-weight: bold"><i>Bạn đã đăng ký hoặc đề xuất đề tài!</i></h2>
                         </div>
-                    @else --}}
+                    @else
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <h2 style="font-weight: bold">Đề xuất đề tài</h2>
                         </div>
@@ -105,7 +105,7 @@
                                             <div class="modal-header bg-light border-bottom-0">
                                                 <h5 class="modal-title fw-semibold text-primary" id="confirmModalLabel">Xác
                                                     nhận
-                                                    đăng ký</h5>
+                                                    đề xuất</h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                     aria-label="Đóng"></button>
                                             </div>
@@ -124,7 +124,7 @@
                                 </div>
                             </form>
                         </div>
-                    {{-- @endif --}}
+                    @endif
                 </div>
             </div>
         </div>

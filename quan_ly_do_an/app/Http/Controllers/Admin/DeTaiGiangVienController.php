@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Jobs\SendEmailJob;
+use App\Mail\TuChoiDeTaiMail;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
@@ -12,6 +14,8 @@ use App\Models\{
     DeTaiSinhVien,
     GiangVienDeTaiGV
 };
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Validator;
 
 class DeTaiGiangVienController extends Controller
 {
@@ -85,7 +89,7 @@ class DeTaiGiangVienController extends Controller
         $deTaiGV = DeTaiGiangVien::where('ma_de_tai', $ma_de_tai)->firstOrFail();
 
         $tenDeTaiMoi = $deTaiGV->ten_de_tai;
-        
+
         $tatCaDeTaiGV = DeTaiGiangVien::where('ma_de_tai', '!=', $ma_de_tai)->where('so_luong_sv_dang_ky', '>=', 1)->where([
             'trang_thai' => 2,
             'da_huy' => 0
@@ -136,10 +140,40 @@ class DeTaiGiangVienController extends Controller
         }
 
         $data = $request->input('DeTai', []);
+        $lyDoTuChoi = $request->input('lyDoTuChoi');
+
+        $validator = Validator::make(
+            ['lyDoTuChoi' => $lyDoTuChoi],  
+            [
+                'lyDoTuChoi' => 'required',  
+            ],
+            [
+                'lyDoTuChoi.required' => 'Lý do từ chối không được để trống.',
+            ]
+        );
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()->toArray(),
+            ]);
+        }
 
         $deTaiGV = DeTaiGiangVien::where('ma_de_tai', $data['ma_de_tai'])->first();
         $deTaiGV->trang_thai = 0;
         $deTaiGV->save();
+        
+        $ngayDuaRa = $deTaiGV->ngayDuaRa->ngay_dua_ra;
+
+        foreach ($deTaiGV->giangViens as $giangVien) {
+            if ($giangVien && $giangVien->email) {
+                $emailList[] = $giangVien->email;
+            }
+        }
+
+        if(!empty($emailList)) {
+            SendEmailJob::dispatch($emailList, $deTaiGV, $ngayDuaRa, $lyDoTuChoi);
+        }
 
         return response()->json(['success' => true]);
     }

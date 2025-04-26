@@ -261,7 +261,6 @@
                             });
                         } else {
                             $.each(result.errors, function(field, messages) {
-                                console.log(result);
                                 let inputField = $("[name='HoiDong[" + field + "]']");
                                 inputField.addClass("is-invalid");
                                 $('.error-' + field).text(messages[0]).removeClass(

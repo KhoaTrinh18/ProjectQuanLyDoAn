@@ -35,6 +35,11 @@ Route::middleware([KiemTraDangNhap::class. ':sinhvien'])->group(function () {
     Route::get('/thong-tin-de-tai/huy', function () {
         return redirect()->back()->with('error', 'Sai đường dẫn');
     });
+    Route::get('/thong-tin-de-tai/sua/{ma_de_tai}', [ThongTinDeTaiController::class, 'sua'])->name('thong_tin_de_tai.sua');
+    Route::post('/thong-tin-de-tai/xacNhanSua', [ThongTinDeTaiController::class, 'xacNhanSua'])->name('thong_tin_de_tai.xac_nhan_sua');
+    Route::get('/thong-tin-de-tai/xacNhanSua', function () {
+        return redirect()->back()->with('error', 'Sai đường dẫn');
+    });
     Route::get('/thong-tin-de-tai/danh-sach-de-tai-huy', [ThongTinDeTaiController::class, 'danhSachDeTaiHuy'])->name('thong_tin_de_tai.danh_sach_de_tai_huy');
     Route::get('/thong-tin-de-tai/chi-tiet-de-tai-huy/{ma_de_tai}', [ThongTinDeTaiController::class, 'chiTietDeTaiHuy'])->name('thong_tin_de_tai.chi_tiet_de_tai_huy');
     Route::post('/thong-tin-de-tai/xac-nhan-de-xuat', [ThongTinDeTaiController::class, 'xacNhanDeXuat'])->name('thong_tin_de_tai.xac_nhan_de_xuat');

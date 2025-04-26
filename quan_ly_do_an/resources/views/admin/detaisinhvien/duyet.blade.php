@@ -50,7 +50,23 @@
                                                 aria-label="Đóng"></button>
                                         </div>
                                         <div class="modal-body text-center fs-5 text-secondary">
-                                            Bạn có chắc chắn không muốn duyệt đề tài này?
+                                            <p>Bạn có chắc chắn không muốn duyệt đề tài này?</p>
+                                            <div class="mt-3 text-start">
+                                                <label class="form-label fw-semibold">Chọn lý do từ chối:</label>
+                                                <select class="form-select" id="lyDoTuChoi" name="lyDoTuChoi">
+                                                    <option value="">-- Chọn lý do --</option>
+                                                    <option value="Trùng nội dung với đề tài khác">Trùng nội dung với đề tài
+                                                        khác</option>
+                                                    <option value="Không phù hợp với định hướng nghiên cứu">Không phù hợp
+                                                        với định hướng nghiên cứu</option>
+                                                    <option value="Thiếu tính thực tiễn">Thiếu tính thực tiễn</option>
+                                                    <option value="khac">Lý do khác</option>
+                                                </select>
+
+                                                <textarea class="form-control mt-3" id="lyDoKhac" rows="3" placeholder="Nhập lý do cụ thể..."
+                                                    style="display: none;"></textarea>
+                                                <span class="error-message text-danger d-none mt-2 error-lyDoTuChoi"></span>
+                                            </div>
                                         </div>
                                         <div class="modal-footer bg-light border-top-0">
                                             <button type="button" class="btn btn-secondary"
@@ -150,15 +166,24 @@
                     },
                 });
             });
+
+            $('#lyDoTuChoi').on('change', function() {
+                $('#lyDoKhac').toggle(this.value === 'khac');
+            });
+
             $("#khongDuyet").click(function(event) {
                 event.preventDefault();
 
                 let form = $("#form_duyet").get(0);
                 let formData = new FormData(form);
 
+                let selectedLyDo = $('#lyDoTuChoi').val();
+                let lyDoFinal = (selectedLyDo === 'khac') ? $('#lyDoKhac').val().trim() : selectedLyDo;
+
+                formData.append('lyDoTuChoi', lyDoFinal);
+
                 $(".error-message").text('').removeClass(
                     "d-block").addClass("d-none");
-                $(".is-invalid").removeClass("is-invalid");
 
                 $.ajax({
                     url: "{{ route('de_tai_sinh_vien.xac_nhan_khong_duyet') }}",
@@ -181,6 +206,11 @@
                             }).then(() => {
                                 window.location.href =
                                     "{{ route('de_tai_sinh_vien.danh_sach') }}";
+                            });
+                        } else {
+                            $.each(result.errors, function(field, messages) {
+                                $('.error-' + field).text(messages[0]).removeClass(
+                                    "d-none").addClass("d-block");
                             });
                         }
                     },

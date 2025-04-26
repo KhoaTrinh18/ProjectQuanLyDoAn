@@ -54,7 +54,7 @@
                             Thông tin
                         </li>
                         <li
-                            class="sidebar-item {{ request()->is('thong-tin-de-tai/thong-tin') || request()->is('thong-tin-de-tai/chi-tiet') ? 'active' : '' }}">
+                            class="sidebar-item {{ request()->is('thong-tin-de-tai/thong-tin') || request()->is('thong-tin-de-tai/chi-tiet') || request()->is('thong-tin-de-tai/sua*')  ? 'active' : '' }}">
                             <a class="sidebar-link" href="{{ route('thong_tin_de_tai.thong_tin') }}">
                                 <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Đề
                                     tài
