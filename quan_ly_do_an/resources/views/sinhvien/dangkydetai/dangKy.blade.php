@@ -101,7 +101,7 @@
                 $(".is-invalid").removeClass("is-invalid");
 
                 $.ajax({
-                    url: "{{ route('thong_tin_de_tai.thong_tin') }}",
+                    url: "{{ route('dang_ky_de_tai.xac_nhan_dang_ky') }}",
                     type: "POST",
                     data: formData,
                     contentType: false,
@@ -120,7 +120,7 @@
                                 showConfirmButton: false
                             }).then(() => {
                                 window.location.href =
-                                    "{{ route('dang_ky_de_tai.danh_sach') }}";
+                                    "{{ route('thong_tin_de_tai.thong_tin') }}";
                             });
                         }
                     },

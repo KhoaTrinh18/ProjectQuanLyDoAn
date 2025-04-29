@@ -25,7 +25,7 @@ class HoiDongController extends Controller
 
         $hoiDongs = HoiDong::where('da_huy', 0)->orderBy('ma_hoi_dong', 'desc')->paginate($limit);
         $thietLaps = ThietLap::orderBy('ma_thiet_lap', 'desc')->get();
-        $chuyenNganhs = BoMon::orderBy('ma_bo_mon', 'desc')->get();
+        $chuyenNganhs = BoMon::where('da_huy', 0)->orderBy('ma_bo_mon', 'desc')->get();
 
         return view('admin.hoidong.danhSach', compact('hoiDongs', 'thietLaps', 'chuyenNganhs'));
     }
@@ -67,7 +67,7 @@ class HoiDongController extends Controller
 
     public function them()
     {
-        $chuyenNganhs = BoMon::with('giangViens')->orderBy('ma_bo_mon', 'desc')->get();
+        $chuyenNganhs = BoMon::where('da_huy', 0)->with('giangViens')->orderBy('ma_bo_mon', 'desc')->get();
         return view('admin.hoidong.them', compact('chuyenNganhs'));
     }
 
@@ -182,7 +182,7 @@ class HoiDongController extends Controller
     public function sua($ma_hoi_dong)
     {
         $hoiDong = HoiDong::where('ma_hoi_dong', $ma_hoi_dong)->firstOrFail();
-        $chuyenNganhs = BoMon::orderBy('ma_bo_mon', 'desc')->get();
+        $chuyenNganhs = BoMon::where('da_huy', 0)->orderBy('ma_bo_mon', 'desc')->get();
 
         return view('admin.hoidong.sua', compact('hoiDong', 'chuyenNganhs'));
     }
@@ -247,46 +247,39 @@ class HoiDongController extends Controller
         }
 
         try {
-            if (BangDiemGVTHDChoSVDK::where('ma_hoi_dong', $data['ma_hoi_dong'])->exists() || BangDiemGVTHDChoSVDX::where('ma_hoi_dong', $data['ma_hoi_dong'])->exists()) {
-                return response()->json([
-                    'success' => false,
-                    'errors' => [],
-                ]);
-            } else {
-                HoiDong::where('ma_hoi_dong', $data['ma_hoi_dong'])->update([
-                    'ten_hoi_dong' => $data['ten_hoi_dong'],
-                    'ma_bo_mon' => $data['chuyen_nganh'],
-                    'phong' => $data['phong'],
-                    'ngay' => Carbon::createFromFormat('H:i d-m-Y', $data['ngay'])
-                ]);
+            HoiDong::where('ma_hoi_dong', $data['ma_hoi_dong'])->update([
+                'ten_hoi_dong' => $data['ten_hoi_dong'],
+                'ma_bo_mon' => $data['chuyen_nganh'],
+                'phong' => $data['phong'],
+                'ngay' => Carbon::createFromFormat('H:i d-m-Y', $data['ngay'])
+            ]);
 
-                HoiDongGiangVien::where('ma_hoi_dong', $data['ma_hoi_dong'])->delete();
+            HoiDongGiangVien::where('ma_hoi_dong', $data['ma_hoi_dong'])->delete();
 
+            $GV_HD = new HoiDongGiangVien();
+            $GV_HD->ma_hoi_dong = $data['ma_hoi_dong'];
+            $GV_HD->ma_gv = $data['chu_tich'];
+            $GV_HD->chuc_vu = "Chủ tịch";
+            $GV_HD->save();
+
+            $GV_HD = new HoiDongGiangVien();
+            $GV_HD->ma_hoi_dong = $data['ma_hoi_dong'];
+            $GV_HD->ma_gv = $data['thu_ky'];
+            $GV_HD->chuc_vu = "Thư ký";
+            $GV_HD->save();
+
+            foreach ($data['uy_vien'] as $uy_vien) {
                 $GV_HD = new HoiDongGiangVien();
                 $GV_HD->ma_hoi_dong = $data['ma_hoi_dong'];
-                $GV_HD->ma_gv = $data['chu_tich'];
-                $GV_HD->chuc_vu = "Chủ tịch";
+                $GV_HD->ma_gv = $uy_vien;
+                $GV_HD->chuc_vu = "Ủy viên";
                 $GV_HD->save();
-
-                $GV_HD = new HoiDongGiangVien();
-                $GV_HD->ma_hoi_dong = $data['ma_hoi_dong'];
-                $GV_HD->ma_gv = $data['thu_ky'];
-                $GV_HD->chuc_vu = "Thư ký";
-                $GV_HD->save();
-
-                foreach ($data['uy_vien'] as $uy_vien) {
-                    $GV_HD = new HoiDongGiangVien();
-                    $GV_HD->ma_hoi_dong = $data['ma_hoi_dong'];
-                    $GV_HD->ma_gv = $uy_vien;
-                    $GV_HD->chuc_vu = "Ủy viên";
-                    $GV_HD->save();
-                }
-
-                return response()->json([
-                    'success' => true,
-                    'errors' => [],
-                ]);
             }
+
+            return response()->json([
+                'success' => true,
+                'errors' => [],
+            ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
@@ -314,7 +307,6 @@ class HoiDongController extends Controller
                 'success' => false
             ]);
         } else {
-
             $hoiDong = HoiDong::where('ma_hoi_dong', $ma_hoi_dong)->first();
             $hoiDong->da_huy = 1;
             $hoiDong->save();

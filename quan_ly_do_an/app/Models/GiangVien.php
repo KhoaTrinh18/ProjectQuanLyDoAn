@@ -23,6 +23,11 @@ class GiangVien extends Model
         return $this->belongsTo(BoMon::class, 'ma_bo_mon', 'ma_bo_mon');
     }
 
+    public function taiKhoan()
+    {
+        return $this->belongsTo(TaiKhoanGV::class, 'ma_tk', 'ma_tk');
+    }
+
     public function deTais()
     {
         return $this->belongsToMany(DeTaiGiangVien::class, 'giang_vien_de_tai_gv', 'ma_gv', 'ma_de_tai');

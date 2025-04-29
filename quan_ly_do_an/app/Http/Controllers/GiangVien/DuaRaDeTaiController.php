@@ -39,7 +39,7 @@ class DuaRaDeTaiController extends Controller
     public function duaRa()
     {
         $linhVucs = LinhVuc::orderBy('ma_linh_vuc', 'desc')->get();
-        $chuyenNganhs = BoMon::with('giangViens')->orderBy('ma_bo_mon', 'desc')->get();
+        $chuyenNganhs = BoMon::where('da_huy', 0)->with('giangViens')->orderBy('ma_bo_mon', 'desc')->get();
 
         return view('giangvien.duaradetai.duaRa', compact('linhVucs', 'chuyenNganhs'));
     }
@@ -133,7 +133,7 @@ class DuaRaDeTaiController extends Controller
     {
         $linhVucs = LinhVuc::orderBy('ma_linh_vuc', 'desc')->get();
         $deTai = DeTaiGiangVien::where('ma_de_tai', $ma_de_tai)->firstOrFail();
-        $chuyenNganhs = BoMon::with('giangViens')->orderBy('ma_bo_mon', 'desc')->get();
+        $chuyenNganhs = BoMon::where('da_huy', 0)->with('giangViens')->orderBy('ma_bo_mon', 'desc')->get();
 
         $maTaiKhoan = session()->get('ma_tai_khoan');
         $giangVien = GiangVien::where('ma_tk', $maTaiKhoan)->first();

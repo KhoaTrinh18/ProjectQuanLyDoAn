@@ -47,11 +47,12 @@
                                             <div class="modal-header bg-light border-bottom-0">
                                                 <h5 class="modal-title fw-semibold text-primary" id="confirmModalLabel">Xác
                                                     nhận
-                                                    không duyệt</h5>
+                                                    hủy đăng ký</h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                     aria-label="Đóng"></button>
                                             </div>
-                                            <div class="modal-body fs-5 text-secondary" > Bạn có chắc muốn hủy đăng ký của sinh viên
+                                            <div class="modal-body fs-5 text-secondary"> Bạn có chắc muốn hủy đăng ký của
+                                                sinh viên
                                                 {{ $deTai->sinhViens->first()->ho_ten }}
                                             </div>
                                             <div class="modal-footer  bg-light border-top-0">
@@ -87,22 +88,22 @@
 
                             <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel"
                                 aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title">Xác nhận hủy đăng ký</h5>
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content rounded-4 shadow-sm border-0">
+                                        <div class="modal-header bg-light border-bottom-0">
+                                            <h5 class="modal-title fw-semibold text-primary" id="confirmModalLabel">Xác
+                                                nhận
+                                                hủy đăng ký</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
+                                                aria-label="Đóng"></button>
                                         </div>
-                                        <div class="modal-body">
-                                            Bạn có chắc muốn hủy đăng ký của sinh viên <strong
-                                                id="modalStudentName"></strong>?
+                                        <div class="modal-body fs-5 text-secondary"> Bạn có chắc muốn hủy đăng ký của
+                                            sinh viên<strong id="modalStudentName"></strong>?
                                         </div>
-                                        <div class="modal-footer">
+                                        <div class="modal-footer bg-light border-top-0">
                                             <button type="button" class="btn btn-secondary"
                                                 data-bs-dismiss="modal">Hủy</button>
                                             <form id="form_huy_sv">
-                                                @csrf
                                                 <input type="hidden" name="ma_sv" id="modalMaSV">
                                                 <input type="hidden" name="ma_de_tai" value="{{ $deTai->ma_de_tai }}">
                                                 <button type="submit" class="btn btn-primary">Xác nhận</button>
@@ -162,7 +163,7 @@
                                 showConfirmButton: false
                             }).then(() => {
                                 window.location.href =
-                                "{{ route('thong_tin_de_tai.danh_sach_duyet') }}";
+                                    "{{ route('thong_tin_de_tai.danh_sach_duyet') }}";
                             });
                         }
                     },

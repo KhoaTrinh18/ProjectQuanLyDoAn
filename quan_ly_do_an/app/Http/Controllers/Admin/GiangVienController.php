@@ -8,16 +8,18 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use App\Models\{
-    BangDiemGVTHDChoSVDK,
-    BangDiemGVTHDChoSVDX,
+    BangDiemGVPBChoSVDK,
+    BangDiemGVPBChoSVDX,
+    BangPhanCongSVDK,
+    BangPhanCongSVDX,
     BoMon,
     GiangVien,
+    GiangVienDeTaiGV,
     HocVi,
-    HoiDong,
     HoiDongGiangVien,
-    TaiKhoanGV,
-    ThietLap
+    TaiKhoanGV
 };
+use Illuminate\Validation\Rule;
 
 class GiangVienController extends Controller
 {
@@ -27,7 +29,7 @@ class GiangVienController extends Controller
 
         $giangViens = GiangVien::where('da_huy', 0)->orderBy('ma_gv', 'desc')->paginate($limit);
         $hocVis = HocVi::orderBy('ma_hoc_vi', 'desc')->get();
-        $boMons = BoMon::orderBy('ma_bo_mon', 'desc')->get();
+        $boMons = BoMon::where('da_huy', 0)->orderBy('ma_bo_mon', 'desc')->get();
 
         return view('admin.giangvien.danhSach', compact('giangViens', 'hocVis', 'boMons'));
     }
@@ -62,7 +64,7 @@ class GiangVienController extends Controller
     public function them()
     {
         $hocVis = HocVi::orderBy('ma_hoc_vi', 'desc')->get();
-        $boMons = BoMon::orderBy('ma_bo_mon', 'desc')->get();
+        $boMons = BoMon::where('da_huy', 0)->orderBy('ma_bo_mon', 'desc')->get();
         return view('admin.giangvien.them', compact('boMons', 'hocVis'));
     }
 
@@ -73,7 +75,6 @@ class GiangVienController extends Controller
         }
 
         $data = $request->input('GiangVien', []);
-        Log::info('giảng viên', $data);
 
         $validator = Validator::make($data, [
             'ten_giang_vien' => [
@@ -100,16 +101,14 @@ class GiangVienController extends Controller
                 'required',
                 'string',
                 'max:50',
-                'regex:/^[a-zA-Z0-9_]+$/'
+                'regex:/^[a-zA-Z0-9_]+$/',
+                'unique:tai_khoan_gv,ten_tk',
             ],
             'mat_khau' => [
                 'required',
                 'string',
                 'regex:/^[\x20-\x7E]+$/'
-            ],
-            'loai_tk' => [
-                'required'
-            ],
+            ]
         ], [
             'ten_giang_vien.required' => 'Tên giảng viên không được để trống.',
             'ten_giang_vien.string' => 'Tên giảng viên phải là chuỗi ký tự.',
@@ -130,12 +129,11 @@ class GiangVienController extends Controller
             'ten_tk.string' => 'Tên tài khoản phải là chuỗi.',
             'ten_tk.max' => 'Tên tài khoản không được vượt quá 50 ký tự.',
             'ten_tk.regex' => 'Tên tài khoản chỉ được chứa chữ cái, số và dấu gạch dưới (_).',
-        
+            'ten_tk.unique' => 'Tên tài khoản đã tồn tại.',
+
             'mat_khau.required' => 'Mật khẩu không được để trống.',
             'mat_khau.string' => 'Mật khẩu phải là chuỗi.',
             'mat_khau.regex' => 'Mật khẩu không chứa dấu tiếng việt.',
-
-            'loai_tk.required' => 'Loại tài khoản không được để trống.',
         ]);
 
         if ($validator->fails()) {
@@ -149,7 +147,7 @@ class GiangVienController extends Controller
             $taiKhoan = new TaiKhoanGV();
             $taiKhoan->ten_tk = $data['ten_tk'];
             $taiKhoan->mat_khau = $data['mat_khau'];
-            $taiKhoan->loai_tk = $data['loai_tk'];
+            $taiKhoan->loai_tk = 'giang_vien';
             $taiKhoan->save();
 
             $giangVien = new GiangVien();
@@ -173,13 +171,13 @@ class GiangVienController extends Controller
         }
     }
 
-    public function sua($ma_hoi_dong)
+    public function sua($ma_gv)
     {
-        $hoiDong = HoiDong::where('ma_hoi_dong', $ma_hoi_dong)->firstOrFail();
-        $giangViens = GiangVien::get();
-        $chuyenNganhs = BoMon::orderBy('ma_bo_mon', 'desc')->get();
+        $giangVien = GiangVien::where('ma_gv', $ma_gv)->firstOrFail();
+        $hocVis = HocVi::orderBy('ma_hoc_vi', 'desc')->get();
+        $boMons = BoMon::where('da_huy', 0)->orderBy('ma_bo_mon', 'desc')->get();
 
-        return view('admin.hoidong.sua', compact('hoiDong', 'giangViens', 'chuyenNganhs'));
+        return view('admin.giangvien.sua', compact('giangVien', 'boMons', 'hocVis'));
     }
 
     public function xacNhanSua(Request $request)
@@ -188,52 +186,69 @@ class GiangVienController extends Controller
             return redirect()->back()->with('error', 'Bạn không thể truy cập trực tiếp trang này!');
         }
 
-        $data = $request->input('HoiDong', []);
+        $data = $request->input('GiangVien', []);
+        $giangVien = GiangVien::where('ma_gv', $data['ma_gv'])->first();
 
         $validator = Validator::make($data, [
-            'ten_hoi_dong' => [
+            'ten_giang_vien' => [
                 'required',
                 'string',
                 'max:255',
+                'regex:/^[\p{L}\s]+$/u'
             ],
-            'phong' => [
+            'email' => [
+                'required',
+                'regex:/^[\w\.-]+@[\w\.-]+\.\w{2,4}$/'
+            ],
+            'so_dien_thoai' => [
+                'required',
+                'regex:/^(0|\+84)[0-9]{9}$/'
+            ],
+            'bo_mon' => [
                 'required'
             ],
-            'ngay' => [
+            'hoc_vi' => [
                 'required'
             ],
-            'chu_tich' => [
-                'required'
+            'ten_tk' => [
+                'required',
+                'string',
+                'max:50',
+                'regex:/^[a-zA-Z0-9_]+$/',
+                Rule::unique('tai_khoan_gv', 'ten_tk')->ignore($giangVien->taiKhoan->ma_tk, 'ma_tk')
             ],
-            'thu_ky' => [
-                'required'
-            ],
-            'uy_vien.*' => [
-                'sometimes'
+            'mat_khau' => [
+                'required',
+                'string',
+                'regex:/^[\x20-\x7E]+$/'
             ]
         ], [
-            'ten_hoi_dong.required' => 'Tên hội đồng không được để trống.',
-            'ten_hoi_dong.string' => 'Tên hội đồng phải là chuỗi ký tự.',
-            'ten_hoi_dong.max' => 'Tên hội đồng không được vượt quá 255 ký tự.',
+            'ten_giang_vien.required' => 'Tên giảng viên không được để trống.',
+            'ten_giang_vien.string' => 'Tên giảng viên phải là chuỗi ký tự.',
+            'ten_giang_vien.max' => 'Tên giảng viên không được vượt quá 255 ký tự.',
+            'ten_giang_vien.regex' => 'Tên giảng viên chỉ được chứa chữ cái và khoảng trắng, không chứa số hoặc ký tự đặc biệt.',
 
-            'phong.required' => 'Phòng không được để trống.',
+            'email.required' => 'Email không được để trống.',
+            'email.regex' => 'Email không đúng định dạng.',
 
-            'ngay.required' => 'Ngày tổ chức không được để trống.',
+            'so_dien_thoai.required' => 'Số điện thoại không được để trống.',
+            'so_dien_thoai.regex' => 'Số điện thoại không đúng định dạng.',
 
-            'chu_tich.required' => 'Bạn phải chọn ít nhất một giảng viên.',
+            'bo_mon.required' => 'Bộ môn không được để trống.',
 
-            'thu_ky.required' => 'Bạn phải chọn ít nhất một giảng viên.',
+            'hoc_vi.required' => 'Học vị không được để trống.',
+
+            'ten_tk.required' => 'Tên tài khoản không được để trống.',
+            'ten_tk.string' => 'Tên tài khoản phải là chuỗi.',
+            'ten_tk.max' => 'Tên tài khoản không được vượt quá 50 ký tự.',
+            'ten_tk.regex' => 'Tên tài khoản chỉ được chứa chữ cái, số và dấu gạch dưới (_).',
+            'ten_tk.unique' => 'Tên tài khoản đã tồn tại.',
+
+            'mat_khau.required' => 'Mật khẩu không được để trống.',
+            'mat_khau.string' => 'Mật khẩu phải là chuỗi.',
+            'mat_khau.regex' => 'Mật khẩu không chứa dấu tiếng việt.',
         ]);
-        $uyVienList = [];
-        $validator->after(function ($validator) use ($request, &$uyVienList) {
-            $uyVienList = array_filter($request->input('HoiDong', [])['uy_vien'], function ($value) {
-                return trim(strip_tags($value)) !== "";
-            });
 
-            if (empty($uyVienList)) {
-                $validator->errors()->add('uy_vien', 'Bạn phải chọn ít nhất một giảng viên.');
-            }
-        });
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
@@ -242,46 +257,23 @@ class GiangVienController extends Controller
         }
 
         try {
-            if (BangDiemGVTHDChoSVDK::where('ma_hoi_dong', $data['ma_hoi_dong'])->exists() || BangDiemGVTHDChoSVDX::where('ma_hoi_dong', $data['ma_hoi_dong'])->exists()) {
-                return response()->json([
-                    'success' => false,
-                    'errors' => [],
-                ]);
-            } else {
-                HoiDong::where('ma_hoi_dong', $data['ma_hoi_dong'])->update([
-                    'ten_hoi_dong' => $data['ten_hoi_dong'],
-                    'ma_bo_mon' => $data['chuyen_nganh'],
-                    'phong' => $data['phong'],
-                    'ngay' => Carbon::createFromFormat('H:i d-m-Y', $data['ngay'])
-                ]);
+            TaiKhoanGV::where('ma_tk', $giangVien->taiKhoan->ma_tk)->update([
+                'ten_tk' => $data['ten_tk'],
+                'mat_khau' => $data['mat_khau'],
+            ]);
 
-                HoiDongGiangVien::where('ma_hoi_dong', $data['ma_hoi_dong'])->delete();
+            GiangVien::where('ma_gv', $data['ma_gv'])->update([
+                'ho_ten' => $data['ten_giang_vien'],
+                'email' => $data['email'],
+                'so_dien_thoai' => $data['so_dien_thoai'],
+                'ma_bo_mon' => $data['bo_mon'],
+                'ma_hoc_vi' => $data['hoc_vi']
+            ]);
 
-                $GV_HD = new HoiDongGiangVien();
-                $GV_HD->ma_hoi_dong = $data['ma_hoi_dong'];
-                $GV_HD->ma_gv = $data['chu_tich'];
-                $GV_HD->chuc_vu = "Chủ tịch";
-                $GV_HD->save();
-
-                $GV_HD = new HoiDongGiangVien();
-                $GV_HD->ma_hoi_dong = $data['ma_hoi_dong'];
-                $GV_HD->ma_gv = $data['thu_ky'];
-                $GV_HD->chuc_vu = "Thư ký";
-                $GV_HD->save();
-
-                foreach ($data['uy_vien'] as $uy_vien) {
-                    $GV_HD = new HoiDongGiangVien();
-                    $GV_HD->ma_hoi_dong = $data['ma_hoi_dong'];
-                    $GV_HD->ma_gv = $uy_vien;
-                    $GV_HD->chuc_vu = "Ủy viên";
-                    $GV_HD->save();
-                }
-
-                return response()->json([
-                    'success' => true,
-                    'errors' => [],
-                ]);
-            }
+            return response()->json([
+                'success' => true,
+                'errors' => [],
+            ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
@@ -290,10 +282,13 @@ class GiangVienController extends Controller
         }
     }
 
-    public function huy($ma_hoi_dong)
+    public function huy($ma_gv)
     {
-        $hoiDong = HoiDong::where('ma_hoi_dong', $ma_hoi_dong)->firstOrFail();
-        return view('admin.hoidong.huy', compact('hoiDong'));
+        $giangVien = GiangVien::where('ma_gv', $ma_gv)->firstOrFail();
+        $hocVis = HocVi::orderBy('ma_hoc_vi', 'desc')->get();
+        $boMons = BoMon::where('da_huy', 0)->orderBy('ma_bo_mon', 'desc')->get();
+
+        return view('admin.giangvien.huy', compact('giangVien', 'boMons', 'hocVis'));
     }
 
     public function xacNhanHuy(Request $request)
@@ -302,19 +297,32 @@ class GiangVienController extends Controller
             return redirect()->back()->with('error', 'Bạn không thể truy cập trực tiếp trang này!');
         }
 
-        $ma_hoi_dong = $request->input('ma_hoi_dong');
+        $ma_gv = $request->input('ma_gv');
 
-        if (BangDiemGVTHDChoSVDK::where('ma_hoi_dong', $ma_hoi_dong)->exists() || BangDiemGVTHDChoSVDX::where('ma_hoi_dong', $ma_hoi_dong)->exists()) {
+        if (GiangVienDeTaiGV::where('ma_gv', $ma_gv)->exists()) {
             return response()->json([
-                'success' => false
+                'success' => false,
+                'error' => 'dua_ra'
+            ]);
+        } else if (BangPhanCongSVDK::where('ma_gvhd', $ma_gv)->exists() || BangPhanCongSVDX::where('ma_gvhd', $ma_gv)->exists()) {
+            return response()->json([
+                'success' => false,
+                'error' => 'phan_cong_huong_dan'
+            ]);
+        } else if (BangDiemGVPBChoSVDK::where('ma_gvpb', $ma_gv)->exists() || BangDiemGVPBChoSVDX::where('ma_gvpb', $ma_gv)->exists()) {
+            return response()->json([
+                'success' => false,
+                'error' => 'phan_cong_phan_bien'
+            ]);
+        } else if (HoiDongGiangVien::where('ma_gv', $ma_gv)->exists()) {
+            return response()->json([
+                'success' => false,
+                'error' => 'phan_cong_hoi_dong'
             ]);
         } else {
-
-            $hoiDong = HoiDong::where('ma_hoi_dong', $ma_hoi_dong)->first();
-            $hoiDong->da_huy = 1;
-            $hoiDong->save();
-
-            HoiDongGiangVien::where('ma_hoi_dong', $ma_hoi_dong)->delete();
+            $giangVien = GiangVien::where('ma_gv', $ma_gv)->first();
+            $giangVien->da_huy = 1;
+            $giangVien->save();
 
             return response()->json([
                 'success' => true,

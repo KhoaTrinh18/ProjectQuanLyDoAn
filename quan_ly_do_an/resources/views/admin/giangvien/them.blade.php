@@ -20,7 +20,7 @@
                                 <div class="ms-2 w-100">
                                     <input type="text" class="form-control form-control-lg shadow-none"
                                         placeholder="Nhập tên giảng viên" name="GiangVien[ten_giang_vien]"
-                                        style="width: 250px">
+                                        style="width: 280px">
                                     <span class="error-message text-danger d-none mt-2 error-ten_giang_vien"></span>
                                 </div>
                             </div>
@@ -32,7 +32,7 @@
                                 </label>
                                 <div class="ms-2 w-100">
                                     <input type="text" class="form-control form-control-lg shadow-none"
-                                        placeholder="Nhập email" name="GiangVien[email]" style="width: 250px">
+                                        placeholder="Nhập email" name="GiangVien[email]" style="width: 280px">
                                     <span class="error-message text-danger d-none mt-2 error-email"></span>
                                 </div>
                             </div>
@@ -45,7 +45,7 @@
                                 <div class="ms-2 w-100">
                                     <input type="text" class="form-control form-control-lg shadow-none"
                                         placeholder="Nhập số điện thoại" name="GiangVien[so_dien_thoai]"
-                                        style="width: 250px">
+                                        style="width: 280px">
                                     <span class="error-message text-danger d-none mt-2 error-so_dien_thoai"></span>
                                 </div>
                             </div>
@@ -57,7 +57,7 @@
                                 </label>
                                 <div class="ms-2 w-100">
                                     <select class="form-select form-select-lg shadow-none" name="GiangVien[bo_mon]"
-                                        style="width: 250px">
+                                        style="width: 280px">
                                         <option value="" selected hidden disabled>Chọn bộ môn</option>
                                         @foreach ($boMons as $boMon)
                                             <option value="{{ $boMon->ma_bo_mon }}">{{ $boMon->ten_bo_mon }}
@@ -75,7 +75,7 @@
                                 </label>
                                 <div class="ms-2 w-100">
                                     <select class="form-select form-select-lg shadow-none" name="GiangVien[hoc_vi]"
-                                        style="width: 250px">
+                                        style="width: 280px">
                                         <option value="" selected hidden disabled>Chọn học vị</option>
                                         @foreach ($hocVis as $hocVi)
                                             <option value="{{ $hocVi->ma_hoc_vi }}">{{ $hocVi->ten_hoc_vi }}
@@ -93,7 +93,7 @@
                                 </label>
                                 <div class="ms-2 w-100">
                                     <input type="text" class="form-control form-control-lg shadow-none"
-                                        placeholder="Nhập tên tài khoản" name="GiangVien[ten_tk]" style="width: 250px">
+                                        placeholder="Nhập tên tài khoản" name="GiangVien[ten_tk]" style="width: 280px">
                                     <span class="error-message text-danger d-none mt-2 error-ten_tk"></span>
                                 </div>
                             </div>
@@ -105,24 +105,8 @@
                                 </label>
                                 <div class="ms-2 w-100">
                                     <input type="text" class="form-control form-control-lg shadow-none"
-                                        placeholder="Nhập mật khẩu" name="GiangVien[mat_khau]" style="width: 250px">
+                                        placeholder="Nhập mật khẩu" name="GiangVien[mat_khau]" style="width: 280px">
                                     <span class="error-message text-danger d-none mt-2 error-mat_khau"></span>
-                                </div>
-                            </div>
-                            <div class="d-flex mb-3">
-                                <label for="GiangVien[loai_tk]"
-                                    class="p-2 d-flex align-items-center justify-content-center text-white rounded bg-secondary"
-                                    style="width: 250px">
-                                    Loại tài khoản
-                                </label>
-                                <div class="ms-2 w-100">
-                                    <select class="form-select form-select-lg shadow-none" name="GiangVien[loai_tk]"
-                                        style="width: 250px">
-                                        <option value="" selected hidden disabled>Loại tài khoản</option>
-                                        <option value="admin">Admin</option>
-                                        <option value="giang_vien">Giảng viên</option>
-                                    </select>
-                                    <span class="error-message text-danger d-none mt-2 error-loai_tk"></span>
                                 </div>
                             </div>
                             <div class="text-center">
@@ -195,47 +179,6 @@
                     }
                 });
             });
-
-            const element = document.getElementById('datetimepicker');
-            if (element) {
-                new tempusDominus.TempusDominus(element, {
-                    display: {
-                        components: {
-                            calendar: true,
-                            date: true,
-                            month: true,
-                            year: true,
-                            decades: true,
-                            clock: true,
-                            hours: true,
-                            minutes: true,
-                            seconds: false
-                        },
-                        icons: {
-                            time: 'bi bi-clock',
-                            date: 'bi bi-calendar',
-                            up: 'bi bi-chevron-up',
-                            down: 'bi bi-chevron-down',
-                            previous: 'bi bi-chevron-left',
-                            next: 'bi bi-chevron-right',
-                            today: 'bi bi-calendar-check',
-                            clear: 'bi bi-trash',
-                            close: 'bi bi-x-circle'
-                        },
-                        buttons: {
-                            today: true,
-                            clear: true,
-                            close: true
-                        },
-                    },
-                    localization: {
-                        locale: 'vi',
-                        format: 'HH:mm dd-MM-yyyy'
-                    },
-                    useCurrent: false,
-                });
-            }
-
         });
     </script>
 @endsection

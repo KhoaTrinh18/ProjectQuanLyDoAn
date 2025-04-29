@@ -45,12 +45,12 @@
             <thead style="background: #222e3c;">
                 <tr>
                     <th scope="col" class="text-white">#</th>
-                    <th scope="col" class="text-white" style="width: 20%">Tên giảng viên</th>
+                    <th scope="col" class="text-white">Tên giảng viên</th>
                     <th scope="col" class="text-white">Email</th>
                     <th scope="col" class="text-white">Số điện thoại</th>
                     <th scope="col" class="text-white">Bộ môn</th>
                     <th scope="col" class="text-white">Học vị</th>
-                    <th scope="col" class="text-white" style="width: 15%"></th>
+                    <th scope="col" class="text-white" style="width: 13%"></th>
                 </tr>
             </thead>
             <tbody id="table-body">

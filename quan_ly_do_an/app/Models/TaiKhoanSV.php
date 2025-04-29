@@ -10,6 +10,6 @@ class TaiKhoanSV extends Model
     use HasFactory;
 
     protected $table = 'tai_khoan_sv';
-    protected $primaryKey = 'ma_lai_khoan';
+    protected $primaryKey = 'ma_tk';
     public $timestamps = false;
 }

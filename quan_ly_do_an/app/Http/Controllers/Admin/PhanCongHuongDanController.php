@@ -38,7 +38,7 @@ class PhanCongHuongDanController extends Controller
             $page,
             ['path' => request()->url(), 'query' => request()->query()]
         );
-        $chuyenNganhs = BoMon::orderBy('ma_bo_mon', 'desc')->get();
+        $chuyenNganhs = BoMon::where('da_huy', 0)->orderBy('ma_bo_mon', 'desc')->get();
 
         return view('admin.phanconghuongdan.danhSach', compact('deTais', 'chuyenNganhs'));
     }

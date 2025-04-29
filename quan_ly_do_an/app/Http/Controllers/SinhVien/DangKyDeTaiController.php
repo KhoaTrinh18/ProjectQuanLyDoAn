@@ -38,7 +38,7 @@ class DangKyDeTaiController extends Controller
         } else {
             $hetHan = 0;
         }
-        $chuyenNganhs = BoMon::orderBy('ma_bo_mon', 'desc')->get();
+        $chuyenNganhs = BoMon::where('da_huy', 0)->orderBy('ma_bo_mon', 'desc')->get();
 
         return view('sinhvien.dangkydetai.danhSach', compact('deTais', 'linhVucs', 'daDangKy', 'hetHan', 'chuyenNganhs'));
     }

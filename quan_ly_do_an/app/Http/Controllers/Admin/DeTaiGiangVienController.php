@@ -25,7 +25,7 @@ class DeTaiGiangVienController extends Controller
         $limit = $request->query('limit', 10);
 
         $deTaiGVs = DeTaiGiangVien::where(['da_huy' => 0])->orderBy('ma_de_tai', 'desc')->paginate($limit);
-        $chuyenNganhs = BoMon::orderBy('ma_bo_mon', 'desc')->get();
+        $chuyenNganhs = BoMon::where('da_huy', 0)->orderBy('ma_bo_mon', 'desc')->get();
 
         return view('admin.detaigiangvien.danhSach', compact('deTaiGVs', 'chuyenNganhs'));
     }

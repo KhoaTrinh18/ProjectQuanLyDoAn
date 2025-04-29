@@ -41,7 +41,7 @@ class PhanCongPhanBienController extends Controller
             $page,
             ['path' => request()->url(), 'query' => request()->query()]
         );
-        $chuyenNganhs = BoMon::orderBy('ma_bo_mon', 'desc')->get();
+        $chuyenNganhs = BoMon::where('da_huy', 0)->orderBy('ma_bo_mon', 'desc')->get();
 
         return view('admin.phancongphanbien.danhSach', compact('deTais', 'chuyenNganhs'));
     }
@@ -168,7 +168,7 @@ class PhanCongPhanBienController extends Controller
             abort(404, 'Đề tài không tồn tại');
         }
 
-        $chuyenNganhs = BoMon::orderBy('ma_bo_mon', 'desc')->get();
+        $chuyenNganhs = BoMon::where('da_huy', 0)->orderBy('ma_bo_mon', 'desc')->get();
 
         return view('admin.phancongphanbien.phanCong', compact('deTai', 'chuyenNganhs'));
     }
@@ -233,7 +233,7 @@ class PhanCongPhanBienController extends Controller
         if (!$deTai) {
             abort(404, 'Đề tài không tồn tại');
         }
-        $chuyenNganhs = BoMon::orderBy('ma_bo_mon', 'desc')->get();
+        $chuyenNganhs = BoMon::where('da_huy', 0)->orderBy('ma_bo_mon', 'desc')->get();
 
         return view('admin.phancongphanbien.sua', compact('deTai', 'chuyenNganhs'));
     }

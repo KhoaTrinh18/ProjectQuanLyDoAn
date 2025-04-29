@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\{
+    BoMonController,
     ThietLapController,
     DeTaiGiangVienController,
     DeTaiSinhVienController,
@@ -130,6 +131,41 @@ Route::middleware([KiemTraDangNhap::class])->group(function () {
     Route::get('/giang-vien/sua/{ma_gv}', [GiangVienController::class, 'sua'])->name('giang_vien.sua');
     Route::post('/giang-vien/xac-nhan-sua', [GiangVienController::class, 'xacNhanSua'])->name('giang_vien.xac_nhan_sua');
     Route::get('/giang-vien/xac-nhan-sua', function () {
+        return redirect()->back()->with('error', 'Sai đường dẫn');
+    });
+
+    Route::get('/giang-vien/danh-sach', [GiangVienController::class, 'danhSach'])->name('giang_vien.danh_sach');
+    Route::get('/giang-vien/page-ajax', [GiangVienController::class, 'pageAjax'])->name('giang_vien.page_ajax');
+    Route::get('/giang-vien/chi-tiet/{ma_gv}', [GiangVienController::class, 'chiTiet'])->name('giang_vien.chi_tiet');
+    Route::get('/giang-vien/them', [GiangVienController::class, 'them'])->name('giang_vien.them');
+    Route::post('/giang-vien/xac-nhan-them', [GiangVienController::class, 'xacNhanThem'])->name('giang_vien.xac_nhan_them');
+    Route::get('/giang-vien/xac-nhan-them', function () {
+        return redirect()->back()->with('error', 'Sai đường dẫn');
+    });
+    Route::get('/giang-vien/huy/{ma_gv}', [GiangVienController::class, 'huy'])->name('giang_vien.huy');
+    Route::post('/giang-vien/xac-nhan-huy', [GiangVienController::class, 'xacNhanHuy'])->name('giang_vien.xac_nhan_huy');
+    Route::get('/giang-vien/xac-nhan-huy', function () {
+        return redirect()->back()->with('error', 'Sai đường dẫn');
+    });
+    Route::get('/giang-vien/sua/{ma_gv}', [GiangVienController::class, 'sua'])->name('giang_vien.sua');
+    Route::post('/giang-vien/xac-nhan-sua', [GiangVienController::class, 'xacNhanSua'])->name('giang_vien.xac_nhan_sua');
+    Route::get('/giang-vien/xac-nhan-sua', function () {
+        return redirect()->back()->with('error', 'Sai đường dẫn');
+    });
+
+    Route::get('/bo-mon/danh-sach', [BoMonController::class, 'danhSach'])->name('bo_mon.danh_sach');
+    Route::get('/bo-mon/them', [BoMonController::class, 'them'])->name('bo_mon.them');
+    Route::post('/bo-mon/xac-nhan-them', [BoMonController::class, 'xacNhanThem'])->name('bo_mon.xac_nhan_them');
+    Route::get('/bo-mon/xac-nhan-them', function () {
+        return redirect()->back()->with('error', 'Sai đường dẫn');
+    });
+    Route::post('/bo-mon/huy', [BoMonController::class, 'huy'])->name('bo_mon.huy');
+    Route::get('/bo-mon/huy', function () {
+        return redirect()->back()->with('error', 'Sai đường dẫn');
+    });
+    Route::get('/bo-mon/sua/{ma_bo_mon}', [BoMonController::class, 'sua'])->name('bo_mon.sua');
+    Route::post('/bo-mon/xac-nhan-sua', [BoMonController::class, 'xacNhanSua'])->name('bo_mon.xac_nhan_sua');
+    Route::get('/bo-mon/xac-nhan-sua', function () {
         return redirect()->back()->with('error', 'Sai đường dẫn');
     });
 });
