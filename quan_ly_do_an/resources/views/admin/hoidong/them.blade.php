@@ -19,7 +19,7 @@
                                 </label>
                                 <div class="ms-2 w-100">
                                     <input type="text" class="form-control form-control-lg shadow-none"
-                                        placeholder="Nhập tên hội đồng" name="HoiDong[ten_hoi_dong]" style="width: 250px">
+                                        placeholder="Nhập tên hội đồng" name="HoiDong[ten_hoi_dong]" style="width: 280px">
                                     <span class="error-message text-danger d-none mt-2 error-ten_hoi_dong"></span>
                                 </div>
                             </div>
@@ -31,8 +31,8 @@
                                 </label>
                                 <div class="ms-2 w-100">
                                     <select class="form-select form-select-lg shadow-none" name="HoiDong[chuyen_nganh]"
-                                        style="width: 250px">
-                                        <option value="" selected>Chọn chuyên ngành</option>
+                                        style="width: 280px">
+                                        <option value="" selected hidden disabled>Chọn chuyên ngành</option>
                                         @foreach ($chuyenNganhs as $chuyenNganh)
                                             <option value="{{ $chuyenNganh->ma_bo_mon }}">{{ $chuyenNganh->ten_bo_mon }}
                                             </option>
@@ -49,7 +49,7 @@
                                 </label>
                                 <div class="ms-2 w-100">
                                     <input type="text" class="form-control form-control-lg shadow-none"
-                                        placeholder="Nhập phòng" name="HoiDong[phong]" style="width: 250px">
+                                        placeholder="Nhập phòng" name="HoiDong[phong]" style="width: 280px">
                                     <span class="error-message text-danger d-none mt-2 error-phong"></span>
                                 </div>
                             </div>
@@ -61,7 +61,7 @@
                                 </label>
                                 <div class="ms-2 w-100">
                                     <div class="input-group" id="datetimepicker" data-td-target-input="nearest"
-                                        data-td-target="#ngayToChucInput" style="width: 250px">
+                                        data-td-target="#ngayToChucInput" style="width: 280px">
                                         <input type="text" class="form-control form-control-lg shadow-none"
                                             name="HoiDong[ngay]" id="ngayToChucInput" data-td-target="#ngayToChucInput"
                                             readonly />
@@ -81,11 +81,16 @@
                                 </label>
                                 <div class="ms-2 w-100">
                                     <select class="form-select form-select-lg shadow-none" name="HoiDong[chu_tich]"
-                                        style="width: 250px">
-                                        <option value="" selected>Chọn giảng viên</option>
-                                        @foreach ($giangViens as $giangVien)
-                                            <option value="{{ $giangVien->ma_gv }}">{{ $giangVien->ho_ten }}
-                                            </option>
+                                        style="width: 280px">
+                                        <option value="" selected hidden disabled>Chọn giảng viên</option>
+                                        @foreach ($chuyenNganhs as $chuyenNganh)
+                                            <optgroup label="{{ $chuyenNganh->ten_bo_mon }}">
+                                                @foreach ($chuyenNganh->giangViens as $giangVien)
+                                                    <option value="{{ $giangVien->ma_gv }}">
+                                                        {{ $giangVien->ho_ten }}
+                                                    </option>
+                                                @endforeach
+                                            </optgroup>
                                         @endforeach
                                     </select>
                                     <span class="error-message text-danger d-none mt-2 error-chu_tich"></span>
@@ -99,11 +104,16 @@
                                 </label>
                                 <div class="ms-2 w-100">
                                     <select class="form-select form-select-lg shadow-none" name="HoiDong[thu_ky]"
-                                        style="width: 250px">
-                                        <option value="" selected>Chọn giảng viên</option>
-                                        @foreach ($giangViens as $giangVien)
-                                            <option value="{{ $giangVien->ma_gv }}">{{ $giangVien->ho_ten }}
-                                            </option>
+                                        style="width: 280px">
+                                        <option value="" selected hidden disabled>Chọn giảng viên</option>
+                                        @foreach ($chuyenNganhs as $chuyenNganh)
+                                            <optgroup label="{{ $chuyenNganh->ten_bo_mon }}">
+                                                @foreach ($chuyenNganh->giangViens as $giangVien)
+                                                    <option value="{{ $giangVien->ma_gv }}">
+                                                        {{ $giangVien->ho_ten }}
+                                                    </option>
+                                                @endforeach
+                                            </optgroup>
                                         @endforeach
                                     </select>
                                     <span class="error-message text-danger d-none mt-2 error-thu_ky"></span>
@@ -118,7 +128,7 @@
                                 <div class="ms-2 w-100">
                                     <select id="so_luong_giang_vien" class="form-select form-select-lg shadow-none"
                                         style="width: 70px">
-                                        @for ($i = 1; $i <= 10; $i++)
+                                        @for ($i = 1; $i <= 5; $i++)
                                             <option value="{{ $i }}" {{ $i == 1 ? 'selected' : '' }}>
                                                 {{ $i }}</option>
                                         @endfor
@@ -130,7 +140,7 @@
                             <div class="text-center">
                                 <a href="{{ route('hoi_dong.danh_sach') }}" class="btn btn-secondary btn-lg">Quay
                                     lại</a>
-                                <button type="submit" class="btn btn-primary btn-lg" id="them">Xác nhận thêm
+                                <button type="submit" class="btn btn-success btn-lg" id="them">Xác nhận thêm
                                     mới</button>
                             </div>
                         </form>
@@ -148,33 +158,39 @@
 
             $('#so_luong_giang_vien').change(function() {
                 var soLuong = $(this).val();
-                var giangVienOptions = @json($giangViens);
+                var chuyenNganhs = @json($chuyenNganhs);
                 var giangVienSelects = $('#giang_vien_selects').empty();
 
                 for (var i = 0; i < soLuong; i++) {
-                    var selectWrapper = $(
-                        '<div class="mt-2 d-flex align-items-center">'
-                    );
+                    var selectWrapper = $('<div class="mt-2 d-flex align-items-center">');
+
                     var select = $('<select>')
                         .attr({
                             name: 'HoiDong[uy_vien][' + i + ']',
                         })
                         .addClass('form-select form-select-lg shadow-none')
-                        .css('width', '250px');
+                        .css('width', '280px');
 
-                    select.append('<option value="">Chọn giảng viên ' + (i + 1) + '</option>');
+                    select.append('<option value="" selected hidden disabled>Chọn giảng viên ' + (i + 1) + '</option>');
 
-                    giangVienOptions.forEach(function(giangVien) {
-                        var option = $('<option>')
-                            .val(giangVien.ma_gv)
-                            .text(giangVien.ho_ten)
-                        select.append(option);
+                    chuyenNganhs.forEach(function(cn) {
+                        var optgroup = $('<optgroup>')
+                            .attr('label', cn.ten_bo_mon);
+                        cn.giang_viens.forEach(function(gv) {
+                            var option = $('<option>')
+                                .val(gv.ma_gv)
+                                .text(gv.ho_ten);
+                            optgroup.append(option);
+                        });
+
+                        select.append(optgroup);
                     });
 
-                    selectWrapper.append(select)
+                    selectWrapper.append(select);
                     selectWrapper.append(
                         '<span class="error-message text-danger d-hidden error-giangvien-[' + i +
-                        '] ms-2"></span>');
+                        '] ms-2"></span>'
+                    );
                     giangVienSelects.append(selectWrapper);
                 }
 
@@ -182,6 +198,7 @@
                 updateSelectedGiangViens();
                 updateAllSelects();
             });
+
 
             function updateSelectedGiangViens() {
                 selectedGiangViens = [];
@@ -199,20 +216,23 @@
             }
 
             function updateAllSelects() {
-                var allSelects = $(
-                    'select[name="HoiDong[chu_tich]"], select[name="HoiDong[thu_ky]"], #giang_vien_selects select'
-                );
+                $('#giang_vien_selects select').each(function() {
+                    var allSelects = $(
+                        'select[name="HoiDong[chu_tich]"], select[name="HoiDong[thu_ky]"], #giang_vien_selects select'
+                    );
 
-                allSelects.each(function() {
-                    var currentSelect = $(this);
-                    var currentValue = currentSelect.val();
+                    allSelects.each(function() {
+                        var currentSelect = $(this);
+                        var currentValue = currentSelect.val();
 
-                    currentSelect.find('option').prop('disabled', false);
+                        currentSelect.find('option').prop('disabled', false);
 
-                    selectedGiangViens.forEach(function(id) {
-                        if (id !== currentValue) {
-                            currentSelect.find('option[value="' + id + '"]').prop('disabled', true);
-                        }
+                        selectedGiangViens.forEach(function(id) {
+                            if (id !== currentValue) {
+                                currentSelect.find('option[value="' + id + '"]').prop(
+                                    'disabled', true);
+                            }
+                        });
                     });
                 });
             }

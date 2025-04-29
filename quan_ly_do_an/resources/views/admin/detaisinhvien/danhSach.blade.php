@@ -53,8 +53,9 @@
                                 <div class="d-flex align-items-center justify-content-between mt-2">
                                     <label for="trang_thai">Trạng thái:</label>
                                     <select class="form-select ms-2 w-75 shadow-none" name="trang_thai">
-                                        <option value="" selected>Chọn trạng thái</option>
-                                        <option value="0">Không được duyệt</option>
+                                        <option value="" selected hidden disabled>Chọn trạng thái</option>
+                                        <option value="">Tất cả</option>
+                                        <option value="0">Không duyệt</option>
                                         <option value="1">Chờ duyệt</option>
                                         <option value="2">Đã duyệt</option>
                                     </select>

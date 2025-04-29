@@ -11,7 +11,7 @@
                     </div>
                     <div class="card-body" style="font-size: 16px">
                         <h3 class="text-center mb-4" style="font-weight: bold">{{ $deTai->ten_de_tai }}</h3>
-                        @if ($deTai->giangViens)
+                        @if (isset($deTai->so_luong_sv_dang_ky))
                             @if ($deTai->giangViens->count() == 1)
                                 @php $giangVien = $deTai->giangViens->first(); @endphp
                                 <p><strong>Giảng viên ra đề tài:</strong> {{ $giangVien->ho_ten }} - Email:

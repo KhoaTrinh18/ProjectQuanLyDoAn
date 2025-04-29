@@ -193,7 +193,7 @@
                     });
             }
 
-            $('#so_luong_giang_vien').val(@json($giangViensDT->count())).trigger('change');
+            $('#so_luong_giang_vien').val(@json($giangViensDT->count() ?: 1)).trigger('change');
 
             $("#sua").click(function(event) {
                 event.preventDefault();

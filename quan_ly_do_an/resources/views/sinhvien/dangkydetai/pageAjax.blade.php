@@ -62,13 +62,6 @@
                         <td>
                             {!! $deTai->giangViens->pluck('ho_ten')->implode('<br>') !!}
                         </td>
-                        {{-- <td class="text-center">
-                            @if ($deTai->da_dang_ky == 0)
-                                <span class="text-danger">Chưa đăng ký</span>
-                            @else
-                                <span class="text-success">Đã đăng ký</span>
-                            @endif
-                        </td> --}}
                         <td class="text-center">
                             @if ($deTai->so_luong_sv_dang_ky >= $deTai->so_luong_sv_toi_da)
                                 <span class="text-danger">{{ $deTai->so_luong_sv_dang_ky."/".$deTai->so_luong_sv_toi_da}}</span>

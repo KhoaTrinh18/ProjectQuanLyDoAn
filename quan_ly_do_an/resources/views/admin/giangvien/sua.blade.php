@@ -20,7 +20,7 @@
                                 </label>
                                 <div class="ms-2 w-100">
                                     <input type="text" class="form-control form-control-lg shadow-none"
-                                        placeholder="Nhập tên hội đồng" name="HoiDong[ten_hoi_dong]" style="width: 280px"
+                                        placeholder="Nhập tên hội đồng" name="HoiDong[ten_hoi_dong]" style="width: 250px"
                                         value="{{ $hoiDong->ten_hoi_dong }}">
                                     <span class="error-message text-danger d-none mt-2 error-ten_hoi_dong"></span>
                                 </div>
@@ -33,7 +33,7 @@
                                 </label>
                                 <div class="ms-2 w-100">
                                     <select class="form-select form-select-lg shadow-none" name="HoiDong[chuyen_nganh]"
-                                        style="width: 280px">
+                                        style="width: 250px">
                                         <option value="" selected>Chọn chuyên ngành</option>
                                         @foreach ($chuyenNganhs as $chuyenNganh)
                                             <option value="{{ $chuyenNganh->ma_bo_mon }}"
@@ -53,7 +53,7 @@
                                 </label>
                                 <div class="ms-2 w-100">
                                     <input type="text" class="form-control form-control-lg shadow-none"
-                                        placeholder="Nhập phòng" name="HoiDong[phong]" style="width: 280px"
+                                        placeholder="Nhập phòng" name="HoiDong[phong]" style="width: 250px"
                                         value="{{ $hoiDong->phong }}">
                                     <span class="error-message text-danger d-none mt-2 error-phong"></span>
                                 </div>
@@ -66,7 +66,7 @@
                                 </label>
                                 <div class="ms-2 w-100">
                                     <div class="input-group" id="datetimepicker" data-td-target-input="nearest"
-                                        data-td-target="#ngayToChucInput" style="width: 280px">
+                                        data-td-target="#ngayToChucInput" style="width: 250px">
                                         <input type="text" class="form-control form-control-lg shadow-none"
                                             name="HoiDong[ngay]" id="ngayToChucInput" data-td-target="#ngayToChucInput"
                                             readonly
@@ -87,18 +87,14 @@
                                 </label>
                                 <div class="ms-2 w-100">
                                     <select class="form-select form-select-lg shadow-none" name="HoiDong[chu_tich]"
-                                        style="width: 280px">
-                                        <option value="" hidden disabled>Chọn giảng viên</option>
-                                        @foreach ($chuyenNganhs as $chuyenNganh)
-                                            <optgroup label="{{ $chuyenNganh->ten_bo_mon }}">
-                                                @foreach ($chuyenNganh->giangViens as $giangVien)
-                                                    @php $chuTich = $hoiDong->giangViens()->wherePivot('chuc_vu', 'Chủ tịch')->first(); @endphp
-                                                    <option value="{{ $giangVien->ma_gv }}"
-                                                        {{ $giangVien->ma_gv == $chuTich->ma_gv ? 'selected' : '' }}>
-                                                        {{ $giangVien->ho_ten }}
-                                                    </option>
-                                                @endforeach
-                                            </optgroup>
+                                        style="width: 260px">
+                                        <option value="">Chọn giảng viên</option>
+                                        @foreach ($giangViens as $giangVien)
+                                            @php $chuTich = $hoiDong->giangViens()->wherePivot('chuc_vu', 'Chủ tịch')->first(); @endphp
+                                            <option value="{{ $giangVien->ma_gv }}"
+                                                {{ $giangVien->ma_gv == $chuTich->ma_gv ? 'selected' : '' }}>
+                                                {{ $giangVien->ho_ten }}
+                                            </option>
                                         @endforeach
                                     </select>
                                     <span class="error-message text-danger d-none mt-2 error-chu_tich"></span>
@@ -112,18 +108,14 @@
                                 </label>
                                 <div class="ms-2 w-100">
                                     <select class="form-select form-select-lg shadow-none" name="HoiDong[thu_ky]"
-                                        style="width: 280px">
-                                        <option value="" hidden disabled>Chọn giảng viên</option>
-                                        @foreach ($chuyenNganhs as $chuyenNganh)
-                                            <optgroup label="{{ $chuyenNganh->ten_bo_mon }}">
-                                                @foreach ($chuyenNganh->giangViens as $giangVien)
-                                                    @php $thuKy = $hoiDong->giangViens()->wherePivot('chuc_vu', 'Thư ký')->first(); @endphp
-                                                    <option value="{{ $giangVien->ma_gv }}"
-                                                        {{ $giangVien->ma_gv == $thuKy->ma_gv ? 'selected' : '' }}>
-                                                        {{ $giangVien->ho_ten }}
-                                                    </option>
-                                                @endforeach
-                                            </optgroup>
+                                        style="width: 260px">
+                                        <option value="" selected>Chọn giảng viên</option>
+                                        @foreach ($giangViens as $giangVien)
+                                            @php $thuKy = $hoiDong->giangViens()->wherePivot('chuc_vu', 'Thư ký')->first(); @endphp
+                                            <option value="{{ $giangVien->ma_gv }}"
+                                                {{ $giangVien->ma_gv == $thuKy->ma_gv ? 'selected' : '' }}>
+                                                {{ $giangVien->ho_ten }}
+                                            </option>
                                         @endforeach
                                     </select>
                                     <span class="error-message text-danger d-none mt-2 error-thu_ky"></span>
@@ -177,43 +169,37 @@
 
             $('#so_luong_giang_vien').change(function() {
                 var soLuong = $(this).val();
-                var chuyenNganhs = @json($chuyenNganhs);
+                var giangVienOptions = @json($giangViens);
                 var giangVienSelects = $('#giang_vien_selects').empty();
                 var uyViensMaGv = @json($uyViensMaGv);
 
                 for (var i = 0; i < soLuong; i++) {
-                    var selectWrapper = $('<div class="mt-2 d-flex align-items-center">');
-
+                    var selectWrapper = $(
+                        '<div class="mt-2 d-flex align-items-center">'
+                    );
                     var select = $('<select>')
                         .attr({
                             name: 'HoiDong[uy_vien][' + i + ']',
                         })
                         .addClass('form-select form-select-lg shadow-none')
-                        .css('width', '280px');
+                        .css('width', '260px');
 
-                    select.append('<option value="" hidden disabled>Chọn giảng viên ' + (i + 1) + '</option>');
+                    select.append('<option value="">Chọn giảng viên ' + (i + 1) + '</option>');
 
-                    chuyenNganhs.forEach(function(cn) {
-                        var optgroup = $('<optgroup>')
-                            .attr('label', cn.ten_bo_mon);
-                        cn.giang_viens.forEach(function(gv) {
-                            var option = $('<option>')
-                                .val(gv.ma_gv)
-                                .text(gv.ho_ten);
-                            if (uyViensMaGv[i] == gv.ma_gv) {
-                                option.prop('selected', true);
-                            }
-                            optgroup.append(option);
-                        });
-
-                        select.append(optgroup);
+                    giangVienOptions.forEach(function(giangVien) {
+                        var option = $('<option>')
+                            .val(giangVien.ma_gv)
+                            .text(giangVien.ho_ten)
+                        if (uyViensMaGv[i] == giangVien.ma_gv) {
+                            option.prop('selected', true);
+                        }
+                        select.append(option);
                     });
 
-                    selectWrapper.append(select);
+                    selectWrapper.append(select)
                     selectWrapper.append(
                         '<span class="error-message text-danger d-hidden error-giangvien-[' + i +
-                        '] ms-2"></span>'
-                    );
+                        '] ms-2"></span>');
                     giangVienSelects.append(selectWrapper);
                 }
 
@@ -221,7 +207,6 @@
                 updateSelectedGiangViens();
                 updateAllSelects();
             });
-
 
             function updateSelectedGiangViens() {
                 selectedGiangViens = [];
@@ -239,23 +224,20 @@
             }
 
             function updateAllSelects() {
-                $('#giang_vien_selects select').each(function() {
-                    var allSelects = $(
-                        'select[name="HoiDong[chu_tich]"], select[name="HoiDong[thu_ky]"], #giang_vien_selects select'
-                    );
+                var allSelects = $(
+                    'select[name="HoiDong[chu_tich]"], select[name="HoiDong[thu_ky]"], #giang_vien_selects select'
+                );
 
-                    allSelects.each(function() {
-                        var currentSelect = $(this);
-                        var currentValue = currentSelect.val();
+                allSelects.each(function() {
+                    var currentSelect = $(this);
+                    var currentValue = currentSelect.val();
 
-                        currentSelect.find('option').prop('disabled', false);
+                    currentSelect.find('option').prop('disabled', false);
 
-                        selectedGiangViens.forEach(function(id) {
-                            if (id !== currentValue) {
-                                currentSelect.find('option[value="' + id + '"]').prop(
-                                    'disabled', true);
-                            }
-                        });
+                    selectedGiangViens.forEach(function(id) {
+                        if (id !== currentValue) {
+                            currentSelect.find('option[value="' + id + '"]').prop('disabled', true);
+                        }
                     });
                 });
             }
@@ -267,6 +249,7 @@
                         updateAllSelects();
                     });
             }
+
             $('#so_luong_giang_vien').val(@json($hoiDong->giangViens()->wherePivot('chuc_vu', 'Ủy viên')->count())).trigger('change');
 
             $("#capNhat").click(function(event) {

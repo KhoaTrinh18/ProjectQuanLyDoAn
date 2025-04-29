@@ -83,7 +83,6 @@
                                         @endfor
                                     </select>
                                     <div id="giang_vien_selects"></div>
-                                    <span class="error-message text-danger d-none mt-2 error-giang_vien"></span>
                                 </div>
                             </div>
                             <div class="text-center">
@@ -182,7 +181,7 @@
                     });
             }
 
-            $('#so_luong_giang_vien').trigger('change');
+            $('#so_luong_giang_vien').val(1).trigger('change');
 
 
             $("#duaRa").click(function(event) {
@@ -231,11 +230,6 @@
                                 inputField.addClass("is-invalid");
                                 $('.error-' + field).text(messages[0]).removeClass(
                                     "d-none").addClass("d-block");
-                                // if (field.startsWith("mssv.")) {
-                                //     let index = field.split('.')[1];
-                                //     $(".error-mssv-" + index).text(messages[0])
-                                //         .removeClass("d-none").show();
-                                // }
                             });
                         }
                     },

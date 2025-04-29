@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Danh sách đề tài giảng viên')
+@section('title', 'Danh sách giảng viên')
 
 @section('content')
     <div class="container-fluid p-0">
@@ -7,76 +7,46 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <h2 style="font-weight: bold">Danh sách đề tài giảng viên</h2>
+                        <h2 style="font-weight: bold">Danh sách giảng viên</h2>
+                        <div>
+                            <a href="{{ route('giang_vien.them') }}" class="btn btn-success btn-lg">Thêm mới</a>
+                        </div>
                     </div>
                     <div class="card-body">
                         <form class="d-flex mb-3" id="form_tim_kiem">
-                            <div class="d-flex flex-column" style="width: 480px">
-                                <div class="d-flex align-items-center justify-content-between">
-                                    <label for="ten_de_tai" style="width: 150px">Tên đề tài:</label>
-                                    <input type="text" name="ten_de_tai" class="form-control ms-2 w-100 shadow-none"
-                                        placeholder="Tên đề tài">
-                                </div>
-                                <div class="d-flex align-items-center mt-2">
-                                    <label for="ngay_dua_ra" style="width: 150px">Ngày ra đề tài:</label>
-                                    <div class="d-flex align-items-center ms-2 w-100">
-                                        <div class="input-group" id="datetimepicker1" data-td-target-input="nearest"
-                                            data-td-target="#ngayDuaRaDau">
-                                            <input type="text" class="form-control form-control-lg shadow-none"
-                                                name="ngay_dua_ra_dau" id="ngayDuaRaDau" data-td-target="#ngayDuaRaDau"
-                                                readonly />
-                                            <span class="input-group-text" data-td-toggle="datetimepicker1"
-                                                data-td-target="#ngayDuaRaDau">
-                                                <i class="bi bi-calendar-event"></i>
-                                            </span>
-                                        </div>
-                                        <span class="mx-2">-</span>
-                                        <div class="input-group" id="datetimepicker2" data-td-target-input="nearest"
-                                            data-td-target="#ngayDuaRaCuoi">
-                                            <input type="text" class="form-control form-control-lg shadow-none"
-                                                name="ngay_dua_ra_cuoi" id="ngayDuaRaCuoi" data-td-target="#ngayDuaRaCuoi"
-                                                readonly />
-                                            <span class="input-group-text" data-td-toggle="datetimepicker2"
-                                                data-td-target="#ngayDuaRaCuoi">
-                                                <i class="bi bi-calendar-event"></i>
-                                            </span>
-                                        </div>
+                            <div class="d-flex align-items-center justify-content-between me-3" style="width: 220px">
+                                <label for="hoc_vi">Học vị:</label>
+                                <select class="form-select ms-2 w-75 shadow-none" name="hoc_vi">
+                                    <option value="" selected disabled hidden>Chọn học vị</option>
+                                    <option value="">Tất cả</option>
+                                    @foreach ($hocVis as $hocVi)
+                                        <option value="{{ $hocVi->ma_hoc_vi }}">{{ $hocVi->ten_hoc_vi }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="d-flex flex-column">
+                                <div class="d-flex align-items-center justify-content-between me-3">
+                                    <div class="d-flex align-items-center justify-content-between me-3" style="width: 320px">
+                                        <label for="bo_mon">Bộ môn:</label>
+                                        <select class="form-select ms-2 w-75 shadow-none" name="bo_mon">
+                                            <option value="" selected disabled hidden>Chọn bộ môn</option>
+                                            <option value="">Tất cả</option>
+                                            @foreach ($boMons as $boMon)
+                                                <option value="{{ $boMon->ma_bo_mon }}">{{ $boMon->ten_bo_mon }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="d-flex justify-content-end">
+                                        <button id="clear" class="btn btn-secondary me-2">Clear</button>
+                                        <button id="timKiem" class="btn btn-primary" type="submit">Tìm kiếm</button>
                                     </div>
                                 </div>
                             </div>
-                            <div class="d-flex flex-column ms-3" style="width: 380px">
-                                <div class="d-flex align-items-center justify-content-between">
-                                    <label for="giang_vien">Giảng viên:</label>
-                                    <select class="form-select ms-2 w-75 shadow-none" name="giang_vien">
-                                        <option value="" selected disabled hidden>Chọn giảng viên</option>
-                                        <option value="">Tất cả</option>
-                                        @foreach ($chuyenNganhs as $chuyenNganh)
-                                            <optgroup label="{{ $chuyenNganh->ten_bo_mon }}">
-                                                @foreach ($chuyenNganh->giangViens as $giangVien)
-                                                    <option value="{{ $giangVien->ma_gv }}">
-                                                        {{ $giangVien->ho_ten }}</option>
-                                                @endforeach
-                                            </optgroup>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="d-flex align-items-center justify-content-between mt-2">
-                                    <label for="trang_thai">Trạng thái:</label>
-                                    <select class="form-select ms-2 w-75 shadow-none" name="trang_thai">
-                                        <option value="" selected hidden disabled>Chọn trạng thái</option>
-                                        <option value="">Tất cả</option>
-                                        <option value="0">Không duyệt</option>
-                                        <option value="1">Chờ duyệt</option>
-                                        <option value="2">Đã duyệt</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="ms-3">
-                                <button id="clear" class="btn btn-secondary">Clear</button>
-                                <button id="timKiem" class="btn btn-primary" type="submit">Tìm kiếm</button>
-                            </div>
+
+
                         </form>
-                        @include('admin.detaigiangvien.pageAjax', ['deTaiGVs' => $deTaiGVs])
+                        @include('admin.giangvien.pageAjax', ['giangViens' => $giangViens])
                     </div>
                 </div>
             </div>
@@ -124,7 +94,7 @@
                 showTableLoading();
 
                 $.ajax({
-                    url: "{{ route('de_tai_giang_vien.page_ajax') }}",
+                    url: "{{ route('giang_vien.page_ajax') }}",
                     type: "GET",
                     data: requestData,
                     dataType: 'json',

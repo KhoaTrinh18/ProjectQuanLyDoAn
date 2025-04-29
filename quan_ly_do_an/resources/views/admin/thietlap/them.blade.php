@@ -37,11 +37,27 @@
                                 </label>
                                 <div class="ms-2">
                                     <div class="d-flex align-items-center">
-                                        <input type="date" class="form-control form-control-lg shadow-none"
-                                            name="ThietLap[ngay_dang_ky]">
+                                        <div class="input-group" id="datetimepicker1" data-td-target-input="nearest"
+                                            data-td-target="#ngayDangKyStart" style="width: 170px">
+                                            <input type="text" class="form-control form-control-lg shadow-none"
+                                                name="ThietLap[ngay_dang_ky]" id="ngayDangKyStart"
+                                                data-td-target="#ngayDangKyStart" readonly />
+                                            <span class="input-group-text" data-td-toggle="datetimepicker1"
+                                                data-td-target="#ngayDangKyStart">
+                                                <i class="bi bi-calendar-event"></i>
+                                            </span>
+                                        </div>
                                         <span class="mx-2">-</span>
-                                        <input type="date" class="form-control form-control-lg shadow-none"
-                                            name="ThietLap[ngay_ket_thuc_dang_ky]">
+                                        <div class="input-group" id="datetimepicker2" data-td-target-input="nearest"
+                                            data-td-target="#ngayDangKyEnd" style="width: 170px">
+                                            <input type="text" class="form-control form-control-lg shadow-none"
+                                                name="ThietLap[ngay_ket_thuc_dang_ky]" id="ngayDangKyEnd"
+                                                data-td-target="#ngayDangKyEnd" readonly />
+                                            <span class="input-group-text" data-td-toggle="datetimepicker2"
+                                                data-td-target="#ngayDangKyEnd">
+                                                <i class="bi bi-calendar-event"></i>
+                                            </span>
+                                        </div>
                                     </div>
                                     <span class="error-message text-danger d-none mt-2 error-ten_de_tai"></span>
                                 </div>
@@ -54,17 +70,36 @@
                                 </label>
                                 <div class="ms-2">
                                     <div class="d-flex align-items-center">
-                                        <input type="date" class="form-control form-control-lg shadow-none"
-                                            name="ThietLap[ngay_thuc_hien]">
+                                        <div class="input-group" id="datetimepicker3" data-td-target-input="nearest"
+                                            data-td-target="#ngayThucHienStart" style="width: 170px">
+                                            <input type="text" class="form-control form-control-lg shadow-none"
+                                                name="ThietLap[ngay_thuc_hien]" id="ngayThucHienStart"
+                                                data-td-target="#ngayThucHienStart" readonly />
+                                            <span class="input-group-text" data-td-toggle="datetimepicker3"
+                                                data-td-target="#ngayThucHienStart">
+                                                <i class="bi bi-calendar-event"></i>
+                                            </span>
+                                        </div>
                                         <span class="mx-2">-</span>
-                                        <input type="date" class="form-control form-control-lg shadow-none"
-                                            name="ThietLap[ngay_ket_thuc_thuc_hien]">
+                                        <div class="d-flex align-items-center">
+                                            <div class="input-group" id="datetimepicker4" data-td-target-input="nearest"
+                                                data-td-target="#ngayThucHienEnd" style="width: 170px">
+                                                <input type="text" class="form-control form-control-lg shadow-none"
+                                                    name="ThietLap[ngay_ket_thuc_thuc_hien]" id="ngayThucHienEnd"
+                                                    data-td-target="#ngayThucHienEnd" readonly />
+                                                <span class="input-group-text" data-td-toggle="datetimepicker4"
+                                                    data-td-target="#ngayThucHienEnd">
+                                                    <i class="bi bi-calendar-event"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <span class="error-message text-danger d-none mt-2 error-ten_de_tai"></span>
                                     </div>
-                                    <span class="error-message text-danger d-none mt-2 error-ten_de_tai"></span>
                                 </div>
                             </div>
                             <div class="text-center">
-                                <a href="{{ route('thiet_lap.danh_sach') }}" class="btn btn-secondary btn-lg">Quay lại</a>
+                                <a href="{{ route('thiet_lap.danh_sach') }}" class="btn btn-secondary btn-lg">Quay
+                                    lại</a>
                                 <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal"
                                     data-bs-target="#confirmModal">
                                     Thiết lập
@@ -155,6 +190,150 @@
                     }
                 });
             });
+
+            const element1 = document.getElementById('datetimepicker1');
+            if (element1) {
+                new tempusDominus.TempusDominus(element1, {
+                    display: {
+                        components: {
+                            calendar: true,
+                            date: true,
+                            month: true,
+                            year: true,
+                            decades: true,
+                        },
+                        icons: {
+                            time: 'bi bi-clock',
+                            date: 'bi bi-calendar',
+                            up: 'bi bi-chevron-up',
+                            down: 'bi bi-chevron-down',
+                            previous: 'bi bi-chevron-left',
+                            next: 'bi bi-chevron-right',
+                            today: 'bi bi-calendar-check',
+                            clear: 'bi bi-trash',
+                            close: 'bi bi-x-circle'
+                        },
+                        buttons: {
+                            today: true,
+                            clear: true,
+                            close: true
+                        },
+                    },
+                    localization: {
+                        locale: 'vi',
+                        format: 'dd-MM-yyyy'
+                    },
+                    useCurrent: false,
+                });
+            }
+
+            const element2 = document.getElementById('datetimepicker2');
+            if (element2) {
+                new tempusDominus.TempusDominus(element2, {
+                    display: {
+                        components: {
+                            calendar: true,
+                            date: true,
+                            month: true,
+                            year: true,
+                            decades: true,
+                        },
+                        icons: {
+                            time: 'bi bi-clock',
+                            date: 'bi bi-calendar',
+                            up: 'bi bi-chevron-up',
+                            down: 'bi bi-chevron-down',
+                            previous: 'bi bi-chevron-left',
+                            next: 'bi bi-chevron-right',
+                            today: 'bi bi-calendar-check',
+                            clear: 'bi bi-trash',
+                            close: 'bi bi-x-circle'
+                        },
+                        buttons: {
+                            today: true,
+                            clear: true,
+                            close: true
+                        },
+                    },
+                    localization: {
+                        locale: 'vi',
+                        format: 'dd-MM-yyyy'
+                    },
+                    useCurrent: false,
+                });
+            }
+
+            const element3 = document.getElementById('datetimepicker3');
+            if (element3) {
+                new tempusDominus.TempusDominus(element3, {
+                    display: {
+                        components: {
+                            calendar: true,
+                            date: true,
+                            month: true,
+                            year: true,
+                            decades: true,
+                        },
+                        icons: {
+                            time: 'bi bi-clock',
+                            date: 'bi bi-calendar',
+                            up: 'bi bi-chevron-up',
+                            down: 'bi bi-chevron-down',
+                            previous: 'bi bi-chevron-left',
+                            next: 'bi bi-chevron-right',
+                            today: 'bi bi-calendar-check',
+                            clear: 'bi bi-trash',
+                            close: 'bi bi-x-circle'
+                        },
+                        buttons: {
+                            today: true,
+                            clear: true,
+                            close: true
+                        },
+                    },
+                    localization: {
+                        locale: 'vi',
+                        format: 'dd-MM-yyyy'
+                    },
+                    useCurrent: false,
+                });
+            }
+
+            const element4 = document.getElementById('datetimepicker4');
+            if (element4) {
+                new tempusDominus.TempusDominus(element4, {
+                    display: {
+                        components: {
+                            calendar: true,
+                            date: true,
+                            month: true,
+                            year: true,
+                            decades: true,
+                        },
+                        icons: {
+                            time: 'bi bi-clock',
+                            date: 'bi bi-calendar',
+                            up: 'bi bi-chevron-up',
+                            down: 'bi bi-chevron-down',
+                            previous: 'bi bi-chevron-left',
+                            next: 'bi bi-chevron-right',
+                            today: 'bi bi-calendar-check',
+                            clear: 'bi bi-trash',
+                            close: 'bi bi-x-circle'
+                        },
+                        buttons: {
+                            today: true,
+                            clear: true,
+                            close: true
+                        },
+                    },
+                    localization: {
+                        locale: 'vi',
+                        format: 'dd-MM-yyyy'
+                    },
+                    useCurrent: false,
+                });
+            }
         });
     </script>
 @endsection

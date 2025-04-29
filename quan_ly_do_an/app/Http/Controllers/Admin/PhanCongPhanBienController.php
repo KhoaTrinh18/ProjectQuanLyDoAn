@@ -13,6 +13,7 @@ use App\Models\{
     BangDiemGVPBChoSVDK,
     BangPhanCongSVDK,
     BangPhanCongSVDX,
+    BoMon,
     DeTaiGiangVien,
     DeTaiSinhVien,
     GiangVien
@@ -40,8 +41,9 @@ class PhanCongPhanBienController extends Controller
             $page,
             ['path' => request()->url(), 'query' => request()->query()]
         );
+        $chuyenNganhs = BoMon::orderBy('ma_bo_mon', 'desc')->get();
 
-        return view('admin.phancongphanbien.danhSach', compact('deTais'));
+        return view('admin.phancongphanbien.danhSach', compact('deTais', 'chuyenNganhs'));
     }
 
     public function pageAjax(Request $request)
@@ -59,13 +61,13 @@ class PhanCongPhanBienController extends Controller
 
         if ($request->filled('giang_vien_huong_dan')) {
             $deTaiSVs->whereHas('giangViens', function ($q) use ($request) {
-                $q->where('ho_ten', 'like', '%' . $request->giang_vien_huong_dan . '%');
+                $q->where('giang_vien.ma_gv', $request->giang_vien_huong_dan);
             });
         }
 
         if ($request->filled('giang_vien_phan_bien')) {
             $deTaiSVs->whereHas('giangVienPhanBiens', function ($q) use ($request) {
-                $q->where('ho_ten', 'like', '%' . $request->giang_vien_phan_bien . '%');
+                $q->where('giang_vien.ma_gv', $request->giang_vien_phan_bien);
             });
         }
 
@@ -96,13 +98,13 @@ class PhanCongPhanBienController extends Controller
 
         if ($request->filled('giang_vien_huong_dan')) {
             $deTaiGVs->whereHas('giangViens', function ($q) use ($request) {
-                $q->where('ho_ten', 'like', '%' . $request->giang_vien_huong_dan . '%');
+                $q->where('giang_vien.ma_gv', $request->giang_vien_huong_dan);
             });
         }
 
         if ($request->filled('giang_vien_phan_bien')) {
             $deTaiGVs->whereHas('giangVienPhanBiens', function ($q) use ($request) {
-                $q->where('ho_ten', 'like', '%' . $request->giang_vien_phan_bien . '%');
+                $q->where('giang_vien.ma_gv', $request->giang_vien_phan_bien);
             });
         }
 
@@ -166,9 +168,9 @@ class PhanCongPhanBienController extends Controller
             abort(404, 'Đề tài không tồn tại');
         }
 
-        $giangViens = GiangVien::get();
+        $chuyenNganhs = BoMon::orderBy('ma_bo_mon', 'desc')->get();
 
-        return view('admin.phancongphanbien.phanCong', compact('deTai', 'giangViens'));
+        return view('admin.phancongphanbien.phanCong', compact('deTai', 'chuyenNganhs'));
     }
 
     public function xacNhanPhanCong(Request $request)
@@ -231,10 +233,9 @@ class PhanCongPhanBienController extends Controller
         if (!$deTai) {
             abort(404, 'Đề tài không tồn tại');
         }
+        $chuyenNganhs = BoMon::orderBy('ma_bo_mon', 'desc')->get();
 
-        $giangViens = GiangVien::get();
-
-        return view('admin.phancongphanbien.sua', compact('deTai', 'giangViens'));
+        return view('admin.phancongphanbien.sua', compact('deTai', 'chuyenNganhs'));
     }
 
     public function xacNhanSua(Request $request)

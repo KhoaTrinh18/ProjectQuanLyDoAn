@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use App\Models\{
+    BoMon,
     DeTaiGiangVien,
     DeTaiSinhVien,
     GiangVienDeTaiGV
@@ -24,7 +25,9 @@ class DeTaiGiangVienController extends Controller
         $limit = $request->query('limit', 10);
 
         $deTaiGVs = DeTaiGiangVien::where(['da_huy' => 0])->orderBy('ma_de_tai', 'desc')->paginate($limit);
-        return view('admin.detaigiangvien.danhSach', compact('deTaiGVs'));
+        $chuyenNganhs = BoMon::orderBy('ma_bo_mon', 'desc')->get();
+
+        return view('admin.detaigiangvien.danhSach', compact('deTaiGVs', 'chuyenNganhs'));
     }
 
     public function pageAjax(Request $request)
@@ -55,7 +58,7 @@ class DeTaiGiangVienController extends Controller
 
         if ($request->filled('giang_vien')) {
             $query->whereHas('giangViens', function ($q) use ($request) {
-                $q->where('ho_ten', 'like', '%' . $request->giang_vien . '%');
+                $q->where('giang_vien.ma_gv', $request->giang_vien);
             });
         }
 
@@ -126,9 +129,13 @@ class DeTaiGiangVienController extends Controller
 
         $data = $request->input('DeTai', []);
 
-        $deTaiGV = DeTaiGiangVien::where('ma_de_tai', $data['ma_de_tai'])->first();
-        $deTaiGV->trang_thai = 2;
-        $deTaiGV->save();
+        DeTaiGiangVien::where('ma_de_tai', $data['ma_de_tai'])->update([
+            'trang_thai' => 2
+        ]);
+
+        GiangVienDeTaiGV::where('ma_de_tai', $data['ma_de_tai'])->update([
+            'trang_thai' => 2
+        ]);
 
         return response()->json(['success' => true]);
     }
@@ -162,6 +169,10 @@ class DeTaiGiangVienController extends Controller
         $deTaiGV = DeTaiGiangVien::where('ma_de_tai', $data['ma_de_tai'])->first();
         $deTaiGV->trang_thai = 0;
         $deTaiGV->save();
+
+        GiangVienDeTaiGV::where('ma_de_tai', $data['ma_de_tai'])->update([
+            'trang_thai' => 0
+        ]);
         
         $ngayDuaRa = $deTaiGV->ngayDuaRa->ngay_dua_ra;
 
@@ -196,8 +207,7 @@ class DeTaiGiangVienController extends Controller
         $deTaiGV->da_huy = 1;
         $deTaiGV->save();
 
-        GiangVienDeTaiGV::where('ma_de_tai', $data['ma_de_tai'])
-            ->update(['da_huy' => 1]);
+        GiangVienDeTaiGV::where('ma_de_tai', $data['ma_de_tai'])->delete();
 
         return response()->json(['success' => true]);
     }

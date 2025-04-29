@@ -123,9 +123,13 @@ class DeTaiSinhVienController extends Controller
 
         $data = $request->input('DeTai', []);
 
-        $deTaiSV = DeTaiSinhVien::where('ma_de_tai', $data['ma_de_tai'])->first();
-        $deTaiSV->trang_thai = 2;
-        $deTaiSV->save();
+        DeTaiSinhVien::where('ma_de_tai', $data['ma_de_tai'])->update([
+            'trang_thai' => 2
+        ]);
+        
+        SinhVienDeTaiSV::where('ma_de_tai', $data['ma_de_tai'])->update([
+            'trang_thai' => 2
+        ]);
 
         return response()->json(['success' => true]);
     }
@@ -160,8 +164,18 @@ class DeTaiSinhVienController extends Controller
         $deTaiSV->trang_thai = 0;
         $deTaiSV->save();
 
-        $ngayDeXuat = $deTaiSV->ngayDeXuat->ngay_de_xuat;
+        $mssvDeTai = $deTaiSV->sinhViens->pluck('mssv');
 
+        SinhVien::whereIn('mssv', $mssvDeTai)->update([
+            'dang_ky' => 0,
+            'loai_sv' => null,
+        ]); 
+
+        SinhVienDeTaiSV::where('ma_de_tai',  $data['ma_de_tai'])->update([
+            'trang_thai' => 0
+        ]);
+
+        $ngayDeXuat = $deTaiSV->ngayDeXuat->ngay_de_xuat;
         foreach ($deTaiSV->sinhViens as $sinhVien) {
             if ($sinhVien && $sinhVien->email) {
                 $emailList[] = $sinhVien->email;
@@ -201,8 +215,7 @@ class DeTaiSinhVienController extends Controller
             $sinhVien->save();
         }
 
-        SinhVienDeTaiSV::where('ma_de_tai', $data['ma_de_tai'])
-            ->update(['da_huy' => 1]);
+        SinhVienDeTaiSV::where('ma_de_tai', $data['ma_de_tai'])->delete();
 
         return response()->json(['success' => true]);
     }

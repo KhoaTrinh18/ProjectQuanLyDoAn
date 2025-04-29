@@ -56,4 +56,9 @@ class DeTaiGiangVien extends Model
     {
         return $this->hasOne(GiangVienDeTaiGV::class, 'ma_de_tai', 'ma_de_tai');
     }
+
+    public function ngayDangKy()
+    {
+        return $this->hasOne(BangPhanCongSVDK::class, 'ma_de_tai', 'ma_de_tai');
+    }
 }

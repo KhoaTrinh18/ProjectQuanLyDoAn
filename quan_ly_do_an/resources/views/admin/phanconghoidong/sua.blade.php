@@ -63,7 +63,7 @@
                             <div class="d-flex align-items-center">
                                 <label for="DeTai[ma_hoi_dong]"><strong>Hội đồng:</strong></label>
                                 <select name="DeTai[ma_hoi_dong]" class="form-select ms-2" style="width: 260px">
-                                    <option value="" selected>Chọn hội đồng</option>
+                                    <option value="" hidden disabled>Chọn hội đồng</option>
                                     @php
                                         $hoiDongDeTai = $deTai->hoiDongs->first();
                                     @endphp

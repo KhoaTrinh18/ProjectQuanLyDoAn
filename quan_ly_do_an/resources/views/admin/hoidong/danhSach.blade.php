@@ -18,7 +18,8 @@
                                 <div class="d-flex align-items-center justify-content-between mb-2">
                                     <label for="nam_hoc" style="width: 150px">Năm học:</label>
                                     <select class="form-select ms-2 w-75 shadow-none" name="nam_hoc">
-                                        <option value="" selected>Chọn năm học</option>
+                                        <option value="" selected hidden disabled>Chọn năm học</option>
+                                        <option value="">Tất cả</option>
                                         @foreach ($thietLaps as $thietLap)
                                             <option value="{{ $thietLap->nam_hoc }}">{{ $thietLap->nam_hoc }}</option>
                                         @endforeach
@@ -27,7 +28,8 @@
                                 <div class="d-flex align-items-center justify-content-between">
                                     <label for="chuyen_nghanh" style="width: 150px">Chuyên ngành:</label>
                                     <select class="form-select ms-2 w-75 shadow-none" name="chuyen_nghanh">
-                                        <option value="" selected>Chọn chuyên ngành</option>
+                                        <option value="" selected hidden disabled>Chọn chuyên ngành</option>
+                                        <option value="">Tất cả</option>
                                         @foreach ($chuyenNganhs as $chuyenNganh)
                                             <option value="{{ $chuyenNganh->ma_bo_mon }}">{{ $chuyenNganh->ten_bo_mon }}</option>
                                         @endforeach

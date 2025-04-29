@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use App\Models\{
     BangPhanCongSVDK,
+    BoMon,
     DeTaiGiangVien,
     SinhVien,
     LinhVuc,
@@ -37,8 +38,9 @@ class DangKyDeTaiController extends Controller
         } else {
             $hetHan = 0;
         }
+        $chuyenNganhs = BoMon::orderBy('ma_bo_mon', 'desc')->get();
 
-        return view('sinhvien.dangkydetai.danhSach', compact('deTais', 'linhVucs', 'daDangKy', 'hetHan'));
+        return view('sinhvien.dangkydetai.danhSach', compact('deTais', 'linhVucs', 'daDangKy', 'hetHan', 'chuyenNganhs'));
     }
 
     public function pageAjax(Request $request)
@@ -55,7 +57,7 @@ class DangKyDeTaiController extends Controller
 
         if ($request->filled('giang_vien')) {
             $query->whereHas('giangViens', function ($q) use ($request) {
-                $q->where('ho_ten', 'like', '%' . $request->giang_vien . '%');
+                $q->where('giang_vien.ma_gv', $request->giang_vien);
             });
         }
 

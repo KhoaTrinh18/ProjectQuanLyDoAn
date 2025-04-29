@@ -6,7 +6,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="card">
-                    @if (!$daDangKy)
+                    @if (!$daDangKy || $deTai->trang_thai == 0)
                         <div class="card-header d-flex justify-content-center align-items-center flex-column">
                             <h2 style="font-weight: bold"><i>Bạn chưa có đề tài</i></h2>
                             <h5 style="font-weight: bold"><i>(Vui lòng đề xuất hoặc đăng ký!)</i></h5>
@@ -18,13 +18,17 @@
                         <div class="card-body" style="font-size: 16px">
                             <p><strong>Đề tài: </strong>{{ $deTai->ten_de_tai }} (<a
                                     href="{{ route('thong_tin_de_tai.chi_tiet') }}">Chi tiết</a>)</p>
-                            <p><strong>Hình thức:</strong>
-                                @if ($loaiDeTai == 'de_tai_sv')
-                                    Đề xuất
-                                @else
-                                    Đăng ký
-                                @endif
-                            </p>
+
+                            @if ($loaiDeTai == 'de_tai_sv')
+                                <p><strong>Hình thức: Đề xuất</strong></p>
+                                <p><strong>Ngày đề xuất:
+                                        {{ \Carbon\Carbon::parse($deTai->ngayDeXuat->ngay_de_xuat)->format('d-m-Y') }}</strong>
+                                </p>
+                            @else
+                                <p><strong>Hình thức:
+                                        {{ \Carbon\Carbon::parse($deTai->ngayDangKy->ngay_dang_ky)->format('d-m-Y') }}</strong>
+                                </p>
+                            @endif
 
                             @if ($deTai->so_luong_sv_dang_ky == 1)
                                 <p><strong>Sinh viên đã đăng ký:
@@ -60,8 +64,6 @@
                                         <span class="text-warning">Đang xử lý</span>
                                     @elseif($deTai->trang_thai == 2)
                                         <span class="text-success">Đã duyệt</span>
-                                    @elseif($deTai->trang_thai == 0)
-                                        <span class="text-danger">Không duyệt</span>
                                     @endif
                                 </p>
                             @else
@@ -196,7 +198,7 @@
                                                         aria-label="Đóng"></button>
                                                 </div>
                                                 <div class="modal-body text-center fs-5 text-secondary">
-                                                    Bạn có chắc chắn không muốn hủy đề tài này?
+                                                    Bạn có chắc chắn muốn hủy đề tài này?
                                                 </div>
                                                 <div class="modal-footer bg-light border-top-0">
                                                     <button type="button" class="btn btn-secondary"

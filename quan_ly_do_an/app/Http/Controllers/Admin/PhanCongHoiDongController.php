@@ -64,7 +64,7 @@ class PhanCongHoiDongController extends Controller
 
         if ($request->filled('giang_vien_huong_dan')) {
             $deTaiSVs->whereHas('giangViens', function ($q) use ($request) {
-                $q->where('ho_ten', 'like', '%' . $request->giang_vien_huong_dan . '%');
+                $q->where('giang_vien.ma_gv', $request->giang_vien_huong_dan);
             });
         }
         
@@ -101,7 +101,7 @@ class PhanCongHoiDongController extends Controller
 
         if ($request->filled('giang_vien_huong_dan')) {
             $deTaiGVs->whereHas('giangViens', function ($q) use ($request) {
-                $q->where('ho_ten', 'like', '%' . $request->giang_vien_huong_dan . '%');
+                $q->where('giang_vien.ma_gv', $request->giang_vien_huong_dan);
             });
         }
 
@@ -246,7 +246,6 @@ class PhanCongHoiDongController extends Controller
         if (!$deTai) {
             abort(404, 'Đề tài không tồn tại');
         }
-
         $chuyenNganhs = BoMon::orderBy('ma_bo_mon', 'desc')->get();
 
         return view('admin.phanconghoidong.sua', compact('deTai', 'chuyenNganhs'));
@@ -296,7 +295,7 @@ class PhanCongHoiDongController extends Controller
             }
         } else {
             BangDiemGVTHDChoSVDK::where('ma_de_tai', $data['ma_de_tai'])->delete();
-            $phanCongs = BangPhanCongSVDK::where('ma_de_tai', $data['ma_de_tai'])->get();
+            $phanCongs = BangDiemGVPBChoSVDK::where('ma_de_tai', $data['ma_de_tai'])->get();
             foreach ($phanCongs as $phanCong) {
                 foreach ($hoiDong->giangViens as $giangVien) {
                     $phanCongHoiDong = new BangDiemGVTHDChoSVDK();

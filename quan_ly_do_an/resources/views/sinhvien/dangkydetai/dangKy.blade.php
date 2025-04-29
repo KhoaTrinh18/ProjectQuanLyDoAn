@@ -101,7 +101,7 @@
                 $(".is-invalid").removeClass("is-invalid");
 
                 $.ajax({
-                    url: "{{ route('dang_ky_de_tai.xac_nhan_dang_ky') }}",
+                    url: "{{ route('thong_tin_de_tai.thong_tin') }}",
                     type: "POST",
                     data: formData,
                     contentType: false,

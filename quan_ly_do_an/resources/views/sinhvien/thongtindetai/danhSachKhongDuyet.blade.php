@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Danh sách đề tài hủy')
+@section('title', 'Danh sách đề tài không được duyệt')
 
 @section('content')
     <div class="container-fluid p-0">
@@ -7,8 +7,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <h2 style="font-weight: bold">Danh sách đề tài hủy</h2>
-                        <a href="{{ route('dua_ra_de_tai.danh_sach') }}" class="btn btn-secondary btn-lg">Quay lại</a>
+                        <h2 style="font-weight: bold">Danh sách đề tài không được duyệt</h2>
                     </div>
                     <div class="card-body">
                         <table class="table table-bordered table-striped table-hover">
@@ -17,7 +16,8 @@
                                     <th scope="col" class="text-white">#</th>
                                     <th scope="col" class="text-white" style="width: 40%;">Tên đề tài</th>
                                     <th scope="col" class="text-white">Lĩnh vực</th>
-                                    <th scope="col" class="text-white">Số lượng sinh viên tối đa</th>
+                                    <th scope="col" class="text-white">Sinh viên</th>
+                                    <th scope="col" class="text-white">Ngày đề xuất</th>
                                     <th scope="col" class="text-white">Trạng thái</th>
                                     <th scope="col" class="text-white"></th>
                                 </tr>
@@ -32,11 +32,12 @@
                                             {{ $deTai->ten_de_tai }}
                                         </td>
                                         <td>{{ $deTai->linhVuc->ten_linh_vuc }}</td>
-                                        <td class="text-center">{{ $deTai->so_luong_sv_toi_da }}</td>
-                                        <td class="text-danger">đã hủy</td>
+                                        <td>{!! $deTai->sinhViens->pluck('ho_ten')->implode('<br>') !!}</td>
+                                        <td>{{ \Carbon\Carbon::parse($deTai->ngayDeXuat->ngay_de_xuat)->format('d-m-Y') }}</td>
+                                        <td><span class="text-danger">Không duyệt</span></td>
                                         <td class="text-center">
-                                            <a href="{{ route('dua_ra_de_tai.khoi_phuc', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
-                                                class="btn btn-primary btn-sm">Khôi phục</a>
+                                            <a href="{{ route('thong_tin_de_tai.chi_tiet_khong_duyet', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
+                                                class="btn btn-secondary btn-sm">Xem</a>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -47,9 +48,6 @@
                                 @endif
                             </tbody>
                         </table>
-                        <h5 class="text-center" style="font-weight: bold"><i>Khi đề tài đã được duyệt giảng viên không thể
-                                tự hủy. Nếu cần hủy thì phải liên hệ với trưởng khoa trong thời gian quy định!</i>
-                        </h5>
                     </div>
                 </div>
             </div>
@@ -57,3 +55,8 @@
     </div>
 @endsection
 
+@section('scripts')
+    <script>
+        $(document).ready(function() {});
+    </script>
+@endsection

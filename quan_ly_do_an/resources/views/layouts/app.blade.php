@@ -63,25 +63,14 @@
 
                         </li>
                         <li
-                            class="sidebar-item {{ request()->is('thong-tin-de-tai/danh-sach-de-tai-huy') || request()->is('thong-tin-de-tai/chi-tiet-de-tai-huy*') ? 'active' : '' }}">
-                            <a class="sidebar-link" href="{{ route('thong_tin_de_tai.danh_sach_de_tai_huy') }}">
-                                <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Đề
-                                    tài
-                                    đã hủy</span>
+                            class="sidebar-item {{ request()->is('thong-tin-de-tai/danh-sach-khong-duyet') || request()->is('thong-tin-de-tai/chi-tiet-khong-duyet*') ? 'active' : '' }}">
+                            <a class="sidebar-link" href="{{ route('thong_tin_de_tai.danh_sach_khong_duyet') }}">
+                                <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Danh sách không duyệt</span>
                             </a>
                         </li>
                     </ul>
                 @elseif (session('ten_giang_vien') != null)
                     <ul class="sidebar-nav">
-                        <li class="sidebar-header">
-                            Thực hiện
-                        </li>
-                        <li class="sidebar-item {{ request()->is('dua-ra-de-tai*') ? 'active' : '' }}">
-                            <a class="sidebar-link" href="{{ route('dua_ra_de_tai.danh_sach') }}">
-                                <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Đưa
-                                    ra đề tài</span>
-                            </a>
-                        </li>
                         <li class="sidebar-header">
                             Thông tin
                         </li>
@@ -89,6 +78,15 @@
                             <a class="sidebar-link" href="{{ route('thong_tin_de_tai.danh_sach_duyet') }}">
                                 <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Đề
                                     tài đã duyệt</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-header">
+                            Thực hiện
+                        </li>
+                        <li class="sidebar-item {{ request()->is('dua-ra-de-tai*') ? 'active' : '' }}">
+                            <a class="sidebar-link" href="{{ route('dua_ra_de_tai.danh_sach') }}">
+                                <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Đưa
+                                    ra đề tài</span>
                             </a>
                         </li>
                         <li class="sidebar-header">
@@ -156,8 +154,10 @@
                                 <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Phân công hội đồng</span>
                             </a>
                         </li>
-                        <li class="sidebar-header">
-                            Thông tin
+                        <li class="sidebar-item {{ request()->is('giang-vien*') ? 'active' : '' }}">
+                            <a class="sidebar-link" href="{{ route('giang_vien.danh_sach') }}">
+                                <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Giảng viên</span>
+                            </a>
                         </li>
                     </ul>
                 @endif

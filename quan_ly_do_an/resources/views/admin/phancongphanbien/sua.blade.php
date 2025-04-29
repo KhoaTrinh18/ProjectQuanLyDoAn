@@ -63,15 +63,18 @@
                             <div class="d-flex align-items-center">
                                 <label for="DeTai[ma_gvpb]"><strong>Giảng viên phản biện:</strong></label>
                                 <select name="DeTai[ma_gvpb]" class="form-select ms-2" style="width: 260px">
-                                    <option value="">Chọn giảng viên</option>
+                                    <option value="" hidden disabled>Chọn giảng viên</option>
                                     @php
                                         $giangVienPB = $deTai->giangVienPhanBiens->first();
                                     @endphp
-                                    @foreach ($giangViens as $giangVien)
-                                        <option value="{{ $giangVien->ma_gv }}"
-                                            {{ $giangVienPB->ma_gv == $giangVien->ma_gv ? 'selected' : '' }}>
-                                            {{ $giangVien->ho_ten }}
-                                        </option>
+                                    @foreach ($chuyenNganhs as $chuyenNganh)
+                                        <optgroup label="{{ $chuyenNganh->ten_bo_mon }}">
+                                            @foreach ($chuyenNganh->giangViens as $giangVien)
+                                                <option value="{{ $giangVien->ma_gv }}"
+                                                    {{ $giangVienPB->ma_gv == $giangVien->ma_gv ? 'selected' : '' }}>
+                                                    {{ $giangVien->ho_ten }}</option>
+                                            @endforeach
+                                        </optgroup>
                                     @endforeach
                                 </select>
                             </div>
@@ -81,7 +84,8 @@
                             <div class="text-center">
                                 <a href="{{ route('phan_cong_phan_bien.danh_sach') }}"
                                     class="btn btn-secondary btn-lg">Quay lại</a>
-                                <button type="submit" class="btn btn-primary btn-lg" id="capNhat">Xác nhận cập nhật</button>
+                                <button type="submit" class="btn btn-primary btn-lg" id="capNhat">Xác nhận cập
+                                    nhật</button>
                             </div>
                         </form>
                     </div>

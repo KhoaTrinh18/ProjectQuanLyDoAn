@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use App\Models\{
     BangPhanCongSVDK,
     BangPhanCongSVDX,
+    BoMon,
     DeTaiGiangVien,
     DeTaiSinhVien,
     GiangVien
@@ -37,8 +38,9 @@ class PhanCongHuongDanController extends Controller
             $page,
             ['path' => request()->url(), 'query' => request()->query()]
         );
+        $chuyenNganhs = BoMon::orderBy('ma_bo_mon', 'desc')->get();
 
-        return view('admin.phanconghuongdan.danhSach', compact('deTais'));
+        return view('admin.phanconghuongdan.danhSach', compact('deTais', 'chuyenNganhs'));
     }
 
     public function pageAjax(Request $request)
@@ -55,7 +57,7 @@ class PhanCongHuongDanController extends Controller
 
         if ($request->filled('giang_vien')) {
             $deTaiSVs->whereHas('giangViens', function ($q) use ($request) {
-                $q->where('ho_ten', 'like', '%' . $request->giang_vien . '%');
+                $q->where('giang_vien.ma_gv', $request->giang_vien);
             });
         }
 
@@ -86,7 +88,7 @@ class PhanCongHuongDanController extends Controller
 
         if ($request->filled('giang_vien')) {
             $deTaiGVs->whereHas('giangViens', function ($q) use ($request) {
-                $q->where('ho_ten', 'like', '%' . $request->giang_vien . '%');
+                $q->where('giang_vien.ma_gv', $request->giang_vien);
             });
         }
 

@@ -79,10 +79,15 @@
                             <div class="d-flex align-items-center">
                                 <label for="DeTai[ma_gvpb]"><strong>Giảng viên phản biện:</strong></label>
                                 <select name="DeTai[ma_gvpb]" class="form-select ms-2" style="width: 260px">
-                                    <option value="" selected>Chọn giảng viên</option>
-                                    @foreach ($giangViens as $giangVien)
-                                        <option value="{{ $giangVien->ma_gv }}">{{ $giangVien->ho_ten }}
-                                        </option>
+                                    <option value="" selected hidden disabled>Chọn giảng viên</option>
+                                    <option value="">Chọn giảng viên</option>
+                                    @foreach ($chuyenNganhs as $chuyenNganh)
+                                        <optgroup label="{{ $chuyenNganh->ten_bo_mon }}">
+                                            @foreach ($chuyenNganh->giangViens as $giangVien)
+                                                <option value="{{ $giangVien->ma_gv }}">
+                                                    {{ $giangVien->ho_ten }}</option>
+                                            @endforeach
+                                        </optgroup>
                                     @endforeach
                                 </select>
                             </div>
@@ -93,7 +98,8 @@
                                 <a href="{{ route('phan_cong_phan_bien.danh_sach') }}"
                                     class="btn btn-secondary btn-lg">Quay
                                     lại</a>
-                                <button type="submit" class="btn btn-primary btn-lg" id="phanCong">Xác nhận phân công</button>
+                                <button type="submit" class="btn btn-primary btn-lg" id="phanCong">Xác nhận phân
+                                    công</button>
                             </div>
                         </form>
                     </div>

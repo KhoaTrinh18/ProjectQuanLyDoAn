@@ -61,7 +61,7 @@ class DangNhapController extends Controller
             }
             Session::put('ten_giang_vien', $hocVi.$giangVien->ho_ten);
             Session::put('role', 'giangvien');
-            $route = route('dua_ra_de_tai.danh_sach');
+            $route = route('thong_tin_de_tai.danh_sach_duyet');
         } else if ($taiKhoanGV->loai_tk == 'admin') {
             Session::put('ten_admin', 'admin');
             Session::put('role', 'admin');

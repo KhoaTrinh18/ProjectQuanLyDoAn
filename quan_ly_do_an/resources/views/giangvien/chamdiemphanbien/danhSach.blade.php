@@ -77,7 +77,7 @@
                                 @endforeach
                                 @if ($deTais->isEmpty())
                                     <tr>
-                                        <td colspan="6" class="text-center">Không có đề tài</td>
+                                        <td colspan="7" class="text-center">Không có đề tài</td>
                                     </tr>
                                 @endif
                             </tbody>

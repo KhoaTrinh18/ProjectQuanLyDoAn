@@ -126,7 +126,8 @@ class DeXuatDeTaiController extends Controller
                 $sinhVienDTSVs[] = [
                     'ma_sv' => $sinhVien->ma_sv,
                     'ma_de_tai' => $deTaiSV->ma_de_tai,
-                    'ngay_de_xuat' => now()->toDateString()
+                    'ngay_de_xuat' => now()->toDateString(),
+                    'trang_thai' => 1
                 ];
             }
             SinhVienDeTaiSV::insert($sinhVienDTSVs);

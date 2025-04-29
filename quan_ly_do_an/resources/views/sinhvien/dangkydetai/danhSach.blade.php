@@ -25,7 +25,8 @@
                                     <div class="d-flex align-items-center justify-content-between mt-2">
                                         <label for="ma_linh_vuc">Lĩnh vực:</label>
                                         <select class="form-select ms-2 w-75 shadow-none" name="ma_linh_vuc">
-                                            <option value="" selected>Chọn lĩnh vực</option>
+                                            <option value="" selected disabled hidden>Chọn lĩnh vực</option>
+                                            <option value="">Tất cả</option>
                                             @foreach ($linhVucs as $linhVuc)
                                                 <option value="{{ $linhVuc->ma_linh_vuc }}">{{ $linhVuc->ten_linh_vuc }}
                                                 </option>
@@ -36,13 +37,24 @@
                                 <div class="d-flex flex-column ms-3" style="width: 350px">
                                     <div class="d-flex align-items-center justify-content-between">
                                         <label for="giang_vien">Giảng viên:</label>
-                                        <input type="text" name="giang_vien" class="form-control ms-2 w-75 shadow-none"
-                                            placeholder="Giảng viên">
+                                        <select class="form-select ms-2 w-75 shadow-none" name="giang_vien">
+                                            <option value="" selected disabled hidden>Chọn giảng viên</option>
+                                            <option value="">Tất cả</option>
+                                            @foreach ($chuyenNganhs as $chuyenNganh)
+                                                <optgroup label="{{ $chuyenNganh->ten_bo_mon }}">
+                                                    @foreach ($chuyenNganh->giangViens as $giangVien)
+                                                        <option value="{{ $giangVien->ma_gv }}">
+                                                            {{ $giangVien->ho_ten }}</option>
+                                                    @endforeach
+                                                </optgroup>
+                                            @endforeach
+                                        </select>
                                     </div>
                                     <div class="d-flex align-items-center justify-content-between mt-2">
                                         <label for="trang_thai">Trạng thái:</label>
                                         <select class="form-select ms-2 w-75 shadow-none" name="trang_thai">
-                                            <option value="" selected>Chọn trạng thái</option>
+                                            <option value="" selected disabled hidden>Chọn trạng thái</option>
+                                            <option value="">Tất cả</option>
                                             <option value="1">Có người đăng ký</option>
                                             <option value="0">Chưa có người đăng ký</option>
                                         </select>

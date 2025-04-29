@@ -28,7 +28,7 @@ class ThongTinDeTaiController extends Controller
 
         if ($daDangKy) {
             if ($sinhVien->loai_sv == 'de_xuat') {
-                $sinhVienDTSV = SinhVienDeTaiSV::where(['ma_sv' => $sinhVien->ma_sv, 'da_huy' => 0])->first();
+                $sinhVienDTSV = SinhVienDeTaiSV::where('ma_sv', $sinhVien->ma_sv)->where('trang_thai', '!=', 0)->first();
                 $deTai = DeTaiSinhVien::where(['ma_de_tai' => $sinhVienDTSV->ma_de_tai, 'da_huy' => 0])->first();
                 $loaiDeTai = 'de_tai_sv';
             } else {
@@ -37,7 +37,7 @@ class ThongTinDeTaiController extends Controller
                 $loaiDeTai = 'de_tai_gv';
             }
 
-            $thietLap = ThietLap::where('trang_thai', 2)->first();
+            $thietLap = ThietLap::where('trang_thai', 1)->first();
             $ngayHomNay = Carbon::now()->toDateString();
             if (Carbon::parse($thietLap->ngay_thuc_hien)->lt($ngayHomNay)) {
                 $ngayThucHien = 1;
@@ -57,7 +57,7 @@ class ThongTinDeTaiController extends Controller
         $sinhVien = SinhVien::where('ma_tk', $maTaiKhoan)->first();
 
         if ($sinhVien->loai_sv == 'de_xuat') {
-            $sinhVienDTSV = SinhVienDeTaiSV::where(['ma_sv' => $sinhVien->ma_sv, 'da_huy' => 0])->first();
+            $sinhVienDTSV = SinhVienDeTaiSV::where('ma_sv', $sinhVien->ma_sv)->first();
             $deTai = DeTaiSinhVien::where(['ma_de_tai' => $sinhVienDTSV->ma_de_tai, 'da_huy' => 0])->first();
         } else {
             $phanCongSVDK = BangPhanCongSVDK::where('ma_sv', $sinhVien->ma_sv)->first();
@@ -80,11 +80,9 @@ class ThongTinDeTaiController extends Controller
         $deTai->trang_thai = null;
         $deTai->save();
 
-        SinhVienDeTaiSV::where('ma_de_tai', $ma_de_tai)->update([
-            'da_huy' => 1
-        ]);
-
         $maSVs = $deTai->sinhViens->pluck('ma_sv')->toArray();
+
+        SinhVienDeTaiSV::where('ma_de_tai', $ma_de_tai)->delete();
 
         SinhVien::whereIn('ma_sv', $maSVs)->update([
             'loai_sv' => null,
@@ -219,7 +217,8 @@ class ThongTinDeTaiController extends Controller
                 $sinhVienDTSVs[] = [
                     'ma_sv' => $sinhVien->ma_sv,
                     'ma_de_tai' => $data['ma_de_tai'],
-                    'ngay_de_xuat' => now()->toDateString()
+                    'ngay_de_xuat' => now()->toDateString(),
+                    'trang_thai' => 1
                 ];
             }
             SinhVienDeTaiSV::insert($sinhVienDTSVs);
@@ -236,43 +235,19 @@ class ThongTinDeTaiController extends Controller
         }
     }
 
-    public function danhSachDeTaiHuy()
+    public function danhSachKhongDuyet()
     {
-        $deTais = DeTaiSinhVien::where('da_huy', 1)->orderBy('ma_de_tai', 'desc')->get();
-        return view('sinhvien.thongtindetai.deTaiHuy', compact('deTais'));
-    }
-
-    public function chiTietDeTaiHuy($ma_de_tai)
-    {
-        $deTai = DeTaiSinhVien::where('ma_de_tai', $ma_de_tai)->first();
-        return view('sinhvien.thongtindetai.chiTietDeTaiHuy', compact('deTai'));
-    }
-
-    public function xacNhandeXuat(Request $request)
-    {
-        if (!$request->isMethod('post')) {
-            return redirect()->back()->with('error', 'Bạn không thể truy cập trực tiếp trang này!');
-        }
-
-        $ma_de_tai = $request->input('ma_de_tai');
-
-        $deTai = DeTaiSinhVien::where('ma_de_tai', $ma_de_tai)->first();
-        $deTai->da_huy = 0;
-        $deTai->save();
-
         $maTaiKhoan = session()->get('ma_tai_khoan');
         $sinhVien = SinhVien::where('ma_tk', $maTaiKhoan)->first();
-        $mssvList[] = $sinhVien->mssv;
-        SinhVien::whereIn('mssv', $mssvList)->update([
-            'ma_de_tai_sv' => $ma_de_tai,
-            'loai_sv' => 1,
-            'ngay' => Carbon::now()
-        ]);
+        $maDeTais = SinhVienDeTaiSV::where(['ma_sv' => $sinhVien->ma_sv, 'trang_thai' => 0])->pluck('ma_de_tai');
+        $deTais = DeTaiSinhVien::whereIn('ma_de_tai', $maDeTais)->orderBy('ma_de_tai', 'desc')->get();
 
-        session(['co_de_tai' => 1]);
+        return view('sinhvien.thongtindetai.danhSachKhongDuyet', compact('deTais'));
+    }
 
-        return response()->json([
-            'success' => true,
-        ]);
+    public function chiTietKhongDuyet($ma_de_tai)
+    {
+        $deTai = DeTaiSinhVien::where('ma_de_tai', $ma_de_tai)->firstOrFail();
+        return view('sinhvien.thongtindetai.chiTietKhongDuyet', compact('deTai'));
     }
 }

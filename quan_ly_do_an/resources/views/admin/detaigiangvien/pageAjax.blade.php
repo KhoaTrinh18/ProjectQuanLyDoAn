@@ -77,10 +77,10 @@
                                 <a href="{{ route('de_tai_giang_vien.duyet', ['ma_de_tai' => $deTaiGV->ma_de_tai]) }}"
                                     class="btn btn-primary btn-sm">Duyệt</a>
                             @else
-                                <a href="{{ route('de_tai_giang_vien.huy', ['ma_de_tai' => $deTaiGV->ma_de_tai]) }}"
-                                    class="btn btn-danger btn-sm">Hủy</a>
                                 <a href="{{ route('de_tai_giang_vien.chi_tiet', ['ma_de_tai' => $deTaiGV->ma_de_tai]) }}"
                                     class="btn btn-secondary btn-sm">Xem</a>
+                                <a href="{{ route('de_tai_giang_vien.huy', ['ma_de_tai' => $deTaiGV->ma_de_tai]) }}"
+                                    class="btn btn-danger btn-sm">Hủy</a>
                             @endif
                         </td>
                     </tr>

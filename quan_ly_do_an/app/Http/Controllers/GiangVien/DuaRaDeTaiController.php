@@ -39,7 +39,7 @@ class DuaRaDeTaiController extends Controller
     public function duaRa()
     {
         $linhVucs = LinhVuc::orderBy('ma_linh_vuc', 'desc')->get();
-        $chuyenNganhs = BoMon::with('giangViens')->get();
+        $chuyenNganhs = BoMon::with('giangViens')->orderBy('ma_bo_mon', 'desc')->get();
 
         return view('giangvien.duaradetai.duaRa', compact('linhVucs', 'chuyenNganhs'));
     }
@@ -102,13 +102,18 @@ class DuaRaDeTaiController extends Controller
 
             $maTaiKhoan = session()->get('ma_tai_khoan');
             $giangVien = GiangVien::where('ma_tk', $maTaiKhoan)->first();
-            $data['giang_vien'][] = $giangVien->ma_gv;
 
-            foreach($data['giang_vien'] as $gv) {
+            $giangViens = array_filter($data['giang_vien'], function ($value) {
+                return trim(strip_tags($value)) !== "";
+            });            
+            $giangViens[] = $giangVien->ma_gv;
+
+            foreach($giangViens as $gv) {
                 $GV_DT = new GiangVienDeTaiGV();
                 $GV_DT->ma_gv = $gv;
                 $GV_DT->ma_de_tai = $deTaiGV->ma_de_tai;
                 $GV_DT->ngay_dua_ra = Carbon::now();
+                $GV_DT->trang_thai = 1;
                 $GV_DT->save();
             }
 
@@ -128,7 +133,7 @@ class DuaRaDeTaiController extends Controller
     {
         $linhVucs = LinhVuc::orderBy('ma_linh_vuc', 'desc')->get();
         $deTai = DeTaiGiangVien::where('ma_de_tai', $ma_de_tai)->firstOrFail();
-        $chuyenNganhs = BoMon::with('giangViens')->get();
+        $chuyenNganhs = BoMon::with('giangViens')->orderBy('ma_bo_mon', 'desc')->get();
 
         $maTaiKhoan = session()->get('ma_tai_khoan');
         $giangVien = GiangVien::where('ma_tk', $maTaiKhoan)->first();
@@ -203,6 +208,7 @@ class DuaRaDeTaiController extends Controller
                 $GV_DT->ma_gv = $gv;
                 $GV_DT->ma_de_tai = $data['ma_de_tai'];
                 $GV_DT->ngay_dua_ra = Carbon::now();
+                $GV_DT->trang_thai = 1;
                 $GV_DT->save();
             }
 
@@ -237,48 +243,8 @@ class DuaRaDeTaiController extends Controller
         $deTai->trang_thai = null;
         $deTai->save();
 
-        GiangVienDeTaiGV::where('ma_de_tai', $ma_de_tai)->update([
-            'da_huy' => 1
-        ]);
+        GiangVienDeTaiGV::where('ma_de_tai', $ma_de_tai)->delete();
 
-        return response()->json([
-            'success' => true,
-        ]);
-    }
-
-    public function danhSachHuy() {
-        $maTaiKhoan = session()->get('ma_tai_khoan');
-        $giangVien = GiangVien::where('ma_tk', $maTaiKhoan)->first();
-        $maDeTais = GiangVienDeTaiGV::where('ma_gv', $giangVien->ma_gv)->pluck('ma_de_tai');
-        $deTais = DeTaiGiangVien::whereIn('ma_de_tai', $maDeTais)
-            ->where('da_huy', 1)
-            ->orderBy('ma_de_tai', 'desc')
-            ->get();
-        return view('giangvien.duaradetai.danhSachHuy', compact('deTais'));
-    }
-
-    public function khoiPhuc($ma_de_tai) {
-        $deTai = DeTaiGiangVien::where('ma_de_tai', $ma_de_tai)->firstOrFail();
-        return view('giangvien.duaradetai.khoiPhuc', compact('deTai'));
-    }
-
-    public function xacNhanKhoiPhuc(Request $request)
-    {
-        if (!$request->isMethod('post')) {
-            return redirect()->back()->with('error', 'Bạn không thể truy cập trực tiếp trang này!');
-        }
-
-        $ma_de_tai = $request->input('ma_de_tai');
-
-        $deTai = DeTaiGiangVien::where('ma_de_tai', $ma_de_tai)->first();
-        $deTai->da_huy = 0;
-        $deTai->trang_thai = 1;
-        $deTai->save();
-
-        GiangVienDeTaiGV::where('ma_de_tai', $ma_de_tai)->update([
-            'da_huy' => 0
-        ]);
-        
         return response()->json([
             'success' => true,
         ]);

@@ -27,12 +27,6 @@ Route::middleware([KiemTraDangNhap::class. ':giangvien'])->group(function () {
     Route::get('/dua-ra-de-tai/xac-nhan-huy', function() {
         return redirect()->back()->with('error', 'Sai đường dẫn');
     });
-    Route::get('/dua-ra-de-tai/danh-sach-huy', [DuaRaDeTaiController::class, 'danhSachHuy'])->name('dua_ra_de_tai.danh_sach_huy');
-    Route::get('/dua-ra-de-tai/khoi-phuc/{ma_de_tai}', [DuaRaDeTaiController::class, 'khoiPhuc'])->name('dua_ra_de_tai.khoi_phuc');
-    Route::post('/dua-ra-de-tai/xac-nhan-khoi-phuc', [DuaRaDeTaiController::class, 'xacNhanKhoiPhuc'])->name('dua_ra_de_tai.xac_nhan_khoi_phuc');
-    Route::get('/dua-ra-de-tai/xac-nhan-khoi-phuc', function() {
-        return redirect()->back()->with('error', 'Sai đường dẫn');
-    });
 
     Route::get('/thong-tin-de-tai/danh-sach-duyet', [ThongTinDeTaiController::class, 'danhSachDuyet'])->name('thong_tin_de_tai.danh_sach_duyet');
     Route::get('/thong-tin-de-tai/chi-tiet-duyet/{ma_de_tai}', [ThongTinDeTaiController::class, 'chiTietDuyet'])->name('thong_tin_de_tai.chi_tiet_duyet');
