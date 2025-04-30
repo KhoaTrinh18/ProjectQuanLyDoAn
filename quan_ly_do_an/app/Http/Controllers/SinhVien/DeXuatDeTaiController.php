@@ -27,8 +27,7 @@ class DeXuatDeTaiController extends Controller
 
         $linhVucs = LinhVuc::orderBy('ma_linh_vuc', 'desc')->get();
 
-        $taikhoan = TaiKhoanSV::where('ma_tk', $maTaiKhoan)->first();
-        $thietLap = ThietLap::where('nam_hoc', $taikhoan->nam_hoc)->first();
+        $thietLap = ThietLap::where('trang_thai', 1)->first();
         $ngayHetHan = Carbon::create($thietLap->ngay_ket_thuc_dang_ky)->setTime(23, 59, 59)->toIso8601String();
 
         return view('sinhvien.dexuatdetai.deXuat', compact('linhVucs', 'daDangKy', 'ngayHetHan'));
@@ -104,12 +103,15 @@ class DeXuatDeTaiController extends Controller
         }
         
         try {
+            $thietLap = ThietLap::where('trang_thai', 1)->first();
+
             $deTaiSV = new DeTaiSinhVien();
             $deTaiSV->ten_de_tai = $data['ten_de_tai'];
             $deTaiSV->ma_linh_vuc = $data['ma_linh_vuc'];
             $deTaiSV->mo_ta = $data['mo_ta'];
             $deTaiSV->trang_thai = 1;
             $deTaiSV->so_luong_sv_de_xuat = count($mssvList) + 1;
+            $deTaiSV->nam_hoc = $thietLap->nam_hoc;
             $deTaiSV->save();
 
             $maTaiKhoan = session()->get('ma_tai_khoan');

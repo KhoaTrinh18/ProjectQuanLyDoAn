@@ -17,6 +17,19 @@ use App\Http\Middleware\KiemTraDangNhap;
 Route::middleware([KiemTraDangNhap::class])->group(function () {
     Route::get('/thiet-lap/danh-sach', [ThietLapController::class, 'danhSach'])->name('thiet_lap.danh_sach');
     Route::get('/thiet-lap/them', [ThietLapController::class, 'them'])->name('thiet_lap.them');
+    Route::post('/thiet-lap/xac-nhan-them', [ThietLapController::class, 'xacNhanThem'])->name('thiet_lap.xac_nhan_them');
+    Route::get('/thiet-lap/xac-nhan-them', function () {
+        return redirect()->back()->with('error', 'Sai đường dẫn');
+    });
+    Route::get('/thiet-lap/sua/{ma_thiet_lap}', [ThietLapController::class, 'sua'])->name('thiet_lap.sua');
+    Route::post('/thiet-lap/xac-nhan-sua', [ThietLapController::class, 'xacNhanSua'])->name('thiet_lap.xac_nhan_sua');
+    Route::get('/thiet-lap/xac-nhan-sua', function () {
+        return redirect()->back()->with('error', 'Sai đường dẫn');
+    });
+    Route::post('/thiet-lap/huy', [ThietLapController::class, 'huy'])->name('thiet_lap.huy');
+    Route::get('/thiet-lap/huy', function () {
+        return redirect()->back()->with('error', 'Sai đường dẫn');
+    });
 
     Route::get('/de-tai-giang-vien/danh-sach', [DeTaiGiangVienController::class, 'danhSach'])->name('de_tai_giang_vien.danh_sach');
     Route::get('/de-tai-giang-vien/page-ajax', [DeTaiGiangVienController::class, 'pageAjax'])->name('de_tai_giang_vien.page_ajax');

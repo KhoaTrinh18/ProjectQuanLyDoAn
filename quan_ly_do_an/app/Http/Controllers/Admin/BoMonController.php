@@ -172,7 +172,6 @@ class BoMonController extends Controller
         }
         $ma_bo_mon = $request->input('ma_bo_mon');
         $boMon = BoMon::where('ma_bo_mon', $ma_bo_mon)->first();
-        Log::info("bo mon", [$boMon]);
 
         if($boMon->giangViens->count() != 0) {
             return response()->json([

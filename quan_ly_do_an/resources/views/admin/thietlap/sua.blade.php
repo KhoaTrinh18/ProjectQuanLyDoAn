@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Thêm mới thiết lập')
+@section('title', 'Cập nhật thiết lập')
 
 @section('content')
     <div class="container-fluid p-0">
@@ -8,10 +8,11 @@
                 <div class="card">
 
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <h2 style="font-weight: bold">Thêm mới thiết lập</h2>
+                        <h2 style="font-weight: bold">Cập nhật thiết lập</h2>
                     </div>
                     <div class="card-body">
-                        <form id="form_them">
+                        <form id="form_cap_nhat">
+                            <input type="hidden" name="ThietLap[ma_thiet_lap]" value="{{ $thietLap->ma_thiet_lap }}">
                             <div class="d-flex mb-3">
                                 <label for="ThietLap[nam_hoc]"
                                     class="p-2 d-flex align-items-center justify-content-center text-white rounded bg-secondary"
@@ -22,11 +23,11 @@
                                     <div class="d-flex align-items-center">
                                         <input type="text" class="form-control form-control-lg shadow-none text-center"
                                             name="ThietLap[nam_hoc_dau]" maxlength="4" style="width: 90px"
-                                            value={{ $namDau }} {{ $check ? 'readonly' : '' }}>
+                                            value={{ $namDau }} readonly>
                                         <span class="mx-2">-</span>
                                         <input type="text" class="form-control form-control-lg shadow-none text-center"
                                             name="ThietLap[nam_hoc_cuoi]" maxlength="4" style="width: 90px"
-                                            value={{ $namCuoi }} {{ $check ? 'readonly' : '' }}>
+                                            value={{ $namCuoi }} readonly>
                                     </div>
                                     <span class="error-message text-danger d-none mt-2 error-nam_hoc"></span>
                                 </div>
@@ -43,7 +44,7 @@
                                             data-td-target="#ngayDangKyStart" style="width: 180px">
                                             <input type="text" class="form-control form-control-lg shadow-none"
                                                 name="ThietLap[ngay_dang_ky]" id="ngayDangKyStart"
-                                                data-td-target="#ngayDangKyStart" readonly />
+                                                data-td-target="#ngayDangKyStart" readonly value="{{ \Carbon\Carbon::parse($thietLap->ngay_dang_ky)->format('d-m-Y') }}" />
                                             <span class="input-group-text" data-td-toggle="datetimepicker1"
                                                 data-td-target="#ngayDangKyStart">
                                                 <i class="bi bi-calendar-event"></i>
@@ -54,7 +55,7 @@
                                             data-td-target="#ngayDangKyEnd" style="width: 180px">
                                             <input type="text" class="form-control form-control-lg shadow-none"
                                                 name="ThietLap[ngay_ket_thuc_dang_ky]" id="ngayDangKyEnd"
-                                                data-td-target="#ngayDangKyEnd" readonly />
+                                                data-td-target="#ngayDangKyEnd" readonly value="{{ \Carbon\Carbon::parse($thietLap->ngay_ket_thuc_dang_ky)->format('d-m-Y') }}"/>
                                             <span class="input-group-text" data-td-toggle="datetimepicker2"
                                                 data-td-target="#ngayDangKyEnd">
                                                 <i class="bi bi-calendar-event"></i>
@@ -76,7 +77,7 @@
                                             data-td-target="#ngayThucHienStart" style="width: 180px">
                                             <input type="text" class="form-control form-control-lg shadow-none"
                                                 name="ThietLap[ngay_thuc_hien]" id="ngayThucHienStart"
-                                                data-td-target="#ngayThucHienStart" readonly />
+                                                data-td-target="#ngayThucHienStart" readonly value="{{ \Carbon\Carbon::parse($thietLap->ngay_thuc_hien)->format('d-m-Y') }}"/>
                                             <span class="input-group-text" data-td-toggle="datetimepicker3"
                                                 data-td-target="#ngayThucHienStart">
                                                 <i class="bi bi-calendar-event"></i>
@@ -88,7 +89,7 @@
                                                 data-td-target="#ngayThucHienEnd" style="width: 180px">
                                                 <input type="text" class="form-control form-control-lg shadow-none"
                                                     name="ThietLap[ngay_ket_thuc_thuc_hien]" id="ngayThucHienEnd"
-                                                    data-td-target="#ngayThucHienEnd" readonly />
+                                                    data-td-target="#ngayThucHienEnd" readonly value="{{ \Carbon\Carbon::parse($thietLap->ngay_ket_thuc_thuc_hien)->format('d-m-Y') }}"/>
                                                 <span class="input-group-text" data-td-toggle="datetimepicker4"
                                                     data-td-target="#ngayThucHienEnd">
                                                     <i class="bi bi-calendar-event"></i>
@@ -102,9 +103,9 @@
                             <div class="text-center">
                                 <a href="{{ route('thiet_lap.danh_sach') }}" class="btn btn-secondary btn-lg">Quay
                                     lại</a>
-                                <button type="button" class="btn btn-success btn-lg" data-bs-toggle="modal"
+                                <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal"
                                     data-bs-target="#confirmModal">
-                                    Xác nhận thêm mới
+                                    Xác nhận cập nhật
                                 </button>
                             </div>
                             <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel"
@@ -112,16 +113,16 @@
                                 <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content rounded-4 shadow-sm border-0">
                                         <div class="modal-header bg-light border-bottom-0">
-                                            <h5 class="modal-title fw-semibold text-primary" id="confirmModalLabel">Xác nhận thêm mới</h5>
+                                            <h5 class="modal-title fw-semibold text-primary" id="confirmModalLabel">Xác nhận cập nhật</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                 aria-label="Close"></button>
                                         </div>
-                                        <div class="modal-body text-center fs-5 text-secondary">Sau khi bạn thiết lập năm học mới thì năm học trước đó đang hoạt động sẽ dừng lại. Bạn có chắc muốn thêm thiết lập này không?
+                                        <div class="modal-body text-center fs-5 text-secondary">Bạn có chắc muốn cập nhật thiết lập này không?
                                         </div>
                                         <div class="modal-footer bg-light border-top-0">
                                             <button type="button" class="btn btn-secondary"
                                                 data-bs-dismiss="modal">Hủy</button>
-                                            <button type="submit" class="btn btn-primary" id="them">Xác
+                                            <button type="submit" class="btn btn-primary" id="capNhat">Xác
                                                 nhận</button>
                                         </div>
                                     </div>
@@ -138,10 +139,10 @@
 @section('scripts')
     <script>
         $(document).ready(function() {
-            $("#them").click(function(event) {
+            $("#capNhat").click(function(event) {
                 event.preventDefault();
 
-                let form = $("#form_them").get(0);
+                let form = $("#form_cap_nhat").get(0);
                 let formData = new FormData(form);
 
                 $(".error-message").text('').removeClass(
@@ -149,7 +150,7 @@
                 $(".is-invalid").removeClass("is-invalid");
 
                 $.ajax({
-                    url: "{{ route('thiet_lap.xac_nhan_them') }}",
+                    url: "{{ route('thiet_lap.xac_nhan_sua') }}",
                     type: "POST",
                     data: formData,
                     contentType: false,
@@ -162,7 +163,7 @@
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Thành công!',
-                                text: 'Thêm mới thành công!',
+                                text: 'Cập nhật thành công!',
                                 confirmButtonText: 'OK',
                                 timer: 1000,
                                 showConfirmButton: false
@@ -185,7 +186,7 @@
                         Swal.fire({
                             icon: 'error',
                             title: 'Thất bại!',
-                            text: 'Thêm mới thất bại! Vui lòng thử lại',
+                            text: 'Cập nhật thất bại! Vui lòng thử lại',
                             confirmButtonText: 'OK',
                             timer: 1000,
                             showConfirmButton: false

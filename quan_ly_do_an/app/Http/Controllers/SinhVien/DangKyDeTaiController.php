@@ -29,18 +29,12 @@ class DangKyDeTaiController extends Controller
 
         $linhVucs = LinhVuc::orderBy('ma_linh_vuc', 'desc')->get();
         $deTais = DeTaiGiangVien::where(['da_huy' => 0, 'trang_thai' => 2])->orderBy('ma_de_tai', 'desc')->paginate($limit);
-
-        $taikhoan = TaiKhoanSV::where('ma_tk', $maTaiKhoan)->first();
-        $thietLap = ThietLap::where('nam_hoc', $taikhoan->nam_hoc)->first();
-        $ngayHetHan = Carbon::create(2024, 5, 1)->toDateString();
-        if (Carbon::parse($thietLap->ngay_ket_thuc_dang_ky)->lt($ngayHetHan)) {
-            $hetHan = 1;
-        } else {
-            $hetHan = 0;
-        }
         $chuyenNganhs = BoMon::where('da_huy', 0)->orderBy('ma_bo_mon', 'desc')->get();
 
-        return view('sinhvien.dangkydetai.danhSach', compact('deTais', 'linhVucs', 'daDangKy', 'hetHan', 'chuyenNganhs'));
+        $thietLap = ThietLap::where('trang_thai', 1)->first();
+        $ngayHetHan = Carbon::create($thietLap->ngay_ket_thuc_dang_ky)->setTime(23, 59, 59)->toIso8601String();
+
+        return view('sinhvien.dangkydetai.danhSach', compact('deTais', 'linhVucs', 'daDangKy', 'ngayHetHan', 'chuyenNganhs'));
     }
 
     public function pageAjax(Request $request)
@@ -88,9 +82,12 @@ class DangKyDeTaiController extends Controller
         $sinhVien = SinhVien::where('ma_tk', $maTaiKhoan)->first();
         $daDangKy = $sinhVien->dang_ky;
 
+        $thietLap = ThietLap::where('trang_thai', 1)->first();
+        $ngayHetHan = Carbon::create($thietLap->ngay_ket_thuc_dang_ky)->setTime(23, 59, 59)->toIso8601String();
+
         $deTai = DeTaiGiangVien::where('ma_de_tai', $ma_de_tai)->firstOrFail();
 
-        return view('sinhvien.dangkydetai.dangKy', compact('deTai', 'daDangKy'));
+        return view('sinhvien.dangkydetai.dangKy', compact('deTai', 'daDangKy', 'ngayHetHan'));
     }
 
     public function xacNhanDangKy(Request $request)

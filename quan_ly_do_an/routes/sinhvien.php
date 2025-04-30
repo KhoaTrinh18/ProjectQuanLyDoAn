@@ -7,20 +7,17 @@ use App\Http\Controllers\SinhVien\{
     ThongTinDeTaiController
 };
 use App\Http\Middleware\{
-    KiemTraDangNhap,
-    KiemTraHetHanDangKy
+    KiemTraDangNhap
 };
 
 
-Route::middleware([KiemTraDangNhap::class. ':sinhvien'])->group(function () {
+Route::middleware([KiemTraDangNhap::class . ':sinhvien'])->group(function () {
     Route::get('/dang-ky-de-tai', [DangKyDeTaiController::class, 'danhSach'])->name('dang_ky_de_tai.danh_sach');
     Route::get('/dang-ky-de-tai/page-ajax', [DangKyDeTaiController::class, 'pageAjax'])->name('dang_ky_de_tai.page_ajax');
-    Route::middleware([KiemTraHetHanDangKy::class])->group(function () {
-        Route::get('/dang-ky-de-tai/dang-ky/{ma_de_tai}', [DangKyDeTaiController::class, 'dangKy'])->name('dang_ky_de_tai.dang_ky');
-        Route::post('/dang-ky-de-tai/xac-nhan-dang-ky', [DangKyDeTaiController::class, 'xacNhanDangKy'])->name('dang_ky_de_tai.xac_nhan_dang_ky');
-        Route::get('/dang-ky-de-tai/xac-nhan-dang-ky', function () {
-            return redirect()->back()->with('error', 'Sai đường dẫn');
-        });
+    Route::get('/dang-ky-de-tai/dang-ky/{ma_de_tai}', [DangKyDeTaiController::class, 'dangKy'])->name('dang_ky_de_tai.dang_ky');
+    Route::post('/dang-ky-de-tai/xac-nhan-dang-ky', [DangKyDeTaiController::class, 'xacNhanDangKy'])->name('dang_ky_de_tai.xac_nhan_dang_ky');
+    Route::get('/dang-ky-de-tai/xac-nhan-dang-ky', function () {
+        return redirect()->back()->with('error', 'Sai đường dẫn');
     });
 
     Route::get('/de-xuat-de-tai/de-xuat', [DeXuatDeTaiController::class, 'deXuat'])->name('de_xuat_de_tai.de_xuat');

@@ -51,7 +51,6 @@
                                                             <button type="button" class="btn btn-secondary"
                                                                 data-bs-dismiss="modal">Hủy</button>
                                                             <form class="form-huy" data-ma="{{ $boMon->ma_bo_mon }}">
-                                                                @csrf
                                                                 <input type="hidden" name="ma_bo_mon"
                                                                     value="{{ $boMon->ma_bo_mon }}">
                                                                 <button type="submit" class="huy btn btn-primary">Xác
@@ -88,7 +87,6 @@
 
                 let form = $(this).closest(".form-huy").get(0);
                 let formData = new FormData(form);
-                console.log(formData);
 
                 $.ajax({
                     url: "{{ route('bo_mon.huy') }}",

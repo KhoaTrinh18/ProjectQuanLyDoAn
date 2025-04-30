@@ -18,7 +18,8 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-bs4.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.7.10/dist/css/tempus-dominus.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.7.10/dist/css/tempus-dominus.min.css"
+        rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     @yield('style')
 </head>
@@ -54,7 +55,7 @@
                             Thông tin
                         </li>
                         <li
-                            class="sidebar-item {{ request()->is('thong-tin-de-tai/thong-tin') || request()->is('thong-tin-de-tai/chi-tiet') || request()->is('thong-tin-de-tai/sua*')  ? 'active' : '' }}">
+                            class="sidebar-item {{ request()->is('thong-tin-de-tai/thong-tin') || request()->is('thong-tin-de-tai/chi-tiet') || request()->is('thong-tin-de-tai/sua*') ? 'active' : '' }}">
                             <a class="sidebar-link" href="{{ route('thong_tin_de_tai.thong_tin') }}">
                                 <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Đề
                                     tài
@@ -65,7 +66,8 @@
                         <li
                             class="sidebar-item {{ request()->is('thong-tin-de-tai/danh-sach-khong-duyet') || request()->is('thong-tin-de-tai/chi-tiet-khong-duyet*') ? 'active' : '' }}">
                             <a class="sidebar-link" href="{{ route('thong_tin_de_tai.danh_sach_khong_duyet') }}">
-                                <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Danh sách không duyệt</span>
+                                <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Danh
+                                    sách không duyệt</span>
                             </a>
                         </li>
                     </ul>
@@ -118,7 +120,8 @@
                         </li>
                         <li class="sidebar-item {{ request()->is('thiet-lap*') ? 'active' : '' }}">
                             <a class="sidebar-link" href="{{ route('thiet_lap.danh_sach') }}">
-                                <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Thiết
+                                <i class="align-middle" data-feather="bar-chart-2"></i> <span
+                                    class="align-middle">Thiết
                                     lập</span>
                             </a>
                         </li>
@@ -136,32 +139,38 @@
                         </li>
                         <li class="sidebar-item {{ request()->is('phan-cong-huong-dan*') ? 'active' : '' }}">
                             <a class="sidebar-link" href="{{ route('phan_cong_huong_dan.danh_sach') }}">
-                                <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Phân công hướng dẫn</span>
+                                <i class="align-middle" data-feather="bar-chart-2"></i> <span
+                                    class="align-middle">Phân công hướng dẫn</span>
                             </a>
                         </li>
                         <li class="sidebar-item {{ request()->is('phan-cong-phan-bien*') ? 'active' : '' }}">
                             <a class="sidebar-link" href="{{ route('phan_cong_phan_bien.danh_sach') }}">
-                                <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Phân công phản biện</span>
+                                <i class="align-middle" data-feather="bar-chart-2"></i> <span
+                                    class="align-middle">Phân công phản biện</span>
                             </a>
                         </li>
                         <li class="sidebar-item {{ request()->is('hoi-dong*') ? 'active' : '' }}">
                             <a class="sidebar-link" href="{{ route('hoi_dong.danh_sach') }}">
-                                <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Hội đồng</span>
+                                <i class="align-middle" data-feather="bar-chart-2"></i> <span
+                                    class="align-middle">Hội đồng</span>
                             </a>
                         </li>
                         <li class="sidebar-item {{ request()->is('phan-cong-hoi-dong*') ? 'active' : '' }}">
                             <a class="sidebar-link" href="{{ route('phan_cong_hoi_dong.danh_sach') }}">
-                                <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Phân công hội đồng</span>
+                                <i class="align-middle" data-feather="bar-chart-2"></i> <span
+                                    class="align-middle">Phân công hội đồng</span>
                             </a>
                         </li>
                         <li class="sidebar-item {{ request()->is('giang-vien*') ? 'active' : '' }}">
                             <a class="sidebar-link" href="{{ route('giang_vien.danh_sach') }}">
-                                <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Giảng viên</span>
+                                <i class="align-middle" data-feather="bar-chart-2"></i> <span
+                                    class="align-middle">Giảng viên</span>
                             </a>
                         </li>
                         <li class="sidebar-item {{ request()->is('bo-mon*') ? 'active' : '' }}">
                             <a class="sidebar-link" href="{{ route('bo_mon.danh_sach') }}">
-                                <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Bộ môn</span>
+                                <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Bộ
+                                    môn</span>
                             </a>
                         </li>
                     </ul>
@@ -174,11 +183,28 @@
                     <i class="hamburger align-self-center"></i>
                 </a>
                 <div class="navbar-collapse collapse">
-                    <div class="nav-item" style="font-size: 18px">Năm học
+                    <div class="nav-item" style="font-size: 18px">
                         @php
                             $thietLap = DB::table('thiet_lap')->where('trang_thai', 1)->first();
-                            echo $thietLap->nam_hoc ?? 'Chưa thiết lập';
+                            use Carbon\Carbon;
+
+                            $homNay = Carbon::now();
+                            $ngayKetThucDK = Carbon::parse($thietLap->ngay_ket_thuc_dang_ky);
+                            $ngayDKFormatted = Carbon::parse($thietLap->ngay_dang_ky)->format('d-m-Y');
+                            $ngayKT_DK_Formatted = $ngayKetThucDK->format('d-m-Y');
+                            $ngayTHFormatted = Carbon::parse($thietLap->ngay_thuc_hien)->format('d-m-Y');
+                            $ngayKT_TH_Formatted = Carbon::parse($thietLap->ngay_ket_thuc_thuc_hien)->format('d-m-Y');
                         @endphp
+                        <strong>Năm học: {{ $thietLap->nam_hoc }}</strong>
+                        @if ($homNay->lte($ngayKetThucDK))
+                            <span style="font-size: 13px" class="m-0">
+                                Thời gian đăng ký: {{ $ngayDKFormatted }} đến {{ $ngayKT_DK_Formatted }}
+                            </span>
+                        @else
+                            <span style="font-size: 13px" class="m-0">
+                                Thời gian thực hiện: {{ $ngayTHFormatted }} đến {{ $ngayKT_TH_Formatted }}
+                            </span>
+                        @endif
                     </div>
                     <ul class="navbar-nav navbar-align">
                         <li class="nav-item d-flex align-items-center">

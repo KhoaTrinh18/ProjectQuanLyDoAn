@@ -17,8 +17,9 @@
                             <thead style="background: #222e3c;">
                                 <tr>
                                     <th scope="col" class="text-white">#</th>
-                                    <th scope="col" class="text-white" style="width: 40%;">Năm học</th>
-                                    <th scope="col" class="text-white">Ngày kết thúc</th>
+                                    <th scope="col" class="text-white">Năm học</th>
+                                    <th scope="col" class="text-white">Thời gian đăng ký</th>
+                                    <th scope="col" class="text-white">Thời gian thực hiện</th>
                                     <th scope="col" class="text-white">Trạng thái</th>
                                     <th scope="col" class="text-white"></th>
                                 </tr>
@@ -28,11 +29,13 @@
                                     <tr>
                                         <td scope="row">
                                             {{ $key + 1 }}</td>
-                                        <td
-                                            style="width: 40%; word-wrap: break-word; overflow-wrap: break-word; white-space: normal; word-break: break-word;">
-                                            {{ $thietLap->nam_hoc }}
+                                        <td> {{ $thietLap->nam_hoc }} </td>
+                                        <td>Từ {{ Carbon\Carbon::parse($thietLap->ngay_dang_ky)->format('d-m-Y') }} đến
+                                            {{ Carbon\Carbon::parse($thietLap->ngay_ket_thuc_dang_ky)->format('d-m-Y') }}
                                         </td>
-                                        <td>{{ $thietLap->ngay_ket_thuc }}</td>
+                                        <td>Từ {{ Carbon\Carbon::parse($thietLap->ngay_thuc_hien)->format('d-m-Y') }} đến
+                                            {{ Carbon\Carbon::parse($thietLap->ngay_ket_thuc_thuc_hien)->format('d-m-Y') }}
+                                        </td>
                                         <td>
                                             @if ($thietLap->trang_thai == 1)
                                                 <span class="text-warning">Đang hoạt động</span>
@@ -41,15 +44,45 @@
                                             @endif
                                         </td>
                                         <td class="text-center">
-                                            {{-- @if ($deTai->trang_thai != 1)
-                                                <a href="{{ route('dua_ra_de_tai.chi_tiet', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
-                                                    class="btn btn-secondary btn-sm">Xem</a>
+                                            @if ($thietLap->trang_thai == 1)
+                                                <a href="{{ route('thiet_lap.sua', ['ma_thiet_lap' => $thietLap->ma_thiet_lap]) }}"
+                                                    class="btn btn-primary btn-sm">Sửa</a>
                                             @else
-                                                <a href="{{ route('dua_ra_de_tai.huy', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
-                                                    class="btn btn-danger btn-sm">hủy</a>
-                                                <a href="{{ route('dua_ra_de_tai.chinh_sua', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
-                                                    class="btn btn-primary btn-sm">Chỉnh sửa</a>
-                                            @endif --}}
+                                                <button class="btn btn-danger btn-sm" data-bs-toggle="modal"
+                                                    data-bs-target="#modal-huy-{{ $thietLap->ma_thiet_lap }}">
+                                                    Hủy
+                                                </button>
+
+                                                <div class="modal fade" id="modal-huy-{{ $thietLap->ma_thiet_lap }}"
+                                                    tabindex="-1" aria-labelledby="modalLabel-{{ $thietLap->ma_thiet_lap }}"
+                                                    aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered">
+                                                        <div class="modal-content rounded-4 shadow-sm border-0">
+                                                            <div class="modal-header bg-light border-bottom-0">
+                                                                <h5 class="modal-title fw-semibold text-primary"
+                                                                    id="modalLabel-{{ $thietLap->ma_thiet_lap }}">
+                                                                    Xác nhận hủy thiết lập</h5>
+                                                                <button type="button" class="btn-close"
+                                                                    data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body fs-5 text-secondary">
+                                                                Bạn có chắc muốn hủy thiết lập năm
+                                                                <strong>{{ $thietLap->nam_hoc }}</strong>?
+                                                            </div>
+                                                            <div class="modal-footer bg-light border-top-0">
+                                                                <button type="button" class="btn btn-secondary"
+                                                                    data-bs-dismiss="modal">Hủy</button>
+                                                                <form class="form-huy" data-ma="{{ $thietLap->ma_thiet_lap }}">
+                                                                    <input type="hidden" name="ma_thiet_lap"
+                                                                        value="{{ $thietLap->ma_thiet_lap }}">
+                                                                    <button type="submit" class="huy btn btn-primary">Xác
+                                                                        nhận</button>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach
@@ -69,6 +102,48 @@
 
 @section('scripts')
     <script>
-        $(document).ready(function() {});
+        $(document).ready(function() {
+            $(".huy").click(function(event) {
+                event.preventDefault();
+
+                let form = $(this).closest(".form-huy").get(0);
+                let formData = new FormData(form);
+
+                $.ajax({
+                    url: "{{ route('thiet_lap.huy') }}",
+                    type: "POST",
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    headers: {
+                        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+                    },
+                    success: function(result) {
+                        if (result.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Thành công!',
+                                text: 'Hủy thành công!',
+                                confirmButtonText: 'OK',
+                                timer: 1000,
+                                showConfirmButton: false
+                            }).then(() => {
+                                location.reload();
+                            });
+                        } 
+                    },
+                    error: function(xhr) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Thất bại!',
+                            text: 'Hủy thất bại! Vui lòng thử lại',
+                            confirmButtonText: 'OK',
+                            timer: 1000,
+                            showConfirmButton: false
+                        })
+                    },
+                });
+            });
+        });
     </script>
 @endsection
