@@ -33,6 +33,7 @@
                                 @endforeach
                             </ul>
                         @endif
+                        <p><strong>Ngày đưa ra:</strong> {{ \Carbon\Carbon::create($deTai->ngayDuaRa->ngay_dua_ra)->format('d-m-Y') }}</p>
                         <p><strong>Lĩnh vực:</strong> {{ $deTai->linhVuc->ten_linh_vuc }}</p>
                         <p><strong>Mô tả:</strong> {!! $deTai->mo_ta !!}</p>
                         <p><strong>Số lượng sinh viên đăng ký tối đa:</strong> {{ $deTai->so_luong_sv_toi_da }}</p>

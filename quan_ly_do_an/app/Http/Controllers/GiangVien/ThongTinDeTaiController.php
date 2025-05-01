@@ -12,7 +12,8 @@ use App\Models\{
     DeTaiGiangVien,
     GiangVien,
     SinhVien,
-    GiangVienDeTaiGV
+    GiangVienDeTaiGV,
+    ThietLap
 };
 
 class ThongTinDeTaiController extends Controller
@@ -21,9 +22,11 @@ class ThongTinDeTaiController extends Controller
     {
         $maTaiKhoan = session()->get('ma_tai_khoan');
         $giangVien = GiangVien::where('ma_tk', $maTaiKhoan)->first();
+        $thietLap = ThietLap::where('trang_thai', 1)->first();
+
         $maDeTais = GiangVienDeTaiGV::where('ma_gv', $giangVien->ma_gv)->pluck('ma_de_tai');
         $deTais = DeTaiGiangVien::whereIn('ma_de_tai', $maDeTais)
-            ->where(['da_huy' => 0, 'trang_thai' => 2])
+            ->where(['da_huy' => 0, 'trang_thai' => 2, 'nam_hoc' => $thietLap->nam_hoc])
             ->orderBy('ma_de_tai', 'desc')
             ->get();
         return view('giangvien.thongtindetai.danhSachDuyet', compact('deTais'));
@@ -32,7 +35,10 @@ class ThongTinDeTaiController extends Controller
     public function chiTietDuyet($ma_de_tai)
     {
         $deTai = DeTaiGiangVien::where('ma_de_tai', $ma_de_tai)->firstOrFail();
-        return view('giangvien.thongtindetai.chiTiet', compact('deTai'));
+        $thietLap = ThietLap::where('trang_thai', 1)->first();
+        $ngayHetHan = Carbon::create($thietLap->ngay_ket_thuc_dang_ky)->setTime(23, 59, 59)->toIso8601String();
+
+        return view('giangvien.thongtindetai.chiTiet', compact('deTai', 'ngayHetHan'));
     }
 
     public function huySinhVien(Request $request)

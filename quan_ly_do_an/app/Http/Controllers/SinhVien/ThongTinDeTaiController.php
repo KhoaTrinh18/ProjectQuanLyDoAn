@@ -30,22 +30,26 @@ class ThongTinDeTaiController extends Controller
             if ($sinhVien->loai_sv == 'de_xuat') {
                 $sinhVienDTSV = SinhVienDeTaiSV::where('ma_sv', $sinhVien->ma_sv)->where('trang_thai', '!=', 0)->first();
                 $deTai = DeTaiSinhVien::where(['ma_de_tai' => $sinhVienDTSV->ma_de_tai, 'da_huy' => 0])->first();
+                $ngayDangKy = '';
                 $loaiDeTai = 'de_tai_sv';
             } else {
                 $phanCongSVDK = BangPhanCongSVDK::where('ma_sv', $sinhVien->ma_sv)->first();
+                $ngayDangKy = $phanCongSVDK->ngay_dang_ky;
                 $deTai = DeTaiGiangVien::where(['ma_de_tai' => $phanCongSVDK->ma_de_tai, 'da_huy' => 0])->first();
                 $loaiDeTai = 'de_tai_gv';
             }
 
             $thietLap = ThietLap::where('trang_thai', 1)->first();
             $ngayHomNay = Carbon::now()->toDateString();
-            if (Carbon::parse($thietLap->ngay_thuc_hien)->lt($ngayHomNay)) {
-                $ngayThucHien = 1;
+            $ngayKetThucDK = Carbon::parse($thietLap->ngay_ket_thuc_dang_ky)->toDateString();
+
+            if ($ngayHomNay > $ngayKetThucDK) {
+                $checkNgayHetHan = 1;
             } else {
-                $ngayThucHien = 0;
+                $checkNgayHetHan = 0;
             }
 
-            return view('sinhvien.thongtindetai.thongTin', compact('deTai', 'loaiDeTai', 'daDangKy', 'ngayThucHien'));
+            return view('sinhvien.thongtindetai.thongTin', compact('deTai', 'loaiDeTai', 'daDangKy', 'checkNgayHetHan', 'sinhVien'));
         } else {
             return view('sinhvien.thongtindetai.thongTin', compact('daDangKy'));
         }
@@ -75,19 +79,29 @@ class ThongTinDeTaiController extends Controller
 
         $ma_de_tai = $request->input('ma_de_tai');
 
-        $deTai = DeTaiSinhVien::where('ma_de_tai', $ma_de_tai)->first();
-        $deTai->da_huy = 1;
-        $deTai->trang_thai = null;
-        $deTai->save();
+        $thietLap = ThietLap::where('trang_thai', 1)->first();
+        $ngayHomNay = Carbon::now()->toDateString();
+        $ngayKetThucDK = Carbon::parse($thietLap->ngay_ket_thuc_dang_ky)->toDateString();
 
-        $maSVs = $deTai->sinhViens->pluck('ma_sv')->toArray();
-
-        SinhVienDeTaiSV::where('ma_de_tai', $ma_de_tai)->delete();
-
-        SinhVien::whereIn('ma_sv', $maSVs)->update([
-            'loai_sv' => null,
-            'dang_ky' => 0 
-        ]);
+        if($ngayHomNay > $ngayKetThucDK) {
+            return response()->json([
+                'success' => false,
+            ]);
+        } else {
+            $deTai = DeTaiSinhVien::where('ma_de_tai', $ma_de_tai)->first();
+            $deTai->da_huy = 1;
+            $deTai->trang_thai = null;
+            $deTai->save();
+    
+            $maSVs = $deTai->sinhViens->pluck('ma_sv')->toArray();
+    
+            SinhVienDeTaiSV::where('ma_de_tai', $ma_de_tai)->delete();
+    
+            SinhVien::whereIn('ma_sv', $maSVs)->update([
+                'loai_sv' => null,
+                'dang_ky' => 0 
+            ]);
+        }
 
         return response()->json([
             'success' => true,
@@ -209,6 +223,7 @@ class ThongTinDeTaiController extends Controller
                 'dang_ky' => 1,
                 'loai_sv' => 'de_xuat',
             ]); 
+            $ngayDeXuat = SinhVienDeTaiSV::where('ma_de_tai', $data['ma_de_tai'])->first()->ngay_de_xuat;
 
             SinhVienDeTaiSV::where('ma_de_tai', $data['ma_de_tai'])->delete();
 
@@ -217,7 +232,7 @@ class ThongTinDeTaiController extends Controller
                 $sinhVienDTSVs[] = [
                     'ma_sv' => $sinhVien->ma_sv,
                     'ma_de_tai' => $data['ma_de_tai'],
-                    'ngay_de_xuat' => now()->toDateString(),
+                    'ngay_de_xuat' => $ngayDeXuat,
                     'trang_thai' => 1
                 ];
             }

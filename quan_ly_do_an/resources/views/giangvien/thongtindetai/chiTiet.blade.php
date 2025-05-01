@@ -115,8 +115,7 @@
                         @endif
 
                         <div class="text-center">
-                            <a href="{{ route('thong_tin_de_tai.danh_sach_duyet') }}"
-                                class="btn btn-secondary btn-lg">Quay
+                            <a href="{{ route('thong_tin_de_tai.danh_sach_duyet') }}" class="btn btn-secondary btn-lg">Quay
                                 lại</a>
                         </div>
                     </div>
@@ -192,6 +191,25 @@
             $('.student-name').each(function() {
                 $(this).css('width', maxWidth);
             });
+
+            const deadline = new Date("{{ $ngayHetHan }}");
+
+            const interval = setInterval(() => {
+                const now = new Date();
+                if (now >= deadline) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Hết thời gian!',
+                        text: 'Bạn đã hết thời gian hủy đăng ký đề tài.',
+                        confirmButtonText: 'OK',
+                        showConfirmButton: true
+                    }).then(() => {
+                        window.location.href =
+                            "{{ route('thong_tin_de_tai.danh_sach_duyet') }}";
+                    });
+                    clearInterval(interval);
+                }
+            }, 10);
         });
     </script>
 @endsection

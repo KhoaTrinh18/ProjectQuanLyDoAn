@@ -152,9 +152,10 @@ class PhanCongHuongDanController extends Controller
             abort(404, 'Đề tài không tồn tại');
         }
 
-        $giangViens = GiangVien::get();
+        $chuyenNganhs = BoMon::with('giangViens')->where('da_huy', 0)->orderBy('ma_bo_mon', 'desc')->get();
+        Log::info($chuyenNganhs);
 
-        return view('admin.phanconghuongdan.phanCong', compact('deTai', 'giangViens'));
+        return view('admin.phanconghuongdan.phanCong', compact('deTai', 'chuyenNganhs'));
     }
 
     public function xacNhanPhanCong(Request $request)

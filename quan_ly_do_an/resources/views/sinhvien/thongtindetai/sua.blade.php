@@ -223,11 +223,16 @@
             const interval = setInterval(() => {
                 const now = new Date();
                 if (now >= deadline) {
-                    $(".card-body").remove();
-                    $(".card-header").html(
-                        '<h2 class="text-danger fw-bold"><i>Đã hết hạn thời gian đề xuất!</i></h2>'
-                    );
-
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Hết thời gian!',
+                        text: 'Bạn đã hết thời gian sửa đề tài.',
+                        confirmButtonText: 'OK',
+                        showConfirmButton: true
+                    }).then(() => {
+                        window.location.href =
+                            "{{ route('thong_tin_de_tai.thong_tin') }}";
+                    });
                     clearInterval(interval);
                 }
             }, 10);

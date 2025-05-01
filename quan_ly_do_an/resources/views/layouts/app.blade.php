@@ -188,15 +188,15 @@
                             $thietLap = DB::table('thiet_lap')->where('trang_thai', 1)->first();
                             use Carbon\Carbon;
 
-                            $homNay = Carbon::now();
-                            $ngayKetThucDK = Carbon::parse($thietLap->ngay_ket_thuc_dang_ky);
+                            $homNay = Carbon::now()->toDateString();
+                            $ngayKetThucDK = Carbon::parse($thietLap->ngay_ket_thuc_dang_ky)->toDateString();
                             $ngayDKFormatted = Carbon::parse($thietLap->ngay_dang_ky)->format('d-m-Y');
-                            $ngayKT_DK_Formatted = $ngayKetThucDK->format('d-m-Y');
+                            $ngayKT_DK_Formatted = Carbon::parse($thietLap->ngay_ket_thuc_dang_ky)->format('d-m-Y');
                             $ngayTHFormatted = Carbon::parse($thietLap->ngay_thuc_hien)->format('d-m-Y');
                             $ngayKT_TH_Formatted = Carbon::parse($thietLap->ngay_ket_thuc_thuc_hien)->format('d-m-Y');
                         @endphp
                         <strong>Năm học: {{ $thietLap->nam_hoc }}</strong>
-                        @if ($homNay->lte($ngayKetThucDK))
+                        @if ($homNay <= $ngayKetThucDK)
                             <span style="font-size: 13px" class="m-0">
                                 Thời gian đăng ký: {{ $ngayDKFormatted }} đến {{ $ngayKT_DK_Formatted }}
                             </span>

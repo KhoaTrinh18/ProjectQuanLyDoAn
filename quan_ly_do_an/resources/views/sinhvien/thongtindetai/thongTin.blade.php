@@ -20,13 +20,14 @@
                                     href="{{ route('thong_tin_de_tai.chi_tiet') }}">Chi tiết</a>)</p>
 
                             @if ($loaiDeTai == 'de_tai_sv')
-                                <p><strong>Hình thức: Đề xuất</strong></p>
-                                <p><strong>Ngày đề xuất:
-                                        {{ \Carbon\Carbon::parse($deTai->ngayDeXuat->ngay_de_xuat)->format('d-m-Y') }}</strong>
+                                <p><strong>Hình thức:</strong> Đề xuất</p>
+                                <p><strong>Ngày đề xuất:</strong>
+                                    {{ \Carbon\Carbon::parse($deTai->ngayDeXuat->ngay_de_xuat)->format('d-m-Y') }}
                                 </p>
                             @else
-                                <p><strong>Hình thức:
-                                        {{ \Carbon\Carbon::parse($deTai->ngayDangKy->ngay_dang_ky)->format('d-m-Y') }}</strong>
+                                <p><strong>Hình thức:</strong> Đăng ký</p>
+                                <p><strong>Ngày đăng ký:</strong>
+                                    {{ \Carbon\Carbon::parse($ngayDangKy)->format('d-m-Y') }}
                                 </p>
                             @endif
 
@@ -72,7 +73,7 @@
                                 </p>
                             @endif
 
-                            @if ($ngayThucHien == 1)
+                            @if ($checkNgayHetHan == 1)
                                 @if ($deTai->giangVienHuongDans->isEmpty())
                                     <p><strong>Giảng viên hướng dẫn: </strong><i>Chưa có</i></p>
                                 @else
@@ -212,16 +213,16 @@
                                 </form>
                                 <h5 class="text-center mt-4" style="font-weight: bold"><i>Sinh viên có thể hủy hoặc sửa khi
                                         chưa
-                                        duyệt đề tài đã đề xuất trong thời gian quy định!</i>
+                                        duyệt đề tài đã đề xuất trước thời gian kết thúc đăng ký!</i>
                                 </h5>
                             @elseif ($loaiDeTai == 'de_tai_sv' && $deTai->trang_thai == 2)
                                 <h5 class="text-center" style="font-weight: bold"><i>Khi đề tài đã duyệt, sinh viên muốn hủy
                                         phải liên hệ với
-                                        trưởng khoa trong thời gian quy định!</i>
+                                        trưởng khoa trước thời gian kết thúc đăng ký!</i>
                                 </h5>
                             @else
                                 <h5 class="text-center" style="font-weight: bold"><i>Sau khi đăng ký đề tài, sinh viên muốn
-                                        hủy phải liên hệ với giảng viên trong thời gian quy định!</i>
+                                        hủy phải liên hệ với giảng viên trước thời gian kết thúc đăng ký!</i>
                                 </h5>
                             @endif
                         </div>
@@ -256,6 +257,17 @@
                                 icon: 'success',
                                 title: 'Thành công!',
                                 text: 'Hủy thành công!',
+                                confirmButtonText: 'OK',
+                                timer: 1000,
+                                showConfirmButton: false
+                            }).then(() => {
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Thất bại!',
+                                text: 'Hủy thất bại! Do đã hết thời hạn hủy đề tài',
                                 confirmButtonText: 'OK',
                                 timer: 1000,
                                 showConfirmButton: false

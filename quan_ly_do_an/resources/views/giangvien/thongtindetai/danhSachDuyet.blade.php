@@ -14,9 +14,9 @@
                             <thead style="background: #222e3c;">
                                 <tr>
                                     <th scope="col" class="text-white">#</th>
-                                    <th scope="col" class="text-white" style="width: 35%;">Tên đề tài</th>
+                                    <th scope="col" class="text-white" style="width: 30%;">Tên đề tài</th>
                                     <th scope="col" class="text-white">Lĩnh vực</th>
-                                    <th scope="col" class="text-white">Sinh viên đăng ký</th>
+                                    <th scope="col" class="text-white">Sinh viên đăng ký (Ngày đăng ký)</th>
                                     <th scope="col" class="text-white">Số lượng sinh viên đăng ký</th>
                                     <th scope="col" class="text-white"></th>
                                 </tr>
@@ -27,7 +27,7 @@
                                         <td scope="row">
                                             {{ $key + 1 }}</td>
                                         <td
-                                            style="width: 35%; word-wrap: break-word; overflow-wrap: break-word; white-space: normal; word-break: break-word;">
+                                            style="width: 30%; word-wrap: break-word; overflow-wrap: break-word; white-space: normal; word-break: break-word;">
                                             {{ $deTai->ten_de_tai }}
                                         </td>
                                         <td>{{ $deTai->linhVuc->ten_linh_vuc }}</td>
@@ -35,7 +35,17 @@
                                             @if ($deTai->sinhViens->count() == 0)
                                                 chưa có
                                             @else
-                                                {!! $deTai->sinhViens->pluck('ho_ten')->implode('<br>') !!}
+                                                @foreach ($deTai->sinhViens as $sinhVien)
+                                                    @php
+                                                        $phanCongSVDK = DB::Table('bang_phan_cong_svdk')
+                                                            ->where('ma_sv', $sinhVien->ma_sv)
+                                                            ->first();
+                                                        $ngayDangKy = \Carbon\Carbon::create(
+                                                            $phanCongSVDK->ngay_dang_ky,
+                                                        )->format('d-m-Y');
+                                                    @endphp
+                                                    {{ $sinhVien->ho_ten }} ({{ $ngayDangKy }}) </br>
+                                                @endforeach
                                             @endif
                                         </td>
                                         <td class="text-center">

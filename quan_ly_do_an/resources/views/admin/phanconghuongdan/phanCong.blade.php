@@ -78,7 +78,8 @@
                                 <a href="{{ route('phan_cong_huong_dan.danh_sach') }}"
                                     class="btn btn-secondary btn-lg">Quay
                                     lại</a>
-                                <button type="submit" class="btn btn-primary btn-lg" id="phanCong">Xác nhận phân công</button>
+                                <button type="submit" class="btn btn-primary btn-lg" id="phanCong">Xác nhận phân
+                                    công</button>
                             </div>
                         </form>
                     </div>
@@ -95,13 +96,11 @@
 
             $('#so_luong_giang_vien').change(function() {
                 var soLuong = $(this).val();
-                var giangVienOptions = @json($giangViens);
+                var chuyenNganhs = @json($chuyenNganhs);
                 var giangVienSelects = $('#giang_vien_selects').empty();
 
                 for (var i = 0; i < soLuong; i++) {
-                    var selectWrapper = $(
-                        '<div class="mt-2 d-flex align-items-center">'
-                    );
+                    var selectWrapper = $('<div class="mt-2 d-flex align-items-center">');
                     var label = $('<label>').attr('for', 'giang_vien_' + i).text('Giảng viên ' + (i + 1) +
                         ':').css({
                         'width': '110px',
@@ -111,60 +110,72 @@
                         .attr({
                             name: 'DeTai[giang_vien][' + i + ']',
                         })
-                        .addClass('form-select ms-2')
-                        .css('width', '260px');
+                        .addClass('form-select form-select-lg shadow-none')
+                        .css('width', '250px');
 
-                    select.append('<option value="">Chọn giảng viên</option>');
+                    select.append('<option value="">Chọn giảng viên ' + (i + 1) + '</option>');
 
-                    giangVienOptions.forEach(function(giangVien) {
-                        var option = $('<option>')
-                            .val(giangVien.ma_gv)
-                            .text(giangVien.ho_ten)
-                            .prop('disabled', selectedGiangViens.includes(giangVien.ma_gv));
+                    chuyenNganhs.forEach(function(cn) {
+                        var optgroup = $('<optgroup>')
+                            .attr('label', cn.ten_bo_mon);
+                        cn.giang_viens.forEach(function(gv) {
+                            var option = $('<option>')
+                                .val(gv.ma_gv)
+                                .text(gv.ho_ten);
+                            optgroup.append(option);
+                        });
 
-                        select.append(option);
+                        select.append(optgroup);
                     });
 
-                    select.change(function() {
-                        updateSelectedGiangViens();
-                        updateGiangViensSelects();
-                    });
-
-                    selectWrapper.append(label).append(select)
+                    selectWrapper.append(label).append(select);
                     selectWrapper.append(
                         '<span class="error-message text-danger d-hidden error-giangvien-[' + i +
-                        '] ms-2"></span>');
+                        '] ms-2"></span>'
+                    );
                     giangVienSelects.append(selectWrapper);
                 }
+
+                bindAllSelects();
+                updateSelectedGiangViens();
+                updateAllSelects();
             });
+
 
             function updateSelectedGiangViens() {
                 selectedGiangViens = [];
+
                 $('#giang_vien_selects select').each(function() {
-                    var selectedValue = $(this).val();
-                    if (selectedValue) {
-                        selectedGiangViens.push(selectedValue);
-                    }
+                    var val = $(this).val();
+                    if (val) selectedGiangViens.push(val);
                 });
             }
 
-            function updateGiangViensSelects() {
+            function updateAllSelects() {
                 $('#giang_vien_selects select').each(function() {
                     var currentSelect = $(this);
                     var currentValue = currentSelect.val();
 
                     currentSelect.find('option').prop('disabled', false);
 
-                    selectedGiangViens.forEach(function(giangVienId) {
-                        currentSelect.find('option[value="' + giangVienId + '"]').prop('disabled',
-                            true);
+                    selectedGiangViens.forEach(function(id) {
+                        if (id !== currentValue) {
+                            currentSelect.find('option[value="' + id + '"]:not(:selected)').prop(
+                                'disabled', true);
+                        }
                     });
-
-                    if (currentValue) {
-                        currentSelect.find('option[value="' + currentValue + '"]').prop('disabled', false);
-                    }
                 });
             }
+
+            function bindAllSelects() {
+                $('#giang_vien_selects select')
+                    .off('change').on('change', function() {
+                        updateSelectedGiangViens();
+                        updateAllSelects();
+                    });
+            }
+
+            $('#so_luong_giang_vien').val(1).trigger('change');
 
             $("#phanCong").click(function(event) {
                 event.preventDefault();

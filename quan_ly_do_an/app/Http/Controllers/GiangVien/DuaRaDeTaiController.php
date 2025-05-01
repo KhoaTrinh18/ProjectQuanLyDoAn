@@ -12,7 +12,8 @@ use App\Models\{
     DeTaiGiangVien,
     GiangVien,
     LinhVuc,
-    GiangVienDeTaiGV
+    GiangVienDeTaiGV,
+    ThietLap
 };
 
 class DuaRaDeTaiController extends Controller
@@ -21,13 +22,25 @@ class DuaRaDeTaiController extends Controller
     {
         $maTaiKhoan = session()->get('ma_tai_khoan');
         $giangVien = GiangVien::where('ma_tk', $maTaiKhoan)->first();
+
+        $thietLap = ThietLap::where('trang_thai', 1)->first();
+
         $maDeTais = GiangVienDeTaiGV::where('ma_gv', $giangVien->ma_gv)->pluck('ma_de_tai');
         $deTais = DeTaiGiangVien::whereIn('ma_de_tai', $maDeTais)
-            ->where('da_huy', 0)
+            ->where(['da_huy' => 0, 'nam_hoc' => $thietLap->nam_hoc])
             ->orderBy('ma_de_tai', 'desc')
             ->get();
-            
-        return view('giangvien.duaradetai.danhSach', compact('deTais'));
+
+        $ngayHetHan = Carbon::create($thietLap->ngay_dang_ky)->subDays(8)->format('d-m-Y');
+        $ngayHomNay = Carbon::now()->toDateString();
+        $ngayHetHanSS = Carbon::create($thietLap->ngay_dang_ky)->subDays(8)->toDateString();
+        if($ngayHomNay > $ngayHetHanSS) {
+            $checkNgayHetHan = 1;
+        } else {
+            $checkNgayHetHan = 0;
+        }
+
+        return view('giangvien.duaradetai.danhSach', compact('deTais', 'ngayHetHan', 'checkNgayHetHan'));
     }
 
     public function chiTiet($ma_de_tai)
@@ -40,8 +53,10 @@ class DuaRaDeTaiController extends Controller
     {
         $linhVucs = LinhVuc::orderBy('ma_linh_vuc', 'desc')->get();
         $chuyenNganhs = BoMon::where('da_huy', 0)->with('giangViens')->orderBy('ma_bo_mon', 'desc')->get();
+        $thietLap = ThietLap::where('trang_thai', 1)->first();
+        $ngayHetHan = Carbon::create($thietLap->ngay_dang_ky)->subDays(8)->setTime(23, 59, 59)->toIso8601String();
 
-        return view('giangvien.duaradetai.duaRa', compact('linhVucs', 'chuyenNganhs'));
+        return view('giangvien.duaradetai.duaRa', compact('linhVucs', 'chuyenNganhs', 'ngayHetHan'));
     }
 
     public function xacNhanDuaRa(Request $request)
@@ -92,12 +107,15 @@ class DuaRaDeTaiController extends Controller
         }
 
         try {
+            $thietLap = ThietLap::where('trang_thai', 1)->first();
+
             $deTaiGV = new DeTaiGiangVien();
             $deTaiGV->ten_de_tai = $data['ten_de_tai'];
             $deTaiGV->ma_linh_vuc = $data['ma_linh_vuc'];
             $deTaiGV->mo_ta = $data['mo_ta'];
             $deTaiGV->trang_thai = 1;
             $deTaiGV->so_luong_sv_toi_da = $data['slsv_toi_da'];
+            $deTaiGV->nam_hoc = $thietLap->nam_hoc;
             $deTaiGV->save();
 
             $maTaiKhoan = session()->get('ma_tai_khoan');
@@ -105,10 +123,10 @@ class DuaRaDeTaiController extends Controller
 
             $giangViens = array_filter($data['giang_vien'], function ($value) {
                 return trim(strip_tags($value)) !== "";
-            });            
+            });
             $giangViens[] = $giangVien->ma_gv;
 
-            foreach($giangViens as $gv) {
+            foreach ($giangViens as $gv) {
                 $GV_DT = new GiangVienDeTaiGV();
                 $GV_DT->ma_gv = $gv;
                 $GV_DT->ma_de_tai = $deTaiGV->ma_de_tai;
@@ -138,8 +156,10 @@ class DuaRaDeTaiController extends Controller
         $maTaiKhoan = session()->get('ma_tai_khoan');
         $giangVien = GiangVien::where('ma_tk', $maTaiKhoan)->first();
         $giangViensDT = $deTai->giangViens->where('ma_gv', '!=', $giangVien->ma_gv)->pluck('ma_gv');
+        $thietLap = ThietLap::where('trang_thai', 1)->first();
+        $ngayHetHan = Carbon::create($thietLap->ngay_dang_ky)->subDays(8)->setTime(23, 59, 59)->toIso8601String();
 
-        return view('giangvien.duaradetai.sua', compact('deTai', 'linhVucs', 'chuyenNganhs', 'giangViensDT'));
+        return view('giangvien.duaradetai.sua', compact('deTai', 'linhVucs', 'chuyenNganhs', 'giangViensDT', 'ngayHetHan'));
     }
 
     public function xacNhanSua(Request $request)
@@ -196,6 +216,7 @@ class DuaRaDeTaiController extends Controller
                 'mo_ta' => $data['mo_ta'],
                 'so_luong_sv_toi_da' => $data['slsv_toi_da']
             ]);
+            $ngayDuaRa = GiangVienDeTaiGV::where('ma_de_tai', $data['ma_de_tai'])->first()->ngay_dua_ra;
 
             GiangVienDeTaiGV::where('ma_de_tai', $data['ma_de_tai'])->delete();
 
@@ -203,11 +224,11 @@ class DuaRaDeTaiController extends Controller
             $giangVien = GiangVien::where('ma_tk', $maTaiKhoan)->first();
             $data['giang_vien'][] = $giangVien->ma_gv;
 
-            foreach($data['giang_vien'] as $gv) {
+            foreach ($data['giang_vien'] as $gv) {
                 $GV_DT = new GiangVienDeTaiGV();
                 $GV_DT->ma_gv = $gv;
                 $GV_DT->ma_de_tai = $data['ma_de_tai'];
-                $GV_DT->ngay_dua_ra = Carbon::now();
+                $GV_DT->ngay_dua_ra = $ngayDuaRa;
                 $GV_DT->trang_thai = 1;
                 $GV_DT->save();
             }
@@ -227,7 +248,10 @@ class DuaRaDeTaiController extends Controller
     public function huy($ma_de_tai)
     {
         $deTai = DeTaiGiangVien::where('ma_de_tai', $ma_de_tai)->firstOrFail();
-        return view('giangvien.duaradetai.huy', compact('deTai'));
+        $thietLap = ThietLap::where('trang_thai', 1)->first();
+        $ngayHetHan = Carbon::create($thietLap->ngay_dang_ky)->subDays(8)->setTime(23, 59, 59)->toIso8601String();
+
+        return view('giangvien.duaradetai.huy', compact('deTai', 'ngayHetHan'));
     }
 
     public function xacNhanHuy(Request $request)

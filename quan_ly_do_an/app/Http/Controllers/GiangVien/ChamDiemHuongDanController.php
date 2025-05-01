@@ -12,7 +12,8 @@ use App\Models\{
     BangPhanCongSVDX,
     DeTaiGiangVien,
     DeTaiSinhVien,
-    GiangVien
+    GiangVien,
+    ThietLap
 };
 
 class ChamDiemHuongDanController extends Controller
@@ -21,18 +22,19 @@ class ChamDiemHuongDanController extends Controller
     {
         $maTaiKhoan = session()->get('ma_tai_khoan');
         $giangVien = GiangVien::where('ma_tk', $maTaiKhoan)->first();
+        $thietLap = ThietLap::where('trang_thai', 1)->first();
 
         $phanCongSVDK = BangPhanCongSVDK::where('ma_gvhd', $giangVien->ma_gv)->get();
         $maDeTais = $phanCongSVDK->pluck('ma_de_tai');
         $deTaiGVs = DeTaiGiangVien::whereIn('ma_de_tai', $maDeTais)
-            ->where(['da_huy' => 0, 'trang_thai' => 2])
+            ->where(['da_huy' => 0, 'trang_thai' => 2, 'nam_hoc' => $thietLap->nam_hoc])
             ->orderBy('ma_de_tai', 'desc')
             ->get();
 
         $phanCongSVDX = BangPhanCongSVDX::where('ma_gvhd', $giangVien->ma_gv)->get();
         $maDeTais = $phanCongSVDX->pluck('ma_de_tai');
         $deTaiSVs = DeTaiSinhVien::whereIn('ma_de_tai', $maDeTais)
-            ->where(['da_huy' => 0, 'trang_thai' => 2])
+            ->where(['da_huy' => 0, 'trang_thai' => 2, 'nam_hoc' => $thietLap->nam_hoc])
             ->orderBy('ma_de_tai', 'desc')
             ->get();
 

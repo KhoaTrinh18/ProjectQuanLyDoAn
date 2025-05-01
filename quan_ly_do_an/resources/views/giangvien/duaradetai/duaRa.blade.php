@@ -261,6 +261,25 @@
                     }
                 }
             });
+
+            const deadline = new Date("{{ $ngayHetHan }}");
+
+            const interval = setInterval(() => {
+                const now = new Date();
+                if (now >= deadline) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Hết thời gian!',
+                        text: 'Bạn đã hết thời gian đưa ra đề tài.',
+                        confirmButtonText: 'OK',
+                        showConfirmButton: true
+                    }).then(() => {
+                        window.location.href =
+                            "{{ route('dua_ra_de_tai.danh_sach') }}";
+                    });
+                    clearInterval(interval);
+                }
+            }, 10);
         });
     </script>
 @endsection

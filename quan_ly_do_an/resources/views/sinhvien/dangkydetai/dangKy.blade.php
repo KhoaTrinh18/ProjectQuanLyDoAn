@@ -145,7 +145,7 @@
                     Swal.fire({
                         icon: 'warning',
                         title: 'Hết thời gian!',
-                        text: 'Bạn đã hết thời gian đề xuất.',
+                        text: 'Bạn đã hết thời gian đăng ký.',
                         confirmButtonText: 'OK',
                         showConfirmButton: true
                     }).then(() => {
