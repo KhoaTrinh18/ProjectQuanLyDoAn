@@ -70,7 +70,10 @@
                                     @foreach ($chuyenNganhs as $chuyenNganh)
                                         <optgroup label="{{ $chuyenNganh->ten_bo_mon }}">
                                             @foreach ($chuyenNganh->hoiDongs as $hoiDong)
-                                                @if ($hoiDong->da_huy != 1)
+                                                @php
+                                                    $thietLap = DB::table('thiet_lap')->where('trang_thai', 1)->first();
+                                                @endphp
+                                                @if ($hoiDong->da_huy != 1 && $hoiDong->nam_hoc == $thietLap->nam_hoc)
                                                     <option value="{{ $hoiDong->ma_hoi_dong }}"
                                                         {{ $hoiDong->ma_hoi_dong == $hoiDongDeTai->ma_hoi_dong ? 'selected' : '' }}>
                                                         {{ $hoiDong->ten_hoi_dong }}</option>
@@ -86,7 +89,8 @@
                             <div class="text-center">
                                 <a href="{{ route('phan_cong_hoi_dong.danh_sach') }}" class="btn btn-secondary btn-lg">Quay
                                     lại</a>
-                                <button type="submit" class="btn btn-primary btn-lg" id="capNhat">Xác nhận cập nhật</button>
+                                <button type="submit" class="btn btn-primary btn-lg" id="capNhat">Xác nhận cập
+                                    nhật</button>
                             </div>
                         </form>
                     </div>

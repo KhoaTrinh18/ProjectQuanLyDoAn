@@ -173,6 +173,11 @@
                                     môn</span>
                             </a>
                         </li>
+                        <li class="sidebar-item {{ request()->is('hoc-vi*') ? 'active' : '' }}">
+                            <a class="sidebar-link" href="{{ route('hoc_vi.danh_sach') }}">
+                                <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Học vị</span>
+                            </a>
+                        </li>
                     </ul>
                 @endif
             </div>

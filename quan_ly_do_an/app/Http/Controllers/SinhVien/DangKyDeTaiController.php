@@ -65,7 +65,8 @@ class DangKyDeTaiController extends Controller
         }
 
         $limit = $request->input('limit', 10);
-        $deTais = $query->where(['da_huy' => 0, 'trang_thai' => 2])->orderBy('ma_de_tai', 'desc')->paginate($limit);
+        $thietLap = ThietLap::where('trang_thai', 1)->first();
+        $deTais = $query->where(['da_huy' => 0, 'trang_thai' => 2, 'nam_hoc' => $thietLap->nam_hoc])->orderBy('ma_de_tai', 'desc')->paginate($limit);
 
         $maTaiKhoan = session()->get('ma_tai_khoan');
         $sinhVien = SinhVien::where('ma_tk', $maTaiKhoan)->first();
@@ -109,6 +110,7 @@ class DangKyDeTaiController extends Controller
         $sinhVien->loai_sv = 'dang_ky';
         $sinhVien->save();
 
+        $thietLap = ThietLap::where('trang_thai', 1)->first();
         $phanCongSVDKs = [];
         foreach ($deTaiGV->giangViens as $giangVien) {
             $phanCongSVDKs[] = [
@@ -116,6 +118,7 @@ class DangKyDeTaiController extends Controller
                 'ma_gvhd' => $giangVien->ma_gv,
                 'ma_de_tai' => $data['ma_de_tai'],
                 'ngay_dang_ky' => now()->toDateString(),
+                'nam_hoc' => $thietLap->nam_hoc
             ];
         }
         BangPhanCongSVDK::insert($phanCongSVDKs);

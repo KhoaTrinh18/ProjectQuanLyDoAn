@@ -11,22 +11,34 @@
                     </div>
                     <div class="card-body">
                         <form id="form_cap_nhat">
-                            <input type="hidden" name="BoMon[ma_bo_mon]" value="{{ $boMon->ma_bo_mon }}">
+                            <input type="hidden" name="HocVi[ma_hoc_vi]" value="{{ $hocVi->ma_hoc_vi }}">
                             <div class="d-flex mb-3">
-                                <label for="BoMon[ten_bo_mon]"
+                                <label for="HocVi[ten_hoc_vi]"
                                     class="p-2 d-flex align-items-center justify-content-center text-white rounded bg-secondary"
                                     style="width: 250px">
-                                    Tên bộ môn
+                                    Tên học vị
                                 </label>
                                 <div class="ms-2 w-100">
                                     <input type="text" class="form-control form-control-lg shadow-none"
-                                        placeholder="Nhập tên bộ môn" name="BoMon[ten_bo_mon]"
-                                        style="width: 280px" value="{{ $boMon->ten_bo_mon }}">
-                                    <span class="error-message text-danger d-none mt-2 error-ten_bo_mon"></span>
+                                        placeholder="Nhập tên học vị" name="HocVi[ten_hoc_vi]"
+                                        style="width: 280px" value="{{ $hocVi->ten_hoc_vi }}">
+                                    <span class="error-message text-danger d-none mt-2 error-ten_hoc_vi"></span>
+                                </div>
+                            </div>
+                            <div class="d-flex mb-3">
+                                <label for="HocVi[sl_de_tai_huong_dan]"
+                                    class="p-2 d-flex align-items-center justify-content-center text-white rounded bg-secondary"
+                                    style="width: 250px">
+                                    Số lượng đề tài hướng dẫn
+                                </label>
+                                <div class="ms-2 w-100">
+                                    <input type="text" class="form-control form-control-lg shadow-none text-center" name="HocVi[sl_de_tai_huong_dan]"
+                                        style="width: 60px" maxlength="2" value="{{ $hocVi->sl_de_tai_huong_dan }}">
+                                    <span class="error-message text-danger d-none mt-2 error-sl_de_tai_huong_dan"></span>
                                 </div>
                             </div>
                             <div class="text-center">
-                                <a href="{{ route('bo_mon.danh_sach') }}" class="btn btn-secondary btn-lg">Quay
+                                <a href="{{ route('hoc_vi.danh_sach') }}" class="btn btn-secondary btn-lg">Quay
                                     lại</a>
                                 <button type="submit" class="btn btn-primary btn-lg" id="capNhat">Xác nhận cập nhật</button>
                             </div>
@@ -52,7 +64,7 @@
                 $(".is-invalid").removeClass("is-invalid");
 
                 $.ajax({
-                    url: "{{ route('bo_mon.xac_nhan_sua') }}",
+                    url: "{{ route('hoc_vi.xac_nhan_sua') }}",
                     type: "POST",
                     data: formData,
                     contentType: false,
@@ -71,11 +83,11 @@
                                 showConfirmButton: false
                             }).then(() => {
                                 window.location.href =
-                                    "{{ route('bo_mon.danh_sach') }}";
+                                    "{{ route('hoc_vi.danh_sach') }}";
                             });
                         } else {
                             $.each(result.errors, function(field, messages) {
-                                let inputField = $("[name='BoMon[" + field + "]']");
+                                let inputField = $("[name='HocVi[" + field + "]']");
                                 inputField.addClass("is-invalid");
                                 $('.error-' + field).text(messages[0]).removeClass(
                                     "d-none").addClass("d-block");

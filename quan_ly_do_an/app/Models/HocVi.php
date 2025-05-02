@@ -12,4 +12,8 @@ class HocVi extends Model
     protected $table = 'hoc_vi';
     protected $primaryKey = 'ma_hoc_vi';
     public $timestamps = false;
+
+    public function giangViens() {
+        return $this->hasMany(GiangVien::class, 'ma_hoc_vi', 'ma_hoc_vi');
+    }
 }

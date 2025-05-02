@@ -14,7 +14,8 @@ use App\Models\{
     BoMon,
     DeTaiGiangVien,
     DeTaiSinhVien,
-    GiangVien
+    GiangVien,
+    ThietLap
 };
 
 class PhanCongHuongDanController extends Controller
@@ -22,10 +23,11 @@ class PhanCongHuongDanController extends Controller
     public function danhSach(Request $request)
     {
         $limit = $request->query('limit', 10);
+        $thietLap = ThietLap::where('trang_thai', 1)->first();
 
-        $deTaiSVs = DeTaiSinhVien::where(['da_huy' => 0, 'trang_thai' => 2])->orderBy('ma_de_tai', 'desc')->get();
+        $deTaiSVs = DeTaiSinhVien::where(['da_huy' => 0, 'trang_thai' => 2, 'nam_hoc' => $thietLap->nam_hoc])->orderBy('ma_de_tai', 'desc')->get();
 
-        $maDeTais = BangPhanCongSVDK::distinct()->pluck('ma_de_tai');
+        $maDeTais = BangPhanCongSVDK::distinct()->where('nam_hoc', $thietLap->nam_hoc)->pluck('ma_de_tai');
         $deTaiGVs = DeTaiGiangVien::whereIn('ma_de_tai', $maDeTais)->orderBy('ma_de_tai', 'desc')->get();
 
         $merged = $deTaiSVs->merge($deTaiGVs)->unique('ma_de_tai')->values();
@@ -46,9 +48,10 @@ class PhanCongHuongDanController extends Controller
     public function pageAjax(Request $request)
     {
         $limit = $request->query('limit', 10);
+        $thietLap = ThietLap::where('trang_thai', 1)->first();
 
         $deTaiSVs = DeTaiSinhVien::query()
-            ->where(['da_huy' => 0, 'trang_thai' => 2])
+            ->where(['da_huy' => 0, 'trang_thai' => 2, 'nam_hoc' => $thietLap->nam_hoc])
             ->orderBy('ma_de_tai', 'desc');
 
         if ($request->filled('ten_de_tai')) {
@@ -77,7 +80,7 @@ class PhanCongHuongDanController extends Controller
 
         $deTaiSVs = $deTaiSVs->get();
 
-        $maDeTais = BangPhanCongSVDK::distinct()->pluck('ma_de_tai');
+        $maDeTais = BangPhanCongSVDK::distinct()->where('nam_hoc', $thietLap->nam_hoc)->pluck('ma_de_tai');
         $deTaiGVs = DeTaiGiangVien::query()
             ->whereIn('ma_de_tai', $maDeTais)
             ->orderBy('ma_de_tai', 'desc');
@@ -188,7 +191,8 @@ class PhanCongHuongDanController extends Controller
                 'errors' => $validator->errors()->toArray(),
             ]);
         }
-
+        
+        $thietLap = ThietLap::where('trang_thai', 1)->first();
         $deTai = DeTaiSinhVien::where('ma_de_tai', $data['ma_de_tai'])->first();
         foreach ($deTai->sinhViens as $sinhVien) {
             foreach ($giangVienList as $giangVien) {
@@ -196,6 +200,7 @@ class PhanCongHuongDanController extends Controller
                 $phanCong->ma_sv = $sinhVien->ma_sv;
                 $phanCong->ma_gvhd = $giangVien;
                 $phanCong->ma_de_tai = $data['ma_de_tai'];
+                $phanCong->nam_hoc = $thietLap->nam_hoc;
                 $phanCong->save();
             }
         }
@@ -253,6 +258,7 @@ class PhanCongHuongDanController extends Controller
 
         $deTai = DeTaiSinhVien::where('ma_de_tai', $data['ma_de_tai'])->first();
 
+        $thietLap = ThietLap::where('trang_thai', 1)->first();
         BangPhanCongSVDX::where('ma_de_tai', $data['ma_de_tai'])->delete();
         foreach ($deTai->sinhViens as $sinhVien) {
             foreach ($giangVienList as $giangVien) {
@@ -260,6 +266,7 @@ class PhanCongHuongDanController extends Controller
                 $phanCong->ma_sv = $sinhVien->ma_sv;
                 $phanCong->ma_gvhd = $giangVien;
                 $phanCong->ma_de_tai = $data['ma_de_tai'];
+                $phanCong->nam_hoc = $thietLap->nam_hoc;
                 $phanCong->save();
             }
         }

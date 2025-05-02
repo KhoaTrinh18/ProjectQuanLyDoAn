@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\{
     DeTaiGiangVienController,
     DeTaiSinhVienController,
     GiangVienController,
+    HocViController,
     PhanCongHuongDanController,
     PhanCongPhanBienController,
     HoiDongController,
@@ -179,6 +180,22 @@ Route::middleware([KiemTraDangNhap::class])->group(function () {
     Route::get('/bo-mon/sua/{ma_bo_mon}', [BoMonController::class, 'sua'])->name('bo_mon.sua');
     Route::post('/bo-mon/xac-nhan-sua', [BoMonController::class, 'xacNhanSua'])->name('bo_mon.xac_nhan_sua');
     Route::get('/bo-mon/xac-nhan-sua', function () {
+        return redirect()->back()->with('error', 'Sai đường dẫn');
+    });
+
+    Route::get('/hoc-vi/danh-sach', [HocViController::class, 'danhSach'])->name('hoc_vi.danh_sach');
+    Route::get('/hoc-vi/them', [HocViController::class, 'them'])->name('hoc_vi.them');
+    Route::post('/hoc-vi/xac-nhan-them', [HocViController::class, 'xacNhanThem'])->name('hoc_vi.xac_nhan_them');
+    Route::get('/hoc-vi/xac-nhan-them', function () {
+        return redirect()->back()->with('error', 'Sai đường dẫn');
+    });
+    Route::post('/hoc-vi/huy', [HocViController::class, 'huy'])->name('hoc_vi.huy');
+    Route::get('/hoc-vi/huy', function () {
+        return redirect()->back()->with('error', 'Sai đường dẫn');
+    });
+    Route::get('/hoc-vi/sua/{ma_hoc_vi}', [HocViController::class, 'sua'])->name('hoc_vi.sua');
+    Route::post('/hoc-vi/xac-nhan-sua', [HocViController::class, 'xacNhanSua'])->name('hoc_vi.xac_nhan_sua');
+    Route::get('/hoc-vi/xac-nhan-sua', function () {
         return redirect()->back()->with('error', 'Sai đường dẫn');
     });
 });

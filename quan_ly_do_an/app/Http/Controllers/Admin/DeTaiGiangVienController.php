@@ -5,15 +5,14 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Jobs\SendEmailJob;
-use App\Mail\TuChoiDeTaiMail;
-use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use App\Models\{
     BoMon,
     DeTaiGiangVien,
     DeTaiSinhVien,
-    GiangVienDeTaiGV
+    GiangVienDeTaiGV,
+    ThietLap
 };
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
@@ -23,8 +22,9 @@ class DeTaiGiangVienController extends Controller
     public function danhSach(Request $request)
     {
         $limit = $request->query('limit', 10);
+        $thietLap = ThietLap::where('trang_thai', 1)->first();
 
-        $deTaiGVs = DeTaiGiangVien::where(['da_huy' => 0])->orderBy('ma_de_tai', 'desc')->paginate($limit);
+        $deTaiGVs = DeTaiGiangVien::where(['da_huy' => 0, 'nam_hoc' => $thietLap->nam_hoc])->orderBy('ma_de_tai', 'desc')->paginate($limit);
         $chuyenNganhs = BoMon::where('da_huy', 0)->orderBy('ma_bo_mon', 'desc')->get();
 
         return view('admin.detaigiangvien.danhSach', compact('deTaiGVs', 'chuyenNganhs'));
@@ -73,7 +73,8 @@ class DeTaiGiangVienController extends Controller
         }
 
         $limit = $request->input('limit', 10);
-        $deTaiGVs = $query->where('da_huy', 0)->orderBy('ma_de_tai', 'desc')->paginate($limit);
+        $thietLap = ThietLap::where('trang_thai', 1)->first();
+        $deTaiGVs = $query->where(['da_huy' => 0, 'nam_hoc' => $thietLap->nam_hoc])->orderBy('ma_de_tai', 'desc')->paginate($limit);
 
         return response()->json([
             'success' => true,

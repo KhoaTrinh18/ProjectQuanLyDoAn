@@ -13,7 +13,8 @@ use App\Models\{
     DeTaiGiangVien,
     DeTaiSinhVien,
     SinhVien,
-    SinhVienDeTaiSV
+    SinhVienDeTaiSV,
+    ThietLap
 };
 
 class DeTaiSinhVienController extends Controller
@@ -21,8 +22,9 @@ class DeTaiSinhVienController extends Controller
     public function danhSach(Request $request)
     {
         $limit = $request->query('limit', 10);
+        $thietLap = ThietLap::where('trang_thai', 1)->first();
 
-        $deTaiSVs = DeTaiSinhVien::where(['da_huy' => 0])->orderBy('ma_de_tai', 'desc')->paginate($limit);
+        $deTaiSVs = DeTaiSinhVien::where(['da_huy' => 0, 'nam_hoc' => $thietLap->nam_hoc])->orderBy('ma_de_tai', 'desc')->paginate($limit);
         return view('admin.detaisinhvien.danhSach', compact('deTaiSVs'));
     }
 

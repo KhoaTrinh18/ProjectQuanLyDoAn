@@ -19,7 +19,8 @@ use App\Models\{
     DeTaiGiangVien,
     DeTaiSinhVien,
     GiangVien,
-    HoiDong
+    HoiDong,
+    ThietLap
 };
 
 class PhanCongHoiDongController extends Controller
@@ -27,11 +28,12 @@ class PhanCongHoiDongController extends Controller
     public function danhSach(Request $request)
     {
         $limit = $request->query('limit', 10);
+        $thietLap = ThietLap::where('trang_thai', 1)->first();
 
-        $maDeTaiDXs = BangDiemGVPBChoSVDX::distinct()->pluck('ma_de_tai');
+        $maDeTaiDXs = BangDiemGVPBChoSVDX::distinct()->where('nam_hoc', $thietLap->nam_hoc)->pluck('ma_de_tai');
         $deTaiSVs = DeTaiSinhVien::whereIn('ma_de_tai', $maDeTaiDXs)->orderBy('ma_de_tai', 'desc')->get();
 
-        $maDeTaiDKs = BangDiemGVPBChoSVDK::distinct()->pluck('ma_de_tai');
+        $maDeTaiDKs = BangDiemGVPBChoSVDK::distinct()->where('nam_hoc', $thietLap->nam_hoc)->pluck('ma_de_tai');
         $deTaiGVs = DeTaiGiangVien::whereIn('ma_de_tai', $maDeTaiDKs)->orderBy('ma_de_tai', 'desc')->get();
 
         $merged = $deTaiSVs->merge($deTaiGVs)->unique('ma_de_tai')->values();
@@ -52,8 +54,9 @@ class PhanCongHoiDongController extends Controller
     public function pageAjax(Request $request)
     {
         $limit = $request->query('limit', 10);
+        $thietLap = ThietLap::where('trang_thai', 1)->first();
 
-        $maDeTaiDXs = BangPhanCongSVDX::distinct()->pluck('ma_de_tai');
+        $maDeTaiDXs = BangPhanCongSVDX::distinct()->where('nam_hoc', $thietLap->nam_hoc)->pluck('ma_de_tai');
         $deTaiSVs = DeTaiSinhVien::query()
             ->whereIn('ma_de_tai', $maDeTaiDXs)
             ->orderBy('ma_de_tai', 'desc');
@@ -90,7 +93,7 @@ class PhanCongHoiDongController extends Controller
 
         $deTaiSVs = $deTaiSVs->get();
 
-        $maDeTaiDKs = BangPhanCongSVDK::distinct()->pluck('ma_de_tai');
+        $maDeTaiDKs = BangPhanCongSVDK::distinct()->where('nam_hoc', $thietLap->nam_hoc)->pluck('ma_de_tai');
         $deTaiGVs = DeTaiGiangVien::query()
             ->whereIn('ma_de_tai', $maDeTaiDKs)
             ->orderBy('ma_de_tai', 'desc');
@@ -201,6 +204,7 @@ class PhanCongHoiDongController extends Controller
 
         $deTai = DeTaiSinhVien::where('ma_de_tai', $data['ma_de_tai'])->first();
         $hoiDong = HoiDong::where('ma_hoi_dong', $data['ma_hoi_dong'])->first();
+        $thietLap = ThietLap::where('trang_thai', 1)->first();
 
         if ($deTai) {
             $phanCongs = BangDiemGVPBChoSVDX::where('ma_de_tai', $data['ma_de_tai'])->get();
@@ -213,6 +217,7 @@ class PhanCongHoiDongController extends Controller
                     $phanCongHoiDong->ma_gvpb = $phanCong->ma_gvpb;
                     $phanCongHoiDong->ma_gvthd = $giangVien->ma_gv;
                     $phanCongHoiDong->ma_hoi_dong = $data['ma_hoi_dong'];
+                    $phanCongHoiDong->nam_hoc = $thietLap->nam_hoc;
                     $phanCongHoiDong->save();
                 }
             }
@@ -227,6 +232,7 @@ class PhanCongHoiDongController extends Controller
                     $phanCongHoiDong->ma_gvpb = $phanCong->ma_gvpb;
                     $phanCongHoiDong->ma_gvthd = $giangVien->ma_gv;
                     $phanCongHoiDong->ma_hoi_dong = $data['ma_hoi_dong'];
+                    $phanCongHoiDong->nam_hoc = $thietLap->nam_hoc;
                     $phanCongHoiDong->save();
                 }
             }
@@ -277,6 +283,7 @@ class PhanCongHoiDongController extends Controller
 
         $deTai = DeTaiSinhVien::where('ma_de_tai', $data['ma_de_tai'])->first();
         $hoiDong = HoiDong::where('ma_hoi_dong', $data['ma_hoi_dong'])->first();
+        $thietLap = ThietLap::where('trang_thai', 1)->first();
 
         if ($deTai) {
             BangDiemGVTHDChoSVDX::where('ma_de_tai', $data['ma_de_tai'])->delete();
@@ -290,6 +297,7 @@ class PhanCongHoiDongController extends Controller
                     $phanCongHoiDong->ma_gvpb = $phanCong->ma_gvpb;
                     $phanCongHoiDong->ma_gvthd = $giangVien->ma_gv;
                     $phanCongHoiDong->ma_hoi_dong = $data['ma_hoi_dong'];
+                    $phanCongHoiDong->nam_hoc = $thietLap->nam_hoc;
                     $phanCongHoiDong->save();
                 }
             }
@@ -305,6 +313,7 @@ class PhanCongHoiDongController extends Controller
                     $phanCongHoiDong->ma_gvpb = $phanCong->ma_gvpb;
                     $phanCongHoiDong->ma_gvthd = $giangVien->ma_gv;
                     $phanCongHoiDong->ma_hoi_dong = $data['ma_hoi_dong'];
+                    $phanCongHoiDong->nam_hoc = $thietLap->nam_hoc;
                     $phanCongHoiDong->save();
                 }
             }

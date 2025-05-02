@@ -255,7 +255,8 @@ class ThongTinDeTaiController extends Controller
         $maTaiKhoan = session()->get('ma_tai_khoan');
         $sinhVien = SinhVien::where('ma_tk', $maTaiKhoan)->first();
         $maDeTais = SinhVienDeTaiSV::where(['ma_sv' => $sinhVien->ma_sv, 'trang_thai' => 0])->pluck('ma_de_tai');
-        $deTais = DeTaiSinhVien::whereIn('ma_de_tai', $maDeTais)->orderBy('ma_de_tai', 'desc')->get();
+        $thietLap = ThietLap::where('trang_thai', 1)->first();
+        $deTais = DeTaiSinhVien::whereIn('ma_de_tai', $maDeTais)->where('nam_hoc', $thietLap->nam_hoc)->orderBy('ma_de_tai', 'desc')->get();
 
         return view('sinhvien.thongtindetai.danhSachKhongDuyet', compact('deTais'));
     }

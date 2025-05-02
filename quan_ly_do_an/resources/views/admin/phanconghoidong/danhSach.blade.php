@@ -26,7 +26,10 @@
                                         @foreach ($chuyenNganhs as $chuyenNganh)
                                             <optgroup label="{{ $chuyenNganh->ten_bo_mon }}">
                                                 @foreach ($chuyenNganh->hoiDongs as $hoiDong)
-                                                    @if ($hoiDong->da_huy != 1)
+                                                    @php
+                                                        $thietLap = DB::table('thiet_lap')->where('trang_thai', 1)->first();
+                                                    @endphp
+                                                    @if ($hoiDong->da_huy != 1 && $hoiDong->nam_hoc == $thietLap->nam_hoc)
                                                         <option value="{{ $hoiDong->ma_hoi_dong }}">
                                                             {{ $hoiDong->ten_hoi_dong }}</option>
                                                     @endif
