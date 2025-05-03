@@ -178,6 +178,11 @@
                                 <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Học vị</span>
                             </a>
                         </li>
+                        <li class="sidebar-item {{ request()->is('sinh-vien*') ? 'active' : '' }}">
+                            <a class="sidebar-link" href="{{ route('sinh_vien.danh_sach') }}">
+                                <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Sinh viên</span>
+                            </a>
+                        </li>
                     </ul>
                 @endif
             </div>

@@ -12,4 +12,9 @@ class SinhVien extends Model
     protected $table = 'sinh_vien';
     protected $primaryKey = 'ma_sv';
     public $timestamps = false;
+
+    public function taiKhoan()
+    {
+        return $this->belongsTo(TaiKhoanSV::class, 'ma_tk', 'ma_tk');
+    }
 }

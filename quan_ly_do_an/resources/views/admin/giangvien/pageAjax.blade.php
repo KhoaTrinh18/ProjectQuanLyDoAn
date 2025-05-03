@@ -49,7 +49,7 @@
                     <th scope="col" class="text-white">Email</th>
                     <th scope="col" class="text-white">Số điện thoại</th>
                     <th scope="col" class="text-white">Bộ môn</th>
-                    <th scope="col" class="text-white">Học vị</th>
+                    <th scope="col" class="text-white">Tài khoản</th>
                     <th scope="col" class="text-white" style="width: 13%"></th>
                 </tr>
             </thead>
@@ -61,7 +61,14 @@
                         <td> {{ $giangVien->email }} </td>
                         <td> {{ $giangVien->so_dien_thoai }} </td>
                         <td> {{ $giangVien->boMon->ten_bo_mon }} </td>
-                        <td> {{ $giangVien->hocVi->ten_hoc_vi }} </td>
+                        <td>
+                            @if (isset($giangVien->taiKhoan))
+                                Tài khoản: {{ $giangVien->taiKhoan->ten_tk }}</br>
+                                Mật khẩu: {{ $giangVien->taiKhoan->mat_khau }}
+                            @else
+                                Chưa có
+                            @endif
+                        </td>
                         <td class="text-center">
                             <a href="{{ route('giang_vien.chi_tiet', ['ma_gv' => $giangVien->ma_gv]) }}"
                                 class="btn btn-secondary btn-sm">Xem</a>

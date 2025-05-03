@@ -11,7 +11,8 @@ use App\Http\Controllers\Admin\{
     PhanCongHuongDanController,
     PhanCongPhanBienController,
     HoiDongController,
-    PhanCongHoiDongController
+    PhanCongHoiDongController,
+    SinhVienController
 };
 use App\Http\Middleware\KiemTraDangNhap;
 
@@ -198,4 +199,25 @@ Route::middleware([KiemTraDangNhap::class])->group(function () {
     Route::get('/hoc-vi/xac-nhan-sua', function () {
         return redirect()->back()->with('error', 'Sai đường dẫn');
     });
+
+    Route::get('/sinh-vien/danh-sach', [SinhVienController::class, 'danhSach'])->name('sinh_vien.danh_sach');
+    Route::get('/sinh-vien/page-ajax', [SinhVienController::class, 'pageAjax'])->name('sinh_vien.page_ajax');
+    Route::get('/sinh-vien/chi-tiet/{ma_sv}', [SinhVienController::class, 'chiTiet'])->name('sinh_vien.chi_tiet');
+    Route::get('/sinh-vien/them', [SinhVienController::class, 'them'])->name('sinh_vien.them');
+    Route::post('/sinh-vien/xac-nhan-them', [SinhVienController::class, 'xacNhanThem'])->name('sinh_vien.xac_nhan_them');
+    Route::get('/sinh-vien/xac-nhan-them', function () {
+        return redirect()->back()->with('error', 'Sai đường dẫn');
+    });
+    Route::get('/sinh-vien/huy/{ma_sv}', [SinhVienController::class, 'huy'])->name('sinh_vien.huy');
+    Route::post('/sinh-vien/xac-nhan-huy', [SinhVienController::class, 'xacNhanHuy'])->name('sinh_vien.xac_nhan_huy');
+    Route::get('/sinh-vien/xac-nhan-huy', function () {
+        return redirect()->back()->with('error', 'Sai đường dẫn');
+    });
+    Route::get('/sinh-vien/sua/{ma_sv}', [SinhVienController::class, 'sua'])->name('sinh_vien.sua');
+    Route::post('/sinh-vien/xac-nhan-sua', [SinhVienController::class, 'xacNhanSua'])->name('sinh_vien.xac_nhan_sua');
+    Route::get('/sinh-vien/xac-nhan-sua', function () {
+        return redirect()->back()->with('error', 'Sai đường dẫn');
+    });
+    Route::get('/sinh-vien/tai-csv-mau', [SinhVienController::class, 'taiCSVMau'])->name('sinh_vien.tai_csv_mau');
+    Route::get('/sinh-vien/tao-tai-khoan', [SinhVienController::class, 'taoTaiKhoan'])->name('sinh_vien.tao_tai_khoan');
 });
