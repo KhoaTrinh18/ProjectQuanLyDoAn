@@ -32,4 +32,8 @@ class GiangVien extends Model
     {
         return $this->belongsToMany(DeTaiGiangVien::class, 'giang_vien_de_tai_gv', 'ma_gv', 'ma_de_tai');
     }
+
+    public function hoiDongs() {
+        return $this->belongsToMany(HoiDong::class, 'hoi_dong_giang_vien', 'ma_gv', 'ma_hoi_dong');
+    }
 }

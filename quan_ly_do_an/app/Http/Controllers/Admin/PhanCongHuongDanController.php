@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Carbon\Carbon;
 use App\Models\{
+    BangDiemGVPBChoSVDX,
     BangPhanCongSVDK,
     BangPhanCongSVDX,
     BoMon,
@@ -145,18 +146,9 @@ class PhanCongHuongDanController extends Controller
 
     public function phanCong($ma_de_tai)
     {
-        $deTai = DeTaiSinhVien::where('ma_de_tai', $ma_de_tai)->first();
-
-        if (!$deTai) {
-            $deTai = DeTaiGiangVien::where('ma_de_tai', $ma_de_tai)->first();
-        }
-
-        if (!$deTai) {
-            abort(404, 'Đề tài không tồn tại');
-        }
+        $deTai = DeTaiSinhVien::where('ma_de_tai', $ma_de_tai)->firstOrFail();
 
         $chuyenNganhs = BoMon::with('giangViens')->where('da_huy', 0)->orderBy('ma_bo_mon', 'desc')->get();
-        Log::info($chuyenNganhs);
 
         return view('admin.phanconghuongdan.phanCong', compact('deTai', 'chuyenNganhs'));
     }
@@ -220,9 +212,9 @@ class PhanCongHuongDanController extends Controller
             abort(404, 'Đề tài không tồn tại');
         }
 
-        $giangViens = GiangVien::get();
+        $chuyenNganhs = BoMon::with('giangViens')->where('da_huy', 0)->orderBy('ma_bo_mon', 'desc')->get();
 
-        return view('admin.phanconghuongdan.sua', compact('deTai', 'giangViens'));
+        return view('admin.phanconghuongdan.sua', compact('deTai', 'chuyenNganhs'));
     }
 
     public function xacNhanSua(Request $request)
@@ -257,6 +249,20 @@ class PhanCongHuongDanController extends Controller
         }
 
         $deTai = DeTaiSinhVien::where('ma_de_tai', $data['ma_de_tai'])->first();
+
+        if(BangDiemGVPBChoSVDX::where('ma_de_tai', $data['ma_de_tai'])->exists()) {
+            return response()->json([
+                'success' => false,
+                'errors' => 'phan_cong'
+        ]);
+        }
+
+        if (BangPhanCongSVDK::where('ma_de_tai', $data['ma_de_tai'])->whereNotNull('diem_gvhd')->exists() || BangPhanCongSVDX::where('ma_de_tai', $data['ma_de_tai'])->whereNotNull('diem_gvhd')->exists()) {
+            return response()->json([
+                'success' => false,
+                'errors' => 'cham_diem'
+            ]);
+        }
 
         $thietLap = ThietLap::where('trang_thai', 1)->first();
         BangPhanCongSVDX::where('ma_de_tai', $data['ma_de_tai'])->delete();

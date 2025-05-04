@@ -8,6 +8,7 @@ use App\Jobs\SendEmailJob;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use App\Models\{
+    BangPhanCongSVDK,
     BoMon,
     DeTaiGiangVien,
     DeTaiSinhVien,
@@ -151,9 +152,9 @@ class DeTaiGiangVienController extends Controller
         $lyDoTuChoi = $request->input('lyDoTuChoi');
 
         $validator = Validator::make(
-            ['lyDoTuChoi' => $lyDoTuChoi],  
+            ['lyDoTuChoi' => $lyDoTuChoi],
             [
-                'lyDoTuChoi' => 'required',  
+                'lyDoTuChoi' => 'required',
             ],
             [
                 'lyDoTuChoi.required' => 'Lý do từ chối không được để trống.',
@@ -174,7 +175,7 @@ class DeTaiGiangVienController extends Controller
         GiangVienDeTaiGV::where('ma_de_tai', $data['ma_de_tai'])->update([
             'trang_thai' => 0
         ]);
-        
+
         $ngayDuaRa = $deTaiGV->ngayDuaRa->ngay_dua_ra;
 
         foreach ($deTaiGV->giangViens as $giangVien) {
@@ -183,7 +184,7 @@ class DeTaiGiangVienController extends Controller
             }
         }
 
-        if(!empty($emailList)) {
+        if (!empty($emailList)) {
             SendEmailJob::dispatch($emailList, $deTaiGV, $ngayDuaRa, $lyDoTuChoi);
         }
 
@@ -203,6 +204,10 @@ class DeTaiGiangVienController extends Controller
         }
 
         $data = $request->input('DeTai', []);
+
+        if (BangPhanCongSVDK::where("ma_de_tai", $data['ma_de_tai'])->exists()) {
+            return response()->json(['success' => false]);
+        }
 
         $deTaiGV = DeTaiGiangVien::where('ma_de_tai', $data['ma_de_tai'])->first();
         $deTaiGV->da_huy = 1;

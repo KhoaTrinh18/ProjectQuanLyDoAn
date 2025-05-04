@@ -70,7 +70,7 @@ class PhanCongHoiDongController extends Controller
                 $q->where('giang_vien.ma_gv', $request->giang_vien_huong_dan);
             });
         }
-        
+
         if ($request->filled('hoi_dong')) {
             $deTaiSVs->whereHas('hoiDongs', function ($q) use ($request) {
                 $q->where('hoi_dong.ma_hoi_dong', $request->hoi_dong);
@@ -259,7 +259,7 @@ class PhanCongHoiDongController extends Controller
 
     public function xacNhanSua(Request $request)
     {
-        
+
         if (!$request->isMethod('post')) {
             return redirect()->back()->with('error', 'Bạn không thể truy cập trực tiếp trang này!');
         }
@@ -278,6 +278,12 @@ class PhanCongHoiDongController extends Controller
             return response()->json([
                 'success' => false,
                 'errors' => $validator->errors()->toArray(),
+            ]);
+        }
+
+        if (BangDiemGVTHDChoSVDK::where('ma_de_tai', $data['ma_de_tai'])->whereNotNull('diem_gvthd')->exists() || BangDiemGVTHDChoSVDX::where('ma_de_tai', $data['ma_de_tai'])->whereNotNull('diem_gvthd')->exists()) {
+            return response()->json([
+                'success' => false,
             ]);
         }
 
@@ -317,6 +323,44 @@ class PhanCongHoiDongController extends Controller
                     $phanCongHoiDong->save();
                 }
             }
+        }
+
+        return response()->json(['success' => true]);
+    }
+
+    public function huy($ma_de_tai)
+    {
+        $deTai = DeTaiSinhVien::where('ma_de_tai', $ma_de_tai)->first();
+
+        if (!$deTai) {
+            $deTai = DeTaiGiangVien::where('ma_de_tai', $ma_de_tai)->first();
+        }
+
+        if (!$deTai) {
+            abort(404, 'Đề tài không tồn tại');
+        }
+
+        return view('admin.phanconghoidong.huy', compact('deTai'));
+    }
+
+    public function xacNhanHuy(Request $request)
+    {
+        if (!$request->isMethod('post')) {
+            return redirect()->back()->with('error', 'Bạn không thể truy cập trực tiếp trang này!');
+        }
+
+        $ma_de_tai = $request->input('ma_de_tai');
+
+        if (BangDiemGVTHDChoSVDK::where('ma_de_tai', $ma_de_tai)->whereNotNull('diem_gvthd')->exists() || BangDiemGVTHDChoSVDX::where('ma_de_tai', $ma_de_tai)->whereNotNull('diem_gvthd')->exists()) {
+            return response()->json([
+                'success' => false,
+            ]);
+        }
+
+        $deleted = BangDiemGVTHDChoSVDK::where('ma_de_tai', $ma_de_tai)->delete();
+
+        if ($deleted === 0) {
+            BangDiemGVTHDChoSVDX::where('ma_de_tai', $ma_de_tai)->delete();
         }
 
         return response()->json(['success' => true]);

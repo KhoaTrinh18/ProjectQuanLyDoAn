@@ -98,6 +98,15 @@
                                 window.location.href =
                                     "{{ route('de_tai_giang_vien.danh_sach') }}";
                             });
+                        } else {
+                            Swal.fire({
+                            icon: 'error',
+                            title: 'Thất bại!',
+                            text: 'Hủy thất bại! Đề tài đã được phân công',
+                            confirmButtonText: 'OK',
+                            timer: 1000,
+                            showConfirmButton: false
+                        })
                         }
                     },
                     error: function(xhr) {

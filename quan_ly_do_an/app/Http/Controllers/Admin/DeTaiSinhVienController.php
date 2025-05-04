@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use App\Models\{
+    BangPhanCongSVDX,
     DeTaiGiangVien,
     DeTaiSinhVien,
     SinhVien,
@@ -204,6 +205,10 @@ class DeTaiSinhVienController extends Controller
         }
 
         $data = $request->input('DeTai', []);
+
+        if (BangPhanCongSVDX::where("ma_de_tai", $data['ma_de_tai'])->exists()) {
+            return response()->json(['success' => false]);
+        }
 
         $deTaiSV = DeTaiSinhVien::where('ma_de_tai', $data['ma_de_tai'])->first();
         $deTaiSV->da_huy = 1;

@@ -94,7 +94,7 @@
                                 </a>
                                 <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal"
                                     data-bs-target="#confirmModal">
-                                    Cập nhật
+                                    Xác nhận cập nhật
                                 </button>
                             </div>
                             <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel"

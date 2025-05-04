@@ -6,7 +6,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="card">
-                    @if (!$daDangKy || $deTai->trang_thai == 0)
+                    @if (!$daDangKy)
                         <div class="card-header d-flex justify-content-center align-items-center flex-column">
                             <h2 style="font-weight: bold"><i>Bạn chưa có đề tài</i></h2>
                             <h5 style="font-weight: bold"><i>(Vui lòng đề xuất hoặc đăng ký!)</i></h5>
@@ -28,48 +28,6 @@
                                 <p><strong>Hình thức:</strong> Đăng ký</p>
                                 <p><strong>Ngày đăng ký:</strong>
                                     {{ \Carbon\Carbon::parse($ngayDangKy)->format('d-m-Y') }}
-                                </p>
-                            @endif
-
-                            @if ($deTai->so_luong_sv_dang_ky == 1)
-                                <p><strong>Sinh viên đã đăng ký:
-                                    </strong>{{ $deTai->sinhViens->first()->ho_ten }}
-                                    ({{ $deTai->sinhViens->first()->mssv }})
-                                </p>
-                            @elseif ($deTai->so_luong_sv_dang_ky > 1)
-                                <p><strong>Sinh viên đã đăng ký:</strong></p>
-                                <ul>
-                                    @foreach ($deTai->sinhViens as $sinhVien)
-                                        <li>{{ $sinhVien->ho_ten }} ({{ $sinhVien->mssv }})</li>
-                                    @endforeach
-                                </ul>
-                            @endif
-
-                            @if ($deTai->so_luong_sv_de_xuat == 1)
-                                <p><strong>Sinh viên đã đề xuất:
-                                    </strong>{{ $deTai->sinhViens->first()->ho_ten }}
-                                    ({{ $deTai->sinhViens->first()->mssv }})
-                                </p>
-                            @elseif ($deTai->so_luong_sv_de_xuat > 1)
-                                <p><strong>Sinh viên đã đề xuất:</strong></p>
-                                <ul>
-                                    @foreach ($deTai->sinhViens as $sinhVien)
-                                        <li>{{ $sinhVien->ho_ten }} ({{ $sinhVien->mssv }})</li>
-                                    @endforeach
-                                </ul>
-                            @endif
-
-                            @if ($loaiDeTai == 'de_tai_sv')
-                                <p><strong>Trạng thái: </strong>
-                                    @if ($deTai->trang_thai == 1)
-                                        <span class="text-warning">Đang xử lý</span>
-                                    @elseif($deTai->trang_thai == 2)
-                                        <span class="text-success">Đã duyệt</span>
-                                    @endif
-                                </p>
-                            @else
-                                <p><strong>Trạng thái: </strong>
-                                    <span class="text-success">Đã duyệt</span>
                                 </p>
                             @endif
 
@@ -102,7 +60,7 @@
                                 @endif
 
                                 @if ($deTai->giangVienPhanBiens->isEmpty())
-                                    <p><strong>Giảng viên phản biện: </strong>Chưa có</p>
+                                    <p><strong>Giảng viên phản biện: </strong><i>Chưa có</i></p>
                                 @else
                                     @php $gv = $deTai->giangVienPhanBiens->first(); @endphp
                                     <p class="mb-0"><strong>Giảng viên phản biện: </strong>{{ $gv->ho_ten }}</p>
@@ -130,7 +88,7 @@
                                                 ->where('ma_de_tai', $deTai->ma_de_tai)
                                                 ->get();
                                         } else {
-                                            $deTaiHoiDong = DB::table('bang_diem_gvthd_cho_svdk')
+                                            $deTaiHoiDong = DB::table('bang_diem_gvthd_cho_svdx')
                                                 ->where('ma_de_tai', $deTai->ma_de_tai)
                                                 ->get();
                                         }
@@ -178,52 +136,71 @@
                                         </ul>
                                     @endif
                                 @endif
-                            @elseif ($loaiDeTai == 'de_tai_sv' && $deTai->trang_thai == 1)
-                                <form id="form_huy">
-                                    <input type="hidden" name="ma_de_tai" value="{{ $deTai->ma_de_tai }}">
-                                    <div class="text-center">
-                                        <button type="button" class="btn btn-danger btn-lg" data-bs-toggle="modal"
-                                            data-bs-target="#cancelModal">Hủy</button>
-                                        <a class="btn btn-lg btn-primary"
-                                            href="{{ route('thong_tin_de_tai.sua', ['ma_de_tai' => $deTai->ma_de_tai]) }}">Sửa</a>
-                                    </div>
-                                    <div class="modal fade" id="cancelModal" tabindex="-1"
-                                        aria-labelledby="cancelModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered">
-                                            <div class="modal-content rounded-4 shadow-sm border-0">
-                                                <div class="modal-header bg-light border-bottom-0">
-                                                    <h5 class="modal-title fw-semibold text-primary" id="cancelModalLabel">
-                                                        Xác nhận
-                                                        hủy</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                        aria-label="Đóng"></button>
-                                                </div>
-                                                <div class="modal-body text-center fs-5 text-secondary">
-                                                    Bạn có chắc chắn muốn hủy đề tài này?
-                                                </div>
-                                                <div class="modal-footer bg-light border-top-0">
-                                                    <button type="button" class="btn btn-secondary"
-                                                        data-bs-dismiss="modal">Hủy</button>
-                                                    <button type="submit" class="btn btn-primary" id="huy">Xác
-                                                        nhận</button>
+                            @else
+                                @if ($loaiDeTai == 'de_tai_sv')
+                                    <p><strong>Trạng thái: </strong>
+                                        @if ($deTai->trang_thai == 1)
+                                            <span class="text-warning">Đang xử lý</span>
+                                        @elseif($deTai->trang_thai == 2)
+                                            <span class="text-success">Đã duyệt</span>
+                                        @endif
+                                    </p>
+                                @else
+                                    <p><strong>Trạng thái: </strong>
+                                        <span class="text-success">Đã duyệt</span>
+                                    </p>
+                                @endif
+                                @if ($loaiDeTai == 'de_tai_sv' && $deTai->trang_thai == 1)
+                                    <form id="form_huy">
+                                        <input type="hidden" name="ma_de_tai" value="{{ $deTai->ma_de_tai }}">
+                                        <div class="text-center">
+                                            <button type="button" class="btn btn-danger btn-lg" data-bs-toggle="modal"
+                                                data-bs-target="#cancelModal">Hủy</button>
+                                            <a class="btn btn-lg btn-primary"
+                                                href="{{ route('thong_tin_de_tai.sua', ['ma_de_tai' => $deTai->ma_de_tai]) }}">Sửa</a>
+                                        </div>
+                                        <div class="modal fade" id="cancelModal" tabindex="-1"
+                                            aria-labelledby="cancelModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content rounded-4 shadow-sm border-0">
+                                                    <div class="modal-header bg-light border-bottom-0">
+                                                        <h5 class="modal-title fw-semibold text-primary"
+                                                            id="cancelModalLabel">
+                                                            Xác nhận
+                                                            hủy</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Đóng"></button>
+                                                    </div>
+                                                    <div class="modal-body text-center fs-5 text-secondary">
+                                                        Bạn có chắc chắn muốn hủy đề tài này?
+                                                    </div>
+                                                    <div class="modal-footer bg-light border-top-0">
+                                                        <button type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal">Hủy</button>
+                                                        <button type="submit" class="btn btn-primary" id="huy">Xác
+                                                            nhận</button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </form>
-                                <h5 class="text-center mt-4" style="font-weight: bold"><i>Sinh viên có thể hủy hoặc sửa khi
-                                        chưa
-                                        duyệt đề tài đã đề xuất trước thời gian kết thúc đăng ký!</i>
-                                </h5>
-                            @elseif ($loaiDeTai == 'de_tai_sv' && $deTai->trang_thai == 2)
-                                <h5 class="text-center" style="font-weight: bold"><i>Khi đề tài đã duyệt, sinh viên muốn hủy
-                                        phải liên hệ với
-                                        trưởng khoa trước thời gian kết thúc đăng ký!</i>
-                                </h5>
-                            @else
-                                <h5 class="text-center" style="font-weight: bold"><i>Sau khi đăng ký đề tài, sinh viên muốn
-                                        hủy phải liên hệ với giảng viên trước thời gian kết thúc đăng ký!</i>
-                                </h5>
+                                    </form>
+                                    <h5 class="text-center mt-4" style="font-weight: bold"><i>Sinh viên có thể hủy hoặc sửa
+                                            khi
+                                            chưa
+                                            duyệt đề tài đã đề xuất trước thời gian kết thúc đăng ký!</i>
+                                    </h5>
+                                @elseif ($loaiDeTai == 'de_tai_sv' && $deTai->trang_thai == 2)
+                                    <h5 class="text-center" style="font-weight: bold"><i>Khi đề tài đã duyệt, sinh viên muốn
+                                            hủy
+                                            phải liên hệ với
+                                            trưởng khoa trước thời gian kết thúc đăng ký!</i>
+                                    </h5>
+                                @else
+                                    <h5 class="text-center" style="font-weight: bold"><i>Sau khi đăng ký đề tài, sinh viên
+                                            muốn
+                                            hủy phải liên hệ với giảng viên trước thời gian kết thúc đăng ký!</i>
+                                    </h5>
+                                @endif
                             @endif
                         </div>
                     @endif

@@ -49,7 +49,7 @@ class ThongTinDeTaiController extends Controller
                 $checkNgayHetHan = 0;
             }
 
-            return view('sinhvien.thongtindetai.thongTin', compact('deTai', 'loaiDeTai', 'daDangKy', 'checkNgayHetHan', 'sinhVien'));
+            return view('sinhvien.thongtindetai.thongTin', compact('deTai', 'loaiDeTai', 'daDangKy', 'checkNgayHetHan', 'sinhVien', 'ngayDangKy'));
         } else {
             return view('sinhvien.thongtindetai.thongTin', compact('daDangKy'));
         }

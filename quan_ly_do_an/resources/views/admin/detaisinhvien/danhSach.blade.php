@@ -46,7 +46,7 @@
                             </div>
                             <div class="d-flex flex-column ms-3" style="width: 380px">
                                 <div class="d-flex align-items-center justify-content-between">
-                                    <label for="giang_vien">Sinh viên:</label>
+                                    <label for="sinh_vien">Sinh viên:</label>
                                     <input type="text" name="sinh_vien" class="form-control ms-2 w-75 shadow-none"
                                         placeholder="Tên sinh viên">
                                 </div>

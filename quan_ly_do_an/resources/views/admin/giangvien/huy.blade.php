@@ -84,7 +84,7 @@
                                 showConfirmButton: false
                             }).then(() => {
                                 window.location.href =
-                                    "{{ route('hoi_dong.danh_sach') }}";
+                                    "{{ route('giang_vien.danh_sach') }}";
                             });
                         } else {
                             if (result.error == 'dua_ra') {

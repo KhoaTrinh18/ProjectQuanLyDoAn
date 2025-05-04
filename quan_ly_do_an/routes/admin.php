@@ -12,7 +12,8 @@ use App\Http\Controllers\Admin\{
     PhanCongPhanBienController,
     HoiDongController,
     PhanCongHoiDongController,
-    SinhVienController
+    SinhVienController,
+    SinhVienDeTaiAllController
 };
 use App\Http\Middleware\KiemTraDangNhap;
 
@@ -96,6 +97,11 @@ Route::middleware([KiemTraDangNhap::class])->group(function () {
     Route::get('/phan-cong-phan-bien/xac-nhan-sua', function () {
         return redirect()->back()->with('error', 'Sai đường dẫn');
     });
+    Route::get('/phan-cong-phan-bien/huy/{ma_de_tai}', [PhanCongPhanBienController::class, 'huy'])->name('phan_cong_phan_bien.huy');
+    Route::post('/phan-cong-phan-bien/xac-nhan-huy', [PhanCongPhanBienController::class, 'xacNhanHuy'])->name('phan_cong_phan_bien.xac_nhan_huy');
+    Route::get('/phan-cong-phan-bien/xac-nhan-huy', function () {
+        return redirect()->back()->with('error', 'Sai đường dẫn');
+    });
 
     Route::get('/hoi-dong/danh-sach', [HoiDongController::class, 'danhSach'])->name('hoi_dong.danh_sach');
     Route::get('/hoi-dong/page-ajax', [HoiDongController::class, 'pageAjax'])->name('hoi_dong.page_ajax');
@@ -127,6 +133,11 @@ Route::middleware([KiemTraDangNhap::class])->group(function () {
     Route::get('/phan-cong-hoi-dong/sua/{ma_de_tai}', [PhanCongHoiDongController::class, 'sua'])->name('phan_cong_hoi_dong.sua');
     Route::post('/phan-cong-hoi-dong/xac-nhan-sua', [PhanCongHoiDongController::class, 'xacNhanSua'])->name('phan_cong_hoi_dong.xac_nhan_sua');
     Route::get('/phan-cong-hoi-dong/xac-nhan-sua', function () {
+        return redirect()->back()->with('error', 'Sai đường dẫn');
+    });
+    Route::get('/phan-cong-hoi-dong/huy/{ma_de_tai}', [PhanCongHoiDongController::class, 'huy'])->name('phan_cong_hoi_dong.huy');
+    Route::post('/phan-cong-hoi-dong/xac-nhan-huy', [PhanCongHoiDongController::class, 'xacNhanHuy'])->name('phan_cong_hoi_dong.xac_nhan_huy');
+    Route::get('/phan-cong-hoi-dong/xac-nhan-huy', function () {
         return redirect()->back()->with('error', 'Sai đường dẫn');
     });
 
@@ -220,4 +231,8 @@ Route::middleware([KiemTraDangNhap::class])->group(function () {
     });
     Route::get('/sinh-vien/tai-csv-mau', [SinhVienController::class, 'taiCSVMau'])->name('sinh_vien.tai_csv_mau');
     Route::get('/sinh-vien/tao-tai-khoan', [SinhVienController::class, 'taoTaiKhoan'])->name('sinh_vien.tao_tai_khoan');
+
+    Route::get('/sinh-vien-de-tai-all/danh-sach', [SinhVienDeTaiAllController::class, 'danhSach'])->name('sinh_vien_de_tai_all.danh_sach');
+    Route::get('/sinh-vien-de-tai-all/page-ajax', [SinhVienDeTaiAllController::class, 'pageAjax'])->name('sinh_vien_de_tai_all.page_ajax');
+    Route::get('/sinh-vien-de-tai-all/chi-tiet/{ma_sv}', [SinhVienDeTaiAllController::class, 'chiTiet'])->name('sinh_vien_de_tai_all.chi_tiet');
 });

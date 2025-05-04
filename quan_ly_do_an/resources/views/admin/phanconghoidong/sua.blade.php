@@ -136,12 +136,24 @@
                                     "{{ route('phan_cong_hoi_dong.danh_sach') }}";
                             });
                         } else {
-                            $.each(result.errors, function(field, messages) {
-                                let inputField = $("[name='DeTai[" + field + "]']");
-                                $('.error-' + field).text(messages[0]).removeClass(
-                                    "d-none").addClass("d-block");
-                                inputField.addClass("is-invalid");
-                            });
+                            if (result.errors) {
+                                $.each(result.errors, function(field, messages) {
+                                    let inputField = $("[name='DeTai[" + field + "]']");
+                                    $('.error-' + field).text(messages[0]).removeClass(
+                                        "d-none").addClass("d-block");
+                                    inputField.addClass("is-invalid");
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Thất bại!',
+                                    text: 'Cập nhật thất bại! Đề tài này đã được chấm điểm',
+                                    confirmButtonText: 'OK',
+                                    timer: 1000,
+                                    showConfirmButton: false
+                                })
+                            }
+
                         }
                     },
                     error: function(xhr) {

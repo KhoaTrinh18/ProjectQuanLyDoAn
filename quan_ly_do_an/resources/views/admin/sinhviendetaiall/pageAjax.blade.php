@@ -50,6 +50,7 @@
                     <th scope="col" class="text-white">Lớp</th>
                     <th scope="col" class="text-white" width="20%">Tên đề tài</th>
                     <th scope="col" class="text-white">Giảng viên hướng dẫn</th>
+                    <th scope="col" class="text-white">Năm học</th>
                     <th scope="col" class="text-white">Trạng thái</th>
                     <th scope="col" class="text-white"></th>
                 </tr>
@@ -89,7 +90,7 @@
                             <td width="20%">{{ $deTai->ten_de_tai }}</td>
                             <td>{!! $deTai->giangViens->pluck('ho_ten')->implode('<br>') !!}</td>
                         @endif
-                        </td>
+                        <td>{{ $sinhVien->nam_hoc }}</td>
                         <td>
                             @if ($sinhVien->trang_thai == 0)
                                 <span class="text-danger">Không hoàn thành</span>
@@ -102,12 +103,6 @@
                         <td class="text-center">
                             <a href="{{ route('sinh_vien.chi_tiet', ['ma_sv' => $sinhVien->ma_sv]) }}"
                                 class="btn btn-secondary btn-sm">Xem</a>
-                            @if ($sinhVien->trang_thai == 1)
-                                <a href="{{ route('sinh_vien.huy', ['ma_sv' => $sinhVien->ma_sv]) }}"
-                                    class="btn btn-danger btn-sm">Hủy</a>
-                                <a href="{{ route('sinh_vien.sua', ['ma_sv' => $sinhVien->ma_sv]) }}"
-                                    class="btn btn-primary btn-sm">Sửa</a>
-                            @endif
                         </td>
                     </tr>
                 @endforeach

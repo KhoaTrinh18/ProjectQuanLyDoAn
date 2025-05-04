@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
-use Carbon\Carbon;
 use App\Models\{
     BangDiemGVPBChoSVDK,
     BangDiemGVPBChoSVDX,
@@ -14,10 +13,9 @@ use App\Models\{
     BangPhanCongSVDX,
     BoMon,
     GiangVien,
-    GiangVienDeTaiGV,
     HocVi,
-    HoiDongGiangVien,
-    TaiKhoanGV
+    TaiKhoanGV,
+    ThietLap
 };
 use Illuminate\Validation\Rule;
 
@@ -28,7 +26,7 @@ class GiangVienController extends Controller
         $limit = $request->query('limit', 10);
 
         $giangViens = GiangVien::where('da_huy', 0)->orderBy('ma_gv', 'desc')->paginate($limit);
-        $hocVis = HocVi::orderBy('ma_hoc_vi', 'desc')->get();
+        $hocVis = HocVi::where('da_huy', 0)->orderBy('ma_hoc_vi', 'desc')->get();
         $boMons = BoMon::where('da_huy', 0)->orderBy('ma_bo_mon', 'desc')->get();
 
         return view('admin.giangvien.danhSach', compact('giangViens', 'hocVis', 'boMons'));
@@ -44,6 +42,10 @@ class GiangVienController extends Controller
 
         if ($request->filled('bo_mon')) {
             $query->where('ma_bo_mon', $request->bo_mon);
+        }
+
+        if ($request->filled('giang_vien')) {
+            $query->where('ho_ten', 'like', '%' . $request->giang_vien . '%');
         }
 
         $limit = $request->input('limit', 10);
@@ -63,7 +65,7 @@ class GiangVienController extends Controller
 
     public function them()
     {
-        $hocVis = HocVi::orderBy('ma_hoc_vi', 'desc')->get();
+        $hocVis = HocVi::where('da_huy', 0)->orderBy('ma_hoc_vi', 'desc')->get();
         $boMons = BoMon::where('da_huy', 0)->orderBy('ma_bo_mon', 'desc')->get();
         return view('admin.giangvien.them', compact('boMons', 'hocVis'));
     }
@@ -174,7 +176,7 @@ class GiangVienController extends Controller
     public function sua($ma_gv)
     {
         $giangVien = GiangVien::where('ma_gv', $ma_gv)->firstOrFail();
-        $hocVis = HocVi::orderBy('ma_hoc_vi', 'desc')->get();
+        $hocVis = HocVi::where('da_huy', 0)->orderBy('ma_hoc_vi', 'desc')->get();
         $boMons = BoMon::where('da_huy', 0)->orderBy('ma_bo_mon', 'desc')->get();
 
         return view('admin.giangvien.sua', compact('giangVien', 'boMons', 'hocVis'));
@@ -285,7 +287,7 @@ class GiangVienController extends Controller
     public function huy($ma_gv)
     {
         $giangVien = GiangVien::where('ma_gv', $ma_gv)->firstOrFail();
-        $hocVis = HocVi::orderBy('ma_hoc_vi', 'desc')->get();
+        $hocVis = HocVi::where('da_huy', 0)->orderBy('ma_hoc_vi', 'desc')->get();
         $boMons = BoMon::where('da_huy', 0)->orderBy('ma_bo_mon', 'desc')->get();
 
         return view('admin.giangvien.huy', compact('giangVien', 'boMons', 'hocVis'));
@@ -298,23 +300,25 @@ class GiangVienController extends Controller
         }
 
         $ma_gv = $request->input('ma_gv');
+        $thietLap = ThietLap::where('trang_thai', 1)->first();
+        $giangVien = GiangVien::where('ma_gv', $ma_gv)->first();
 
-        if (GiangVienDeTaiGV::where('ma_gv', $ma_gv)->exists()) {
+        if ($giangVien->deTais->where('nam_hoc',  $thietLap->nam_hoc)->count() != 0) {
             return response()->json([
                 'success' => false,
                 'error' => 'dua_ra'
             ]);
-        } else if (BangPhanCongSVDK::where('ma_gvhd', $ma_gv)->exists() || BangPhanCongSVDX::where('ma_gvhd', $ma_gv)->exists()) {
+        } else if (BangPhanCongSVDK::where(['ma_gvhd' => $ma_gv, 'nam_hoc' => $thietLap->nam_hoc])->exists() || BangPhanCongSVDX::where(['ma_gvhd' => $ma_gv, 'nam_hoc' => $thietLap->nam_hoc])->exists()) {
             return response()->json([
                 'success' => false,
                 'error' => 'phan_cong_huong_dan'
             ]);
-        } else if (BangDiemGVPBChoSVDK::where('ma_gvpb', $ma_gv)->exists() || BangDiemGVPBChoSVDX::where('ma_gvpb', $ma_gv)->exists()) {
+        } else if (BangDiemGVPBChoSVDK::where(['ma_gvpb' => $ma_gv, 'nam_hoc' => $thietLap->nam_hoc])->exists() || BangDiemGVPBChoSVDX::where(['ma_gvpb' => $ma_gv, 'nam_hoc' => $thietLap->nam_hoc])->exists()) {
             return response()->json([
                 'success' => false,
                 'error' => 'phan_cong_phan_bien'
             ]);
-        } else if (HoiDongGiangVien::where('ma_gv', $ma_gv)->exists()) {
+        } else if ($giangVien->hoiDongs->where('nam_hoc',  $thietLap->nam_hoc)->count() != 0) {
             return response()->json([
                 'success' => false,
                 'error' => 'phan_cong_hoi_dong'

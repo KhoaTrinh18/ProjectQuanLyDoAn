@@ -11,6 +11,8 @@ use Carbon\Carbon;
 use App\Models\{
     BangDiemGVPBChoSVDX,
     BangDiemGVPBChoSVDK,
+    BangDiemGVTHDChoSVDK,
+    BangDiemGVTHDChoSVDX,
     BangPhanCongSVDK,
     BangPhanCongSVDX,
     BoMon,
@@ -267,10 +269,70 @@ class PhanCongPhanBienController extends Controller
             ]);
         }
 
+        if (BangDiemGVTHDChoSVDK::where('ma_de_tai', $data['ma_de_tai'])->exists() || BangDiemGVTHDChoSVDX::where('ma_de_tai', $data['ma_de_tai'])->exists()) {
+            return response()->json([
+                'success' => false,
+                'errors' => 'phan_cong'
+            ]);
+        }
+
+        if (BangDiemGVPBChoSVDK::where('ma_de_tai', $data['ma_de_tai'])->whereNotNull('diem_gvpb')->exists() || BangDiemGVPBChoSVDX::where('ma_de_tai', $data['ma_de_tai'])->whereNotNull('diem_gvpb')->exists()) {
+            return response()->json([
+                'success' => false,
+                'errors' => 'cham_diem'
+            ]);
+        }
+
         $updated = BangDiemGVPBChoSVDK::where('ma_de_tai', $data['ma_de_tai'])->update(['ma_gvpb' => $data['ma_gvpb']]);
 
         if ($updated === 0) {
             BangDiemGVPBChoSVDX::where('ma_de_tai', $data['ma_de_tai'])->update(['ma_gvpb' => $data['ma_gvpb']]);
+        }
+
+        return response()->json(['success' => true]);
+    }
+
+    public function huy($ma_de_tai)
+    {
+        $deTai = DeTaiSinhVien::where('ma_de_tai', $ma_de_tai)->first();
+
+        if (!$deTai) {
+            $deTai = DeTaiGiangVien::where('ma_de_tai', $ma_de_tai)->first();
+        }
+
+        if (!$deTai) {
+            abort(404, 'Đề tài không tồn tại');
+        }
+
+        return view('admin.phancongphanbien.huy', compact('deTai'));
+    }
+
+    public function xacNhanHuy(Request $request)
+    {
+        if (!$request->isMethod('post')) {
+            return redirect()->back()->with('error', 'Bạn không thể truy cập trực tiếp trang này!');
+        }
+
+        $ma_de_tai = $request->input('ma_de_tai');
+
+        if (BangDiemGVTHDChoSVDK::where('ma_de_tai', $ma_de_tai)->exists() || BangDiemGVTHDChoSVDX::where('ma_de_tai', $ma_de_tai)->exists()) {
+            return response()->json([
+                'success' => false,
+                'errors' => 'phan_cong'
+            ]);
+        }
+
+        if (BangDiemGVPBChoSVDK::where('ma_de_tai', $ma_de_tai)->whereNotNull('diem_gvpb')->exists() || BangDiemGVPBChoSVDX::where('ma_de_tai', $ma_de_tai)->whereNotNull('diem_gvpb')->exists()) {
+            return response()->json([
+                'success' => false,
+                'errors' => 'cham_diem'
+            ]);
+        }
+
+        $deleted = BangDiemGVPBChoSVDK::where('ma_de_tai', $ma_de_tai)->delete();
+
+        if ($deleted === 0) {
+            BangDiemGVPBChoSVDX::where('ma_de_tai', $ma_de_tai)->delete();
         }
 
         return response()->json(['success' => true]);

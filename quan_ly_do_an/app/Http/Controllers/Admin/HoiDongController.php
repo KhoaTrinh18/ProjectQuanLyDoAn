@@ -247,6 +247,10 @@ class HoiDongController extends Controller
         }
 
         try {
+            if (BangDiemGVTHDChoSVDK::where('ma_hoi_dong', $data['ma_hoi_dong'])->exists() || BangDiemGVTHDChoSVDX::where('ma_hoi_dong', $data['ma_hoi_dong'])->exists()) {
+                return response()->json(['success' => false]);
+            }
+
             HoiDong::where('ma_hoi_dong', $data['ma_hoi_dong'])->update([
                 'ten_hoi_dong' => $data['ten_hoi_dong'],
                 'ma_bo_mon' => $data['chuyen_nganh'],

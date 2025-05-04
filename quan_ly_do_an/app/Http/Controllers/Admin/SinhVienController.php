@@ -6,23 +6,21 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
-use Carbon\Carbon;
 use App\Models\{
     BangDiemGVPBChoSVDK,
     BangDiemGVPBChoSVDX,
+    BangDiemGVTHDChoSVDK,
+    BangDiemGVTHDChoSVDX,
     BangPhanCongSVDK,
     BangPhanCongSVDX,
-    BoMon,
-    GiangVien,
-    GiangVienDeTaiGV,
-    HocVi,
-    HoiDongGiangVien,
+    DeTaiGiangVien,
+    DeTaiSinhVien,
     SinhVien,
-    TaiKhoanGV,
+    SinhVienDeTaiSV,
     TaiKhoanSV,
     ThietLap
 };
-use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 class SinhVienController extends Controller
@@ -32,7 +30,7 @@ class SinhVienController extends Controller
         $limit = $request->query('limit', 10);
         $thietLap = ThietLap::where('trang_thai', 1)->first();
 
-        $sinhViens = SinhVien::where(['da_huy' => 0, 'nam_hoc' => $thietLap->nam_hoc])->orderBy('ma_sv', 'desc')->paginate($limit);
+        $sinhViens = SinhVien::where('nam_hoc', $thietLap->nam_hoc)->orderBy('ma_sv', 'desc')->paginate($limit);
 
         return view('admin.sinhvien.danhSach', compact('sinhViens'));
     }
@@ -41,17 +39,9 @@ class SinhVienController extends Controller
     {
         $query = SinhVien::query();
 
-        if ($request->filled('hoc_vi')) {
-            $query->where('ma_hoc_vi', $request->hoc_vi);
-        }
-
-        if ($request->filled('bo_mon')) {
-            $query->where('ma_bo_mon', $request->bo_mon);
-        }
-
         $limit = $request->input('limit', 10);
         $thietLap = ThietLap::where('trang_thai', 1)->first();
-        $sinhViens = $query->where(['da_huy' => 0, 'nam_hoc' => $thietLap->nam_hoc])->orderBy('ma_sv', 'desc')->paginate($limit);
+        $sinhViens = $query->where('nam_hoc', $thietLap->nam_hoc)->orderBy('ma_sv', 'desc')->paginate($limit);
 
         return response()->json([
             'success' => true,
@@ -59,10 +49,20 @@ class SinhVienController extends Controller
         ]);
     }
 
-    public function chiTiet($ma_gv)
+    public function chiTiet($ma_sv)
     {
-        $giangVien = GiangVien::where('ma_gv', $ma_gv)->firstOrFail();
-        return view('admin.giangvien.chiTiet', compact('giangVien'));
+        $sinhVien = SinhVien::where('ma_sv', $ma_sv)->firstOrFail();
+        if ($sinhVien->dang_ky == 1) {
+            if ($sinhVien->loai_sv == 'de_xuat') {
+                $sinhVienDTSV = SinhVienDeTaiSV::where('ma_sv', $sinhVien->ma_sv)->where('trang_thai', '!=', 0)->first();
+                $deTai = DeTaiSinhVien::where(['ma_de_tai' => $sinhVienDTSV->ma_de_tai, 'da_huy' => 0])->first();
+            } else {
+                $phanCongSVDK = BangPhanCongSVDK::where('ma_sv', $sinhVien->ma_sv)->first();
+                $deTai = DeTaiGiangVien::where(['ma_de_tai' => $phanCongSVDK->ma_de_tai, 'da_huy' => 0])->first();
+            }
+            return view('admin.sinhVien.chiTiet', compact('sinhVien', 'deTai'));
+        }
+        return view('admin.sinhVien.chiTiet', compact('sinhVien'));
     }
 
     public function them()
@@ -75,6 +75,8 @@ class SinhVienController extends Controller
         if (!$request->isMethod('post')) {
             return redirect()->back()->with('error', 'Bạn không thể truy cập trực tiếp trang này!');
         }
+
+        $thietLap = ThietLap::where('trang_thai', 1)->first();
 
         $data = $request->input('GiangVien', []);
 
@@ -101,7 +103,6 @@ class SinhVienController extends Controller
 
             $handle = fopen($file, 'r');
             $row = 0;
-            $thietLap = ThietLap::where('trang_thai', 1)->first();
             $errors = [];
             $rows = [];
 
@@ -168,6 +169,8 @@ class SinhVienController extends Controller
                 ]);
             }
 
+            SinhVien::where('nam_hoc', $thietLap->nam_hoc)->delete();
+            TaiKhoanSV::where('nam_hoc', $thietLap->nam_hoc)->delete();
             SinhVien::insert($rows);
 
             return response()->json([
@@ -182,13 +185,11 @@ class SinhVienController extends Controller
         }
     }
 
-    public function sua($ma_gv)
+    public function sua($ma_sv)
     {
-        $giangVien = GiangVien::where('ma_gv', $ma_gv)->firstOrFail();
-        $hocVis = HocVi::orderBy('ma_hoc_vi', 'desc')->get();
-        $boMons = BoMon::where('da_huy', 0)->orderBy('ma_bo_mon', 'desc')->get();
+        $sinhVien = SinhVien::where('ma_sv', $ma_sv)->firstOrFail();
 
-        return view('admin.giangvien.sua', compact('giangVien', 'boMons', 'hocVis'));
+        return view('admin.sinhvien.sua', compact('sinhVien'));
     }
 
     public function xacNhanSua(Request $request)
@@ -197,67 +198,28 @@ class SinhVienController extends Controller
             return redirect()->back()->with('error', 'Bạn không thể truy cập trực tiếp trang này!');
         }
 
-        $data = $request->input('GiangVien', []);
-        $giangVien = GiangVien::where('ma_gv', $data['ma_gv'])->first();
+        $data = $request->input('SinhVien', []);
 
         $validator = Validator::make($data, [
-            'ten_giang_vien' => [
-                'required',
-                'string',
-                'max:255',
-                'regex:/^[\p{L}\s]+$/u'
-            ],
-            'email' => [
-                'required',
-                'regex:/^[\w\.-]+@[\w\.-]+\.\w{2,4}$/'
-            ],
-            'so_dien_thoai' => [
-                'required',
-                'regex:/^(0|\+84)[0-9]{9}$/'
-            ],
-            'bo_mon' => [
-                'required'
-            ],
-            'hoc_vi' => [
-                'required'
-            ],
-            'ten_tk' => [
-                'required',
-                'string',
-                'max:50',
-                'regex:/^[a-zA-Z0-9_]+$/',
-                Rule::unique('tai_khoan_gv', 'ten_tk')->ignore($giangVien->taiKhoan->ma_tk, 'ma_tk')
-            ],
-            'mat_khau' => [
-                'required',
-                'string',
-                'regex:/^[\x20-\x7E]+$/'
-            ]
+            'mssv'          => 'required|numeric',
+            'ten_sinh_vien' => ['required', 'regex:/^[\p{L}\s]+$/u'],
+            'lop'           => 'required',
+            'email'         => ['required', 'regex:/^[\w\.-]+@[\w\.-]+\.\w{2,4}$/'],
+            'so_dien_thoai' => ['required', 'regex:/^(0|\+84)[0-9]{9,10}$/'],
         ], [
-            'ten_giang_vien.required' => 'Tên giảng viên không được để trống.',
-            'ten_giang_vien.string' => 'Tên giảng viên phải là chuỗi ký tự.',
-            'ten_giang_vien.max' => 'Tên giảng viên không được vượt quá 255 ký tự.',
-            'ten_giang_vien.regex' => 'Tên giảng viên chỉ được chứa chữ cái và khoảng trắng, không chứa số hoặc ký tự đặc biệt.',
+            'mssv.required' => 'MSSV không được để trống.',
+            'mssv.numeric' => 'MSSV phải là chuỗi số.',
+
+            'ten_sinh_vien.required' => 'Tên sinh viên không được để trống.',
+            'ten_sinh_vien.regex' => 'Tên sinh viên chỉ được chứa chữ và khoảng trắng.',
+
+            'lop.required' => 'Lớp không được để trống.',
 
             'email.required' => 'Email không được để trống.',
-            'email.regex' => 'Email không đúng định dạng.',
+            'email.regex' => 'Email không hợp lệ.',
 
             'so_dien_thoai.required' => 'Số điện thoại không được để trống.',
-            'so_dien_thoai.regex' => 'Số điện thoại không đúng định dạng.',
-
-            'bo_mon.required' => 'Bộ môn không được để trống.',
-
-            'hoc_vi.required' => 'Học vị không được để trống.',
-
-            'ten_tk.required' => 'Tên tài khoản không được để trống.',
-            'ten_tk.string' => 'Tên tài khoản phải là chuỗi.',
-            'ten_tk.max' => 'Tên tài khoản không được vượt quá 50 ký tự.',
-            'ten_tk.regex' => 'Tên tài khoản chỉ được chứa chữ cái, số và dấu gạch dưới (_).',
-            'ten_tk.unique' => 'Tên tài khoản đã tồn tại.',
-
-            'mat_khau.required' => 'Mật khẩu không được để trống.',
-            'mat_khau.string' => 'Mật khẩu phải là chuỗi.',
-            'mat_khau.regex' => 'Mật khẩu không chứa dấu tiếng việt.',
+            'so_dien_thoai.regex' => 'Số điện thoại không hợp lệ.',
         ]);
 
         if ($validator->fails()) {
@@ -268,17 +230,12 @@ class SinhVienController extends Controller
         }
 
         try {
-            TaiKhoanGV::where('ma_tk', $giangVien->taiKhoan->ma_tk)->update([
-                'ten_tk' => $data['ten_tk'],
-                'mat_khau' => $data['mat_khau'],
-            ]);
-
-            GiangVien::where('ma_gv', $data['ma_gv'])->update([
-                'ho_ten' => $data['ten_giang_vien'],
+            SinhVien::where('ma_sv', $data['ma_sv'])->update([
+                'mssv' => $data['mssv'],
+                'ho_ten' => $data['ten_sinh_vien'],
+                'lop' => $data['lop'],
                 'email' => $data['email'],
                 'so_dien_thoai' => $data['so_dien_thoai'],
-                'ma_bo_mon' => $data['bo_mon'],
-                'ma_hoc_vi' => $data['hoc_vi']
             ]);
 
             return response()->json([
@@ -293,13 +250,20 @@ class SinhVienController extends Controller
         }
     }
 
-    public function huy($ma_gv)
+    public function huy($ma_sv)
     {
-        $giangVien = GiangVien::where('ma_gv', $ma_gv)->firstOrFail();
-        $hocVis = HocVi::orderBy('ma_hoc_vi', 'desc')->get();
-        $boMons = BoMon::where('da_huy', 0)->orderBy('ma_bo_mon', 'desc')->get();
-
-        return view('admin.giangvien.huy', compact('giangVien', 'boMons', 'hocVis'));
+        $sinhVien = SinhVien::where('ma_sv', $ma_sv)->firstOrFail();
+        if ($sinhVien->dang_ky == 1) {
+            if ($sinhVien->loai_sv == 'de_xuat') {
+                $sinhVienDTSV = SinhVienDeTaiSV::where('ma_sv', $sinhVien->ma_sv)->where('trang_thai', '!=', 0)->first();
+                $deTai = DeTaiSinhVien::where(['ma_de_tai' => $sinhVienDTSV->ma_de_tai, 'da_huy' => 0])->first();
+            } else {
+                $phanCongSVDK = BangPhanCongSVDK::where('ma_sv', $sinhVien->ma_sv)->first();
+                $deTai = DeTaiGiangVien::where(['ma_de_tai' => $phanCongSVDK->ma_de_tai, 'da_huy' => 0])->first();
+            }
+            return view('admin.sinhVien.huy', compact('sinhVien', 'deTai'));
+        }
+        return view('admin.sinhVien.huy', compact('sinhVien'));
     }
 
     public function xacNhanHuy(Request $request)
@@ -308,37 +272,43 @@ class SinhVienController extends Controller
             return redirect()->back()->with('error', 'Bạn không thể truy cập trực tiếp trang này!');
         }
 
-        $ma_gv = $request->input('ma_gv');
+        $ma_sv = $request->input('ma_sv');
 
-        if (GiangVienDeTaiGV::where('ma_gv', $ma_gv)->exists()) {
-            return response()->json([
-                'success' => false,
-                'error' => 'dua_ra'
-            ]);
-        } else if (BangPhanCongSVDK::where('ma_gvhd', $ma_gv)->exists() || BangPhanCongSVDX::where('ma_gvhd', $ma_gv)->exists()) {
-            return response()->json([
-                'success' => false,
-                'error' => 'phan_cong_huong_dan'
-            ]);
-        } else if (BangDiemGVPBChoSVDK::where('ma_gvpb', $ma_gv)->exists() || BangDiemGVPBChoSVDX::where('ma_gvpb', $ma_gv)->exists()) {
-            return response()->json([
-                'success' => false,
-                'error' => 'phan_cong_phan_bien'
-            ]);
-        } else if (HoiDongGiangVien::where('ma_gv', $ma_gv)->exists()) {
-            return response()->json([
-                'success' => false,
-                'error' => 'phan_cong_hoi_dong'
-            ]);
+        $sinhVien = SinhVien::where('ma_sv', $ma_sv)->first();
+
+
+        if ($sinhVien->loai_sv == 'de_xuat') {
+            BangDiemGVTHDChoSVDX::where('ma_sv', $ma_sv)->delete();
+            BangDiemGVPBChoSVDX::where('ma_sv', $ma_sv)->delete();
+            BangPhanCongSVDX::where('ma_sv', $ma_sv)->delete();
+            $sinhVienDTSV = SinhVienDeTaiSV::where('ma_sv', $ma_sv)->where('trang_thai', '!=', 0)->first();
+            $deTai = DeTaiSinhVien::where(['ma_de_tai' => $sinhVienDTSV->ma_de_tai, 'da_huy' => 0])->first();
+            if ($deTai->so_luong_sv_de_xuat > 1) {
+                $deTai->so_luong_sv_de_xuat -= 1;
+            } else {
+                $deTai->da_huy = 1;
+            }
+            $deTai->save();
+            SinhVienDeTaiSV::where('ma_sv', $ma_sv)->delete();
         } else {
-            $giangVien = GiangVien::where('ma_gv', $ma_gv)->first();
-            $giangVien->da_huy = 1;
-            $giangVien->save();
-
-            return response()->json([
-                'success' => true,
-            ]);
+            BangDiemGVTHDChoSVDK::where('ma_sv', $ma_sv)->delete();
+            BangDiemGVPBChoSVDK::where('ma_sv', $ma_sv)->delete();
+            $phanCongSVDK = BangPhanCongSVDK::where('ma_sv', $sinhVien->ma_sv)->first();
+            $deTai = DeTaiGiangVien::where(['ma_de_tai' => $phanCongSVDK->ma_de_tai, 'da_huy' => 0])->first();
+            $deTai->so_luong_sv_dang_ky -= 1;
+            $deTai->save();
+            BangPhanCongSVDK::where('ma_sv', $ma_sv)->delete();
         }
+
+        SinhVien::where('ma_sv', $ma_sv)->update([
+            'loai_sv' => null,
+            'dang_ky' => 0,
+            'trang_thai' => 0
+        ]);
+
+        return response()->json([
+            'success' => true,
+        ]);
     }
 
     public function taiCSVMau()
@@ -363,6 +333,8 @@ class SinhVienController extends Controller
     public function taoTaiKhoan()
     {
         $thietLap = ThietLap::where('trang_thai', 1)->first();
+        TaiKhoanSV::where('nam_hoc', $thietLap->nam_hoc)->delete();
+
         $sinhViens = SinhVien::where(['da_huy' => 0, 'nam_hoc' => $thietLap->nam_hoc])->orderBy('ma_sv', 'desc')->get();
         $count = 1;
 

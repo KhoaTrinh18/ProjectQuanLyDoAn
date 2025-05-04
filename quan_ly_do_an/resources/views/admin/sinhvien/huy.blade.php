@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Hủy giảng viên')
+@section('title', 'Hủy sinh viên')
 
 @section('content')
     <div class="container-fluid p-0">
@@ -7,21 +7,127 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <h2 style="font-weight: bold">Hủy giảng viên</h2>
+                        <h2 style="font-weight: bold">Hủy sinh viên</h2>
                     </div>
                     <div class="card-body" style="font-size: 16px">
-                        <p><strong>Tên giảng viên:</strong> {{ $giangVien->ho_ten }}</p>
-                        <p><strong>Email:</strong> {{ $giangVien->email }}</p>
-                        <p><strong>Số điện thoại:</strong> {{ $giangVien->so_dien_thoai }}</p>
-                        <p><strong>Bộ môn:</strong> {{ $giangVien->boMon->ten_bo_mon }}</p>
-                        <p><strong>Học vị:</strong> {{ $giangVien->hocVi->ten_hoc_vi }}</p>
-                        <p><strong>Tài khoản:</strong> {{ $giangVien->taiKhoan->ten_tk }}</p>
-                        <p><strong>Mật khẩu:</strong> {{ $giangVien->taiKhoan->mat_khau }}</p>
+                        <p><strong>MSSV:</strong> {{ $sinhVien->mssv }}</p>
+                        <p><strong>Tên sinh viên:</strong> {{ $sinhVien->ho_ten }}</p>
+                        <p><strong>Lớp:</strong> {{ $sinhVien->lop }}</p>
+                        <p><strong>Email:</strong> {{ $sinhVien->email }}</p>
+                        <p><strong>Số điện thoại:</strong> {{ $sinhVien->so_dien_thoai }}</p>
+                        @if ($sinhVien->dang_ky == 0)
+                            <p><strong>Tên đề tài: </strong><i>Chưa có</i></p>
+                        @else
+                            <p><strong>Tên đề tài: </strong>{{ $deTai->ten_de_tai }}</p>
+                            @if ($deTai->giangVienHuongDans->isEmpty())
+                                <p><strong>Giảng viên hướng dẫn: </strong><i>Chưa có</i></p>
+                            @else
+                                @if ($deTai->giangVienHuongDans->count() === 1)
+                                    @php $gv = $deTai->giangVienHuongDans->first(); @endphp
+                                    <p class="mb-0"><strong>Giảng viên hướng dẫn: </strong>{{ $gv->ho_ten }}</p>
+                                    <ul>
+                                        <li><strong>Điểm:
+                                            </strong><i>{{ $gv->pivot->diem_gvhd ? number_format($gv->pivot->diem_gvhd, 2) : 'Chưa có' }}</i>
+                                        </li>
+                                        <li><strong>Nhận xét: </strong>{!! $gv->pivot->nhan_xet ?? '<em>Chưa có</em>' !!}</li>
+                                    </ul>
+                                @else
+                                    <p class="mb-0"><strong>Giảng viên hướng dẫn:</strong></p>
+                                    <ul>
+                                        @foreach ($deTai->giangVienHuongDans as $gv)
+                                            <li class="mb-2">
+                                                {{ $gv->ho_ten }}<br>
+                                                <strong>Điểm:
+                                                </strong><i>{{ $gv->pivot->diem_gvhd ? number_format($gv->pivot->diem_gvhd, 2) : 'Chưa có' }}</i><br>
+                                                <strong>Nhận xét: </strong>{!! $gv->pivot->nhan_xet ?? '<em>Chưa có</em>' !!}
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                @endif
+                            @endif
 
+                            @if ($deTai->giangVienPhanBiens->isEmpty())
+                                <p><strong>Giảng viên phản biện: </strong><i>Chưa có</i></p>
+                            @else
+                                @php $gv = $deTai->giangVienPhanBiens->first(); @endphp
+                                <p class="mb-0"><strong>Giảng viên phản biện: </strong>{{ $gv->ho_ten }}</p>
+                                <ul>
+                                    <li><strong>Điểm:
+                                        </strong><i>{{ $gv->pivot->diem_gvpb ? number_format($gv->pivot->diem_gvpb, 2) : 'Chưa có' }}</i>
+                                    </li>
+                                    <li><strong>Nhận xét: </strong>{!! $gv->pivot->nhan_xet ?? '<em>Chưa có</em>' !!}</li>
+                                </ul>
+                            @endif
+
+                            @if ($deTai->hoiDongs->isEmpty())
+                                <p><strong>Hội đồng: </strong><i>Chưa có</i></p>
+                            @else
+                                @php
+                                    $hoiDong = $deTai->hoiDongs->first();
+                                    $chuTich = $hoiDong->giangViens()->wherePivot('chuc_vu', 'Chủ tịch')->first();
+                                    $thuKy = $hoiDong->giangViens()->wherePivot('chuc_vu', 'Thư ký')->first();
+                                    $uyViens = $hoiDong->giangViens()->wherePivot('chuc_vu', 'Ủy viên')->get();
+
+                                    $deTaiHoiDong = [];
+
+                                    if (isset($deTai->so_luong_sv_dang_ky)) {
+                                        $deTaiHoiDong = DB::table('bang_diem_gvthd_cho_svdk')
+                                            ->where('ma_de_tai', $deTai->ma_de_tai)
+                                            ->get();
+                                    } else {
+                                        $deTaiHoiDong = DB::table('bang_diem_gvthd_cho_svdx')
+                                            ->where('ma_de_tai', $deTai->ma_de_tai)
+                                            ->get();
+                                    }
+                                @endphp
+                                <p><strong>Hội đồng:</strong> {{ $hoiDong->ten_hoi_dong }}</p>
+                                <p><strong>Ngày tổ chức:</strong>
+                                    {{ \Carbon\Carbon::parse($hoiDong->ngay)->format('H:i d-m-Y') }}</p>
+                                <p><strong>Phòng:</strong> {{ $hoiDong->phong }}</p>
+                                <p class="mb-0"><strong>Chủ tịch: </strong>{{ $chuTich->ho_ten }}</p>
+                                <ul class="mb-3">
+                                    <li><strong>Điểm:
+                                        </strong><i>{{ $deTaiHoiDong->where('ma_gvthd', $chuTich->ma_gv)->first()->diem_gvthd ? number_format($deTaiHoiDong->where('ma_gvthd', $chuTich->ma_gv)->first()->diem_gvthd, 2) : 'Chưa có' }}</i>
+                                    </li>
+                                    <li><strong>Nhận xét: </strong>{!! $deTaiHoiDong->where('ma_gvthd', $chuTich->ma_gv)->first()->nhan_xet ?? '<em>Chưa có</em>' !!}</li>
+                                </ul>
+
+                                <p class="mb-0"><strong>Thư ký: </strong>{{ $thuKy->ho_ten }}</p>
+                                <ul class="mb-3">
+                                    <li><strong>Điểm:
+                                        </strong><i>{{ $deTaiHoiDong->where('ma_gvthd', $thuKy->ma_gv)->first()->diem_gvthd ? number_format($deTaiHoiDong->where('ma_gvthd', $thuKy->ma_gv)->first()->diem_gvthd, 2) : 'Chưa có' }}</i>
+                                    </li>
+                                    <li><strong>Nhận xét: </strong>{!! $deTaiHoiDong->where('ma_gvthd', $thuKy->ma_gv)->first()->nhan_xet ?? '<em>Chưa có</em>' !!}</li>
+                                </ul>
+
+                                @if ($uyViens->count() === 1)
+                                    @php $uyVien = $uyViens->first(); @endphp
+                                    <p class="mb-0"><strong>Ủy viên: </strong>{{ $uyVien->ho_ten }}</p>
+                                    <ul>
+                                        <li><strong>Điểm:
+                                            </strong><i>{{ $deTaiHoiDong->where('ma_gvthd', $uyVien->ma_gv)->first()->diem_gvthd ? number_format($deTaiHoiDong->where('ma_gvthd', $uyVien->ma_gv)->first()->diem_gvthd, 2) : 'Chưa có' }}</i>
+                                        </li>
+                                        <li><strong>Nhận xét: </strong>{!! $deTaiHoiDong->where('ma_gvthd', $uyVien->ma_gv)->first()->nhan_xet ?? '<em>Chưa có</em>' !!}</li>
+                                    </ul>
+                                @else
+                                    <p class="mb-0"><strong>Ủy viên:</strong></p>
+                                    <ul>
+                                        @foreach ($uyViens as $uyVien)
+                                            <li class="mb-2">
+                                                {{ $uyVien->ho_ten }}<br>
+                                                <strong>Điểm:
+                                                </strong><i>{{ $deTaiHoiDong->where('ma_gvthd', $uyVien->ma_gv)->first()->diem_gvthd ? number_format($deTaiHoiDong->where('ma_gvthd', $uyVien->ma_gv)->first()->diem_gvthd, 2) : 'Chưa có' }}</i><br>
+                                                <strong>Nhận xét: </strong>{!! $deTaiHoiDong->where('ma_gvthd', $uyVien->ma_gv)->first()->nhan_xet ?? '<em>Chưa có</em>' !!}
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                @endif
+                            @endif
+                        @endif
                         <form id="form_huy">
-                            <input type="hidden" name="ma_gv" value="{{ $giangVien->ma_gv }}">
+                            <input type="hidden" name="ma_sv" value="{{ $sinhVien->ma_sv }}">
                             <div class="text-center">
-                                <a href="{{ route('giang_vien.danh_sach') }}" class="btn btn-secondary btn-lg">Quay
+                                <a href="{{ route('sinh_vien.danh_sach') }}" class="btn btn-secondary btn-lg">Quay
                                     lại</a>
                                 <button type="button" class="btn btn-danger btn-lg" data-bs-toggle="modal"
                                     data-bs-target="#confirmModal">Xác nhận hủy</button>
@@ -37,7 +143,7 @@
                                                 aria-label="Đóng"></button>
                                         </div>
                                         <div class="modal-body text-center fs-5 text-secondary">
-                                            Bạn có chắc chắn muốn hủy giảng viên này không?
+                                            Khi hủy sinh viên này sẽ hủy toàn bộ thông tin liên quan đến sinh viên và cập nhật trạng thái sinh viên thành <strong>không hoàn thành</strong>. Bạn có chắc chắn muốn hủy sinh viên này không?
                                         </div>
                                         <div class="modal-footer bg-light border-top-0">
                                             <button type="button" class="btn btn-secondary"
@@ -65,7 +171,7 @@
                 let formData = new FormData(form);
 
                 $.ajax({
-                    url: "{{ route('giang_vien.xac_nhan_huy') }}",
+                    url: "{{ route('sinh_vien.xac_nhan_huy') }}",
                     type: "POST",
                     data: formData,
                     contentType: false,
@@ -96,7 +202,7 @@
                                     timer: 2000,
                                     showConfirmButton: false
                                 })
-                            } else if(result.error == 'phan_cong_huong_dan') {
+                            } else if (result.error == 'phan_cong_huong_dan') {
                                 Swal.fire({
                                     icon: 'error',
                                     title: 'Thất bại!',
@@ -105,7 +211,7 @@
                                     timer: 2000,
                                     showConfirmButton: false
                                 })
-                            } else if(result.error == 'phan_cong_phan_bien') {
+                            } else if (result.error == 'phan_cong_phan_bien') {
                                 Swal.fire({
                                     icon: 'error',
                                     title: 'Thất bại!',
@@ -114,7 +220,7 @@
                                     timer: 2000,
                                     showConfirmButton: false
                                 })
-                            } else if(result.error == 'phan_cong_hoi_dong') {
+                            } else if (result.error == 'phan_cong_hoi_dong') {
                                 Swal.fire({
                                     icon: 'error',
                                     title: 'Thất bại!',

@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Cập nhật giảng viên phản biện')
+@section('title', 'Hủy phân công phản biện')
 
 @section('content')
     <div class="container-fluid p-0">
@@ -7,7 +7,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <h2 style="font-weight: bold">Cập nhật giảng viên phản biện</h2>
+                        <h2 style="font-weight: bold">Hủy phân công phản biện</h2>
                     </div>
                     <div class="card-body" style="font-size: 16px">
                         <h3 class="text-center mb-4" style="font-weight: bold">{{ $deTai->ten_de_tai }}</h3>
@@ -56,36 +56,69 @@
                             @endif
                         @endif
 
+                        @if ($deTai->giangVienPhanBiens->count() == 0)
+                            <p><strong>Giảng viên phản biện:</strong> Chưa có</p>
+                        @elseif ($deTai->giangVienPhanBiens->count() == 1)
+                            @php $giangVien = $deTai->giangVienPhanBiens->first(); @endphp
+                            <p><strong>Giảng viên phản biện:</strong> {{ $giangVien->ho_ten }} - Email:
+                                {{ $giangVien->email }} - Số điện thoại: {{ $giangVien->so_dien_thoai }}
+                            @else
+                            <p><strong>Giảng viên phản biện:</strong></p>
+                            <ul>
+                                @foreach ($deTai->giangVienPhanBiens as $giangVien)
+                                    <li>{{ $giangVien->ho_ten }} - Email: {{ $giangVien->email }} - Số điện thoại:
+                                        {{ $giangVien->so_dien_thoai }}
+                                @endforeach
+                            </ul>
+                        @endif
+
+                        @if ($deTai->sinhViens->first()->loai_sv == 'dang_ky')
+                            @if ($deTai->giangViens->count() == 1)
+                                @php $giangVien = $deTai->giangViens->first(); @endphp
+                                <p><strong>Giảng viên ra đề tài:</strong> {{ $giangVien->ho_ten }} - Email:
+                                    {{ $giangVien->email }} - Số điện thoại: {{ $giangVien->so_dien_thoai }}
+                                @else
+                                <p><strong>Giảng viên ra đề tài:</strong></p>
+                                <ul>
+                                    @foreach ($deTai->giangViens as $giangVien)
+                                        <li>{{ $giangVien->ho_ten }} - Email: {{ $giangVien->email }} - Số điện thoại:
+                                            {{ $giangVien->so_dien_thoai }}
+                                    @endforeach
+                                </ul>
+                            @endif
+                        @endif
+
                         <p><strong>Lĩnh vực:</strong> {{ $deTai->linhVuc->ten_linh_vuc }}</p>
                         <p><strong>Mô tả:</strong> {!! $deTai->mo_ta !!}</p>
-
-                        <form id="form_cap_nhat">
-                            <div class="d-flex align-items-center">
-                                <label for="DeTai[ma_gvpb]"><strong>Giảng viên phản biện:</strong></label>
-                                <select name="DeTai[ma_gvpb]" class="form-select ms-2" style="width: 260px">
-                                    <option value="" hidden disabled>Chọn giảng viên</option>
-                                    @php
-                                        $giangVienPB = $deTai->giangVienPhanBiens->first();
-                                    @endphp
-                                    @foreach ($chuyenNganhs as $chuyenNganh)
-                                        <optgroup label="{{ $chuyenNganh->ten_bo_mon }}">
-                                            @foreach ($chuyenNganh->giangViens as $giangVien)
-                                                <option value="{{ $giangVien->ma_gv }}"
-                                                    {{ $giangVienPB->ma_gv == $giangVien->ma_gv ? 'selected' : '' }}>
-                                                    {{ $giangVien->ho_ten }}</option>
-                                            @endforeach
-                                        </optgroup>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <span class="error-message text-danger d-hidden error-ma_gvpb m-0 mt-2"></span>
-
-                            <input type="hidden" name="DeTai[ma_de_tai]" value="{{ $deTai->ma_de_tai }}">
+                        <form id="form_huy">
+                            <input type="hidden" name="ma_de_tai" value="{{ $deTai->ma_de_tai }}">
                             <div class="text-center">
                                 <a href="{{ route('phan_cong_phan_bien.danh_sach') }}"
-                                    class="btn btn-secondary btn-lg">Quay lại</a>
-                                <button type="submit" class="btn btn-primary btn-lg" id="capNhat">Xác nhận cập
-                                    nhật</button>
+                                    class="btn btn-secondary btn-lg">Quay
+                                    lại</a>
+                                <button type="button" class="btn btn-danger btn-lg" data-bs-toggle="modal"
+                                    data-bs-target="#confirmModal">Xác nhận hủy</button>
+                            </div>
+                            <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel"
+                                aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content rounded-4 shadow-sm border-0">
+                                        <div class="modal-header bg-light border-bottom-0">
+                                            <h5 class="modal-title fw-semibold text-primary" id="confirmModalLabel">Xác nhận
+                                                hủy</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Đóng"></button>
+                                        </div>
+                                        <div class="modal-body text-center fs-5 text-secondary">
+                                            Bạn có chắc chắn muốn hủy phân công phản biện cho đề tài này không?
+                                        </div>
+                                        <div class="modal-footer bg-light border-top-0">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Hủy</button>
+                                            <button type="submit" class="btn btn-primary" id="huy">Xác nhận</button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </form>
                     </div>
@@ -98,18 +131,14 @@
 @section('scripts')
     <script>
         $(document).ready(function() {
-            $("#capNhat").click(function(event) {
+            $("#huy").click(function(event) {
                 event.preventDefault();
 
-                let form = $("#form_cap_nhat").get(0);
+                let form = $("#form_huy").get(0);
                 let formData = new FormData(form);
 
-                $(".error-message").text('').removeClass(
-                    "d-block").addClass("d-none");
-                $(".is-invalid").removeClass("is-invalid");
-
                 $.ajax({
-                    url: "{{ route('phan_cong_phan_bien.xac_nhan_sua') }}",
+                    url: "{{ route('phan_cong_phan_bien.xac_nhan_huy') }}",
                     type: "POST",
                     data: formData,
                     contentType: false,
@@ -122,7 +151,7 @@
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Thành công!',
-                                text: 'Cập nhật thành công!',
+                                text: 'Hủy thành công!',
                                 confirmButtonText: 'OK',
                                 timer: 1000,
                                 showConfirmButton: false
@@ -135,27 +164,20 @@
                                 Swal.fire({
                                     icon: 'error',
                                     title: 'Thất bại!',
-                                    text: 'Cập nhật thất bại! Đề tài này đã được phân công hội đồng',
-                                    confirmButtonText: 'OK',
-                                    timer: 1000,
-                                    showConfirmButton: false
-                                })
-                            } else if (result.errors == 'cham_diem') {
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Thất bại!',
-                                    text: 'Cập nhật thất bại! Đề tài này đã được chấm điểm',
+                                    text: 'Hủy thất bại! Đề tài này đã được phân công hội đồng',
                                     confirmButtonText: 'OK',
                                     timer: 1000,
                                     showConfirmButton: false
                                 })
                             } else {
-                                $.each(result.errors, function(field, messages) {
-                                    let inputField = $("[name='DeTai[" + field + "]']");
-                                    $('.error-' + field).text(messages[0]).removeClass(
-                                        "d-none").addClass("d-block");
-                                    inputField.addClass("is-invalid");
-                                });
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Thất bại!',
+                                    text: 'Hủy thất bại! Đề tài này đã được chấm điểm',
+                                    confirmButtonText: 'OK',
+                                    timer: 1000,
+                                    showConfirmButton: false
+                                })
                             }
                         }
                     },
@@ -163,7 +185,7 @@
                         Swal.fire({
                             icon: 'error',
                             title: 'Thất bại!',
-                            text: 'Cập nhật thất bại! Vui lòng thử lại',
+                            text: 'Hủy thất bại! Vui lòng thử lại',
                             confirmButtonText: 'OK',
                             timer: 1000,
                             showConfirmButton: false

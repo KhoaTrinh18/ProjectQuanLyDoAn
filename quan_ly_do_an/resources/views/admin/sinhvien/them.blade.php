@@ -24,14 +24,41 @@
                                 </div>
                             </div>
                             <div class="mb-3">
-                                <a href="{{ route('sinh_vien.tai_csv_mau') }}" class="btn btn-outline-primary btn-lg" style="width: 207.8px">Tải file
+                                <a href="{{ route('sinh_vien.tai_csv_mau') }}" class="btn btn-outline-primary btn-lg"
+                                    style="width: 207.8px">Tải file
                                     CSV mẫu</a>
                             </div>
                             <div class="text-center">
                                 <a href="{{ route('sinh_vien.danh_sach') }}" class="btn btn-secondary btn-lg">Quay
                                     lại</a>
-                                <button type="submit" class="btn btn-success btn-lg" id="them">Xác nhận thêm
-                                    mới</button>
+                                <button type="button" class="btn btn-success btn-lg" data-bs-toggle="modal"
+                                    data-bs-target="#confirmModal">
+                                    Xác nhận thêm mới
+                                </button>
+                            </div>
+                            <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel"
+                                aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content rounded-4 shadow-sm border-0">
+                                        <div class="modal-header bg-light border-bottom-0">
+                                            <h5 class="modal-title fw-semibold text-primary" id="confirmModalLabel">Xác
+                                                nhận
+                                                thêm mới</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Đóng"></button>
+                                        </div>
+                                        <div class="modal-body text-center fs-5 text-secondary">
+                                            Khi thêm mới danh sách sẽ xóa toàn bộ danh sách sinh viên cũ và tài khoản liên
+                                            quan. Bạn có chắc chắn muốn thêm danh sách sinh viên ?
+                                        </div>
+                                        <div class="modal-footer bg-light border-top-0">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Hủy</button>
+                                            <button type="submit" class="btn btn-primary" id="them">Xác
+                                                nhận</button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </form>
                     </div>
@@ -78,12 +105,13 @@
                                     "{{ route('sinh_vien.danh_sach') }}";
                             });
                         } else {
+                            $('#confirmModal').modal('hide');
                             if ($.isArray(result.errors)) {
                                 const allErrors = result.errors;
                                 const total = allErrors.length;
                                 const maxShow = 10;
                                 let display = [`Tổng cộng: ${total} lỗi.`]
-                                .concat(allErrors.slice(0, maxShow));
+                                    .concat(allErrors.slice(0, maxShow));
 
                                 if (allErrors.length > maxShow) {
                                     const remaining = allErrors.length - maxShow;
@@ -95,13 +123,14 @@
                                     .html(display.join('<br>'))
                                     .removeClass('d-none')
                                     .addClass('d-block');
+                            } else {
+                                $.each(result.errors, function(field, messages) {
+                                    let inputField = $("[name='" + field + "'");
+                                    inputField.addClass("is-invalid");
+                                    $('.error-' + field).text(messages[0]).removeClass(
+                                        "d-none").addClass("d-block");
+                                });
                             }
-                            $.each(result.errors, function(field, messages) {
-                                let inputField = $("[name='" + field + "'");
-                                inputField.addClass("is-invalid");
-                                $('.error-' + field).text(messages[0]).removeClass(
-                                    "d-none").addClass("d-block");
-                            });
                         }
                     },
                     error: function(xhr) {

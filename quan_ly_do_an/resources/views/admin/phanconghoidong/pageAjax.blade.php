@@ -86,6 +86,8 @@
                             @if ($deTai->hoiDongs->count() != 0)
                                 <a href="{{ route('phan_cong_hoi_dong.chi_tiet', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
                                     class="btn btn-secondary btn-sm">Xem</a>
+                                <a href="{{ route('phan_cong_hoi_dong.huy', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
+                                    class="btn btn-danger btn-sm">Hủy</a>
                                 <a href="{{ route('phan_cong_hoi_dong.sua', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
                                     class="btn btn-primary btn-sm">Sửa</a>
                             @else

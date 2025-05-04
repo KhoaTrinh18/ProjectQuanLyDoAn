@@ -24,7 +24,8 @@
                             </ul>
                         @endif
 
-                        <p><strong>Ngày đề xuất:</strong> {{ \Carbon\Carbon::parse($deTaiSV->ngayDeXuat->ngay_de_xuat)->format('d-m-Y') }}</p>
+                        <p><strong>Ngày đề xuất:</strong>
+                            {{ \Carbon\Carbon::parse($deTaiSV->ngayDeXuat->ngay_de_xuat)->format('d-m-Y') }}</p>
                         <p><strong>Lĩnh vực:</strong> {{ $deTaiSV->linhVuc->ten_linh_vuc }}</p>
                         <p><strong>Mô tả:</strong> {!! $deTaiSV->mo_ta !!}</p>
 
@@ -96,6 +97,15 @@
                                 window.location.href =
                                     "{{ route('de_tai_sinh_vien.danh_sach') }}";
                             });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Thất bại!',
+                                text: 'Hủy thất bại! Đề tài đã được phân công',
+                                confirmButtonText: 'OK',
+                                timer: 1000,
+                                showConfirmButton: false
+                            })
                         }
                     },
                     error: function(xhr) {
