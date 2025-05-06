@@ -14,8 +14,8 @@
                             <thead style="background: #222e3c;">
                                 <tr>
                                     <th scope="col" class="text-white">#</th>
-                                    <th scope="col" class="text-white" style="width: 40%;">Tên đề tài</th>
-                                    <th scope="col" class="text-white">Sinh viên thực hiện</th>
+                                    <th scope="col" class="text-white" style="width: 38%;">Tên đề tài</th>
+                                    <th scope="col" class="text-white">Sinh viên thực hiện (Điểm)</th>
                                     <th scope="col" class="text-white">Giảng viên hướng dẫn</th>
                                     <th scope="col" class="text-white">Trạng thái</th>
                                     <th scope="col" class="text-white"></th>
@@ -41,11 +41,19 @@
                                         <td scope="row">
                                             {{ $key + 1 }}</td>
                                         <td
-                                            style="width: 40%; word-wrap: break-word; overflow-wrap: break-word; white-space: normal; word-break: break-word;">
+                                            style="width: 38%; word-wrap: break-word; overflow-wrap: break-word; white-space: normal; word-break: break-word;">
                                             {{ $deTai->ten_de_tai }}
                                         </td>
                                         <td>
-                                            {!! $deTai->sinhViens->pluck('ho_ten')->implode('<br>') !!}
+                                            @foreach ($deTai->sinhViens as $sinhVien)
+                                                @php
+                                                    $phanCong = DB::table('bang_phan_cong_svdk')->where(['ma_de_tai' => $deTai->ma_de_tai, 'ma_gvhd' => $giangVien->ma_gv, 'ma_sv' => $sinhVien->ma_sv])->first();
+                                                    if(!$phanCong) {
+                                                        $phanCong = DB::table('bang_phan_cong_svdx')->where(['ma_de_tai' => $deTai->ma_de_tai, 'ma_gvhd' => $giangVien->ma_gv, 'ma_sv' => $sinhVien->ma_sv])->first();
+                                                    }
+                                                @endphp
+                                                {{ $sinhVien->ho_ten }} ({!! number_format($phanCong->diem_gvhd, 2) ?? '<em>Chưa có</em>' !!})<br>
+                                            @endforeach
                                         </td>
                                         <td>
                                             {!! $deTai->giangViens->pluck('ho_ten')->implode('<br>') !!}

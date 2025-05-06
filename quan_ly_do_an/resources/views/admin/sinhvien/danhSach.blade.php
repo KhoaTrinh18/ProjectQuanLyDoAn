@@ -9,6 +9,10 @@
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h2 style="font-weight: bold">Danh sách sinh viên</h2>
                         <div>
+                            <a href="{{ route('sinh_vien.tai_ds_sinh_vien') }}" class="btn btn-info btn-lg">Tải danh sách sinh viên</a>
+
+                            <a href="{{ route('sinh_vien.tai_ds_tai_khoan') }}" class="btn btn-secondary btn-lg">Tải danh sách tài khoản</a>
+
                             <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal"
                                 data-bs-target="#confirmModal">Tạo tài khoản</button>
                             <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel"
@@ -33,10 +37,66 @@
                                     </div>
                                 </div>
                             </div>
+
                             <a href="{{ route('sinh_vien.them') }}" class="btn btn-success btn-lg">Thêm mới</a>
                         </div>
                     </div>
                     <div class="card-body">
+                        <form class="d-flex mb-3" id="form_tim_kiem">
+                            <div class="d-flex flex-column" style="width: 420px">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <label for="sinh_vien" style="width: 200px">Sinh viên:</label>
+                                    <input type="text" name="sinh_vien" class="form-control ms-2 w-75 shadow-none"
+                                        placeholder="Tên sinh viên">
+                                </div>
+                                <div class="d-flex align-items-center justify-content-between mt-2">
+                                    <label for="ten_de_tai" style="width: 200px">Tên đề tài:</label>
+                                    <input type="text" name="ten_de_tai" class="form-control ms-2 w-75 shadow-none"
+                                        placeholder="Tên đề tài">
+                                </div>
+                                <div class="d-flex align-items-center justify-content-between mt-2">
+                                    <label for="giang_vien" style="width: 205px">Giảng viên hướng dẫn:</label>
+                                    <select class="form-select ms-2 w-75 shadow-none" name="giang_vien">
+                                        <option value="" selected disabled hidden>Chọn giảng viên</option>
+                                        <option value="">Tất cả</option>
+                                        @foreach ($chuyenNganhs as $chuyenNganh)
+                                            <optgroup label="{{ $chuyenNganh->ten_bo_mon }}">
+                                                @foreach ($chuyenNganh->giangViens as $giangVien)
+                                                    <option value="{{ $giangVien->ma_gv }}">
+                                                        {{ $giangVien->ho_ten }}</option>
+                                                @endforeach
+                                            </optgroup>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="d-flex flex-column ms-3" style="width: 300px">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <label for="mssv" style="width: 150px">MSSV:</label>
+                                    <input type="text" name="mssv" class="form-control ms-2 w-100 shadow-none"
+                                        placeholder="MSSV">
+                                </div>
+                                <div class="d-flex align-items-center justify-content-between mt-2">
+                                    <label for="lop" style="width: 150px">Lớp:</label>
+                                    <input type="text" name="lop" class="form-control ms-2 w-100 shadow-none"
+                                        placeholder="Tên lớp">
+                                </div>
+                                <div class="d-flex align-items-center justify-content-between mt-2">
+                                    <label for="trang_thai" style="width: 156px">Trạng thái:</label>
+                                    <select class="form-select ms-2 w-100 shadow-none" name="trang_thai">
+                                        <option value="" selected hidden disabled>Chọn trạng thái</option>
+                                        <option value="">Tất cả</option>
+                                        <option value="0">Không hoàn thành</option>
+                                        <option value="1">Đang thực hiện</option>
+                                        <option value="2">Đã hoàn thành</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="ms-3">
+                                <button id="clear" class="btn btn-secondary">Tạo lại</button>
+                                <button id="timKiem" class="btn btn-primary" type="submit">Tìm kiếm</button>
+                            </div>
+                        </form>
                         @include('admin.sinhvien.pageAjax', ['sinhviens' => $sinhViens])
                     </div>
                 </div>

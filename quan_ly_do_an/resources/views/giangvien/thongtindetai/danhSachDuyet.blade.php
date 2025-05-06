@@ -44,7 +44,7 @@
                                                             $phanCongSVDK->ngay_dang_ky,
                                                         )->format('d-m-Y');
                                                     @endphp
-                                                    {{ $sinhVien->ho_ten }} ({{ $ngayDangKy }}) </br>
+                                                    {{ $sinhVien->ho_ten }} ({{ $ngayDangKy }})</br>
                                                 @endforeach
                                             @endif
                                         </td>

@@ -44,7 +44,7 @@
                                     </select>
                                 </div>
                                 <div class="d-flex justify-content-end mt-2">
-                                    <button id="clear" class="btn btn-secondary me-2">Clear</button>
+                                    <button id="clear" class="btn btn-secondary me-2">Tạo lại</button>
                                     <button id="timKiem" class="btn btn-primary" type="submit">Tìm kiếm</button>
                                 </div>
                             </div>

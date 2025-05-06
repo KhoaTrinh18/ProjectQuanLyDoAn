@@ -13,6 +13,7 @@ use App\Models\{
     BangDiemGVTHDChoSVDX,
     BangPhanCongSVDK,
     BangPhanCongSVDX,
+    BoMon,
     DeTaiGiangVien,
     DeTaiSinhVien,
     SinhVien,
@@ -22,6 +23,10 @@ use App\Models\{
 };
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\DB;
+use League\Csv\Writer;
+use SplTempFileObject;
 
 class SinhVienController extends Controller
 {
@@ -31,13 +36,56 @@ class SinhVienController extends Controller
         $thietLap = ThietLap::where('trang_thai', 1)->first();
 
         $sinhViens = SinhVien::where('nam_hoc', $thietLap->nam_hoc)->orderBy('ma_sv', 'desc')->paginate($limit);
+        $chuyenNganhs = BoMon::where('da_huy', 0)->orderBy('ma_bo_mon', 'desc')->get();
 
-        return view('admin.sinhvien.danhSach', compact('sinhViens'));
+        return view('admin.sinhvien.danhSach', compact('sinhViens', 'chuyenNganhs'));
     }
 
     public function pageAjax(Request $request)
     {
         $query = SinhVien::query();
+
+        if ($request->filled('sinh_vien')) {
+            $query->where('ho_ten', 'like', '%' . $request->sinh_vien . '%');
+        }
+
+        if ($request->filled('mssv')) {
+            $query->where('mssv', $request->mssv);
+        }
+
+        if ($request->filled('lop')) {
+            $query->where('lop', 'like', '%' . $request->lop . '%');
+        }
+
+        if ($request->filled('trang_thai')) {
+            $query->where('trang_thai', $request->trang_thai);
+        }
+
+        if ($request->filled('ten_de_tai')) {
+            $tuKhoa = strtolower($request->ten_de_tai);
+
+            $query->whereHas('deTaiDeXuat', function ($q) use ($tuKhoa) {
+                $q->where('ten_de_tai', 'like', '%' . $tuKhoa . '%');
+            });
+
+            $query->orWhereHas('deTaiDangKy', function ($q) use ($tuKhoa) {
+                $q->where('ten_de_tai', 'like', '%' . $tuKhoa . '%');
+            });
+        }
+
+        if ($request->filled('giang_vien')) {
+            $query->whereHas('deTaiDeXuat', function ($q) use ($request) {
+                $q->whereHas('giangViens', function ($q2) use ($request) {
+                    $q2->where('giang_vien.ma_gv', $request->giang_vien);
+                });
+            });
+
+            $query->orWhereHas('deTaiDangKy', function ($q) use ($request) {
+                $q->whereHas('giangViens', function ($q2) use ($request) {
+                    $q2->where('giang_vien.ma_gv', $request->giang_vien);
+                });
+            });
+        }
 
         $limit = $request->input('limit', 10);
         $thietLap = ThietLap::where('trang_thai', 1)->first();
@@ -357,5 +405,81 @@ class SinhVienController extends Controller
         }
 
         return back()->with('success', "Đã tạo tài khoản cho {$count} sinh viên.");
+    }
+
+    public function taiDSSinhVien()
+    {
+        $thietLap = ThietLap::where('trang_thai', 1)->first();
+        $sinhViens = SinhVien::where('nam_hoc', $thietLap->nam_hoc)
+            ->orderBy('ma_sv', 'desc')
+            ->get();
+    
+        $filename = 'danh_sach_sinh_vien.csv';
+    
+        return Response::streamDownload(function () use ($sinhViens) {
+            $handle = fopen('php://output', 'w');
+    
+            fwrite($handle, chr(0xEF) . chr(0xBB) . chr(0xBF));
+    
+            fputcsv($handle, ['MSSV', 'Họ tên', 'Lớp', 'Email', 'Số điện thoại', 'Đề tài', 'Giảng viên hướng dẫn']);
+    
+            foreach ($sinhViens as $sinhVien) {
+                $deTai = $sinhVien->deTaiDeXuat->pluck('ten_de_tai')->first()
+                        ?: $sinhVien->deTaiDangKy->pluck('ten_de_tai')->first()
+                        ?: 'Chưa có';
+    
+                $giangViens = $sinhVien->deTaiDeXuat->first()?->giangViens?->pluck('ho_ten')->implode(', ')
+                              ?: $sinhVien->deTaiDangKy->first()?->giangViens?->pluck('ho_ten')->implode(', ')
+                              ?: 'Chưa có';
+    
+                fputcsv($handle, [
+                    $sinhVien->mssv,
+                    $sinhVien->ho_ten,
+                    $sinhVien->lop,
+                    $sinhVien->email,
+                    "'" . $sinhVien->so_dien_thoai,
+                    $deTai,
+                    $giangViens
+                ]);
+            }
+    
+            fclose($handle);
+        }, $filename, [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => "attachment; filename={$filename}",
+        ]);
+    }
+
+    public function taiDSTaiKhoan()
+    {
+        $thietLap = ThietLap::where('trang_thai', 1)->first();
+        $sinhViens = SinhVien::where('nam_hoc', $thietLap->nam_hoc)
+            ->orderBy('ma_sv', 'desc')
+            ->get();
+    
+        $filename = 'danh_sach_tai_khoan.csv';
+    
+        return Response::streamDownload(function () use ($sinhViens) {
+            $handle = fopen('php://output', 'w');
+    
+            fwrite($handle, chr(0xEF) . chr(0xBB) . chr(0xBF));
+    
+            fputcsv($handle, ['MSSV', 'Họ tên', 'Lớp', 'Tên tài khoản', 'Mật khẩu']);
+    
+            foreach ($sinhViens as $sinhVien) {
+                fputcsv($handle, [
+                    $sinhVien->mssv,
+                    $sinhVien->ho_ten,
+                    $sinhVien->lop,
+                    $sinhVien->taiKhoan->ten_tk,
+                    $sinhVien->taiKhoan->mat_khau
+                ]);
+            }
+    
+            fclose($handle);
+        }, $filename, [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => "attachment; filename={$filename}",
+        ]);
     }
 }

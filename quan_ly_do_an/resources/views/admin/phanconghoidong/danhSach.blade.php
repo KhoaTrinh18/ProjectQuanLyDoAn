@@ -70,7 +70,7 @@
                                     </select>
                                 </div>
                                 <div class="ms-3 mt-2 d-flex justify-content-end">
-                                    <button id="clear" class="btn btn-secondary me-2">Clear</button>
+                                    <button id="clear" class="btn btn-secondary me-2">Tạo lại</button>
                                     <button id="timKiem" class="btn btn-primary" type="submit">Tìm kiếm</button>
                                 </div>
                             </div>

@@ -35,7 +35,7 @@
                             <form class="d-flex align-items-center" id="form_huy_sv">
                                 <p class="m-0"><strong>Sinh viên đã đăng ký:
                                     </strong>{{ $deTai->sinhViens->first()->ho_ten }}
-                                    ({{ $deTai->sinhViens->first()->mssv }})
+                                    ({{ $deTai->sinhViens->first()->mssv }}) - Email: {{ $deTai->sinhViens->first()->email }} - Số điện thoại: {{ $deTai->sinhViens->first()->so_dien_thoai }}
                                 </p>
                                 <button class="btn btn-danger btn-sm ms-2" type="button" data-bs-toggle="modal"
                                     data-bs-target="#confirmModal">Hủy đăng
@@ -74,7 +74,7 @@
                                 @foreach ($deTai->sinhViens as $sinhVien)
                                     <li class="mt-2">
                                         <div class="d-flex align-items-center">
-                                            <p class="student-name m-0">{{ $sinhVien->ho_ten }} ({{ $sinhVien->mssv }})
+                                            <p class="student-name m-0">{{ $sinhVien->ho_ten }} ({{ $sinhVien->mssv }}) - Email: {{ $sinhVien->email }} - Số điện thoại: {{ $sinhVien->so_dien_thoai }}
                                             </p>
                                             <button class="btn btn-danger btn-sm ms-2 huy-dang-ky-btn"
                                                 data-ma-sv="{{ $sinhVien->ma_sv }}" data-ho-ten="{{ $sinhVien->ho_ten }}"

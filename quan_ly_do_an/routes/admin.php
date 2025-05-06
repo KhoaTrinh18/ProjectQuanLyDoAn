@@ -231,6 +231,8 @@ Route::middleware([KiemTraDangNhap::class])->group(function () {
     });
     Route::get('/sinh-vien/tai-csv-mau', [SinhVienController::class, 'taiCSVMau'])->name('sinh_vien.tai_csv_mau');
     Route::get('/sinh-vien/tao-tai-khoan', [SinhVienController::class, 'taoTaiKhoan'])->name('sinh_vien.tao_tai_khoan');
+    Route::get('/sinh-vien/tai-danh-sach-tai-khoan', [SinhVienController::class, 'taiDSTaiKhoan'])->name('sinh_vien.tai_ds_tai_khoan');
+    Route::get('/sinh-vien/tai-danh-sach-sinh-vien', [SinhVienController::class, 'taiDSSinhVien'])->name('sinh_vien.tai_ds_sinh_vien');
 
     Route::get('/sinh-vien-de-tai-all/danh-sach', [SinhVienDeTaiAllController::class, 'danhSach'])->name('sinh_vien_de_tai_all.danh_sach');
     Route::get('/sinh-vien-de-tai-all/page-ajax', [SinhVienDeTaiAllController::class, 'pageAjax'])->name('sinh_vien_de_tai_all.page_ajax');

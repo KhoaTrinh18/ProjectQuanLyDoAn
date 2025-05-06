@@ -72,7 +72,7 @@
                                 </div>
                             </div>
                             <div class="ms-3">
-                                <button id="clear" class="btn btn-secondary">Clear</button>
+                                <button id="clear" class="btn btn-secondary">Tạo lại</button>
                                 <button id="timKiem" class="btn btn-primary" type="submit">Tìm kiếm</button>
                             </div>
                         </form>
