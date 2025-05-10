@@ -10,7 +10,7 @@
                         <h2 style="font-weight: bold">Danh sách đề tài hướng dẫn</h2>
                     </div>
                     <div class="card-body">
-                        <table class="table table-bordered table-striped table-hover">
+                        <table class="table table-bordered table-striped table-hover" style="font-size: 13px">
                             <thead style="background: #222e3c;">
                                 <tr>
                                     <th scope="col" class="text-white">#</th>
@@ -23,20 +23,6 @@
                             </thead>
                             <tbody id="table-body">
                                 @foreach ($deTais as $key => $deTai)
-                                    @php
-                                        if (isset($deTai->so_luong_sv_dang_ky)) {
-                                            $phanCong = $phanCongSVDK->where('ma_de_tai', $deTai->ma_de_tai)->first();
-                                        } else {
-                                            $phanCong = $phanCongSVDX->where('ma_de_tai', $deTai->ma_de_tai)->first();
-                                        }
-
-                                        $daChamDiem = 0;
-                                        if ($phanCong->diem_gvhd) {
-                                            $daChamDiem = 1;
-                                        } else {
-                                            $daChamDiem = 0;
-                                        }
-                                    @endphp
                                     <tr>
                                         <td scope="row">
                                             {{ $key + 1 }}</td>
@@ -51,16 +37,25 @@
                                             @foreach ($deTai->sinhViens as $sinhVien)
                                                 @php
                                                     if (isset($deTai->so_luong_sv_dang_ky)) {
-                                                        $phanCongSV = $phanCong
+                                                        $phanCong = $phanCongSVDK
+                                                            ->where('ma_de_tai', $deTai->ma_de_tai)
                                                             ->where('ma_sv', $sinhVien->ma_sv)
                                                             ->first();
                                                     } else {
-                                                        $phanCongSV = $phanCong
+                                                        $phanCong = $phanCongSVDX
+                                                            ->where('ma_de_tai', $deTai->ma_de_tai)
                                                             ->where('ma_sv', $sinhVien->ma_sv)
                                                             ->first();
                                                     }
+
+                                                    $daChamDiem = 0;
+                                                    if ($phanCong->diem_gvhd) {
+                                                        $daChamDiem = 1;
+                                                    } else {
+                                                        $daChamDiem = 0;
+                                                    }
                                                 @endphp
-                                                {{ $sinhVien->ho_ten }} ({!! $phanCongSV->diem_gvhd !== null ? number_format($phanCongSV->diem_gvhd, 2) : '<em>Chưa có</em>' !!})<br>
+                                                {{ $sinhVien->ho_ten }} ({!! $phanCong->diem_gvhd !== null ? number_format($phanCong->diem_gvhd, 2) : '<em>Chưa có</em>' !!})<br>
                                             @endforeach
                                         </td>
                                         <td class="text-center">

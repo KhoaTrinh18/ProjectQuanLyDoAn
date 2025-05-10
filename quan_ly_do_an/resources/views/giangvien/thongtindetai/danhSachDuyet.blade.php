@@ -10,7 +10,7 @@
                         <h2 style="font-weight: bold">Danh sách đề tài đã duyệt</h2>
                     </div>
                     <div class="card-body">
-                        <table class="table table-bordered table-striped table-hover">
+                        <table class="table table-bordered table-striped table-hover" style="font-size: 13px">
                             <thead style="background: #222e3c;">
                                 <tr>
                                     <th scope="col" class="text-white">#</th>
@@ -33,7 +33,7 @@
                                         <td>{{ $deTai->linhVuc->ten_linh_vuc }}</td>
                                         <td>
                                             @if ($deTai->sinhViens->count() == 0)
-                                                chưa có
+                                                <i>Chưa có</i>
                                             @else
                                                 @foreach ($deTai->sinhViens as $sinhVien)
                                                     @php

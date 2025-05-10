@@ -23,6 +23,7 @@ use App\Models\{
 };
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Response;
+use PhpParser\Node\Stmt\Continue_;
 
 class SinhVienController extends Controller
 {
@@ -394,9 +395,6 @@ class SinhVienController extends Controller
             SinhVien::where('ma_sv', $sinhVien->ma_sv)->update([
                 'ma_tk' => $taiKhoan->ma_tk
             ]);
-
-            // (Tuỳ chọn) Gửi email thông báo tài khoản + mật khẩu
-            // Mail::to($sv->email)->queue(new NewStudentAccount($user, $plainPassword));
             $count++;
         }
 
@@ -409,25 +407,25 @@ class SinhVienController extends Controller
         $sinhViens = SinhVien::where('nam_hoc', $thietLap->nam_hoc)
             ->orderBy('ma_sv', 'desc')
             ->get();
-    
+
         $filename = 'danh_sach_sinh_vien.csv';
-    
+
         return Response::streamDownload(function () use ($sinhViens) {
             $handle = fopen('php://output', 'w');
-    
+
             fwrite($handle, chr(0xEF) . chr(0xBB) . chr(0xBF));
-    
+
             fputcsv($handle, ['MSSV', 'Họ tên', 'Lớp', 'Email', 'Số điện thoại', 'Đề tài', 'Giảng viên hướng dẫn']);
-    
+
             foreach ($sinhViens as $sinhVien) {
                 $deTai = $sinhVien->deTaiDeXuat->pluck('ten_de_tai')->first()
-                        ?: $sinhVien->deTaiDangKy->pluck('ten_de_tai')->first()
-                        ?: 'Chưa có';
-    
+                    ?: $sinhVien->deTaiDangKy->pluck('ten_de_tai')->first()
+                    ?: 'Chưa có';
+
                 $giangViens = $sinhVien->deTaiDeXuat->first()?->giangViens?->pluck('ho_ten')->implode(', ')
-                              ?: $sinhVien->deTaiDangKy->first()?->giangViens?->pluck('ho_ten')->implode(', ')
-                              ?: 'Chưa có';
-    
+                    ?: $sinhVien->deTaiDangKy->first()?->giangViens?->pluck('ho_ten')->implode(', ')
+                    ?: 'Chưa có';
+
                 fputcsv($handle, [
                     $sinhVien->mssv,
                     $sinhVien->ho_ten,
@@ -438,7 +436,7 @@ class SinhVienController extends Controller
                     $giangViens
                 ]);
             }
-    
+
             fclose($handle);
         }, $filename, [
             'Content-Type' => 'text/csv; charset=UTF-8',
@@ -452,16 +450,16 @@ class SinhVienController extends Controller
         $sinhViens = SinhVien::where('nam_hoc', $thietLap->nam_hoc)
             ->orderBy('ma_sv', 'desc')
             ->get();
-    
+
         $filename = 'danh_sach_tai_khoan.csv';
-    
+
         return Response::streamDownload(function () use ($sinhViens) {
             $handle = fopen('php://output', 'w');
-    
+
             fwrite($handle, chr(0xEF) . chr(0xBB) . chr(0xBF));
-    
+
             fputcsv($handle, ['MSSV', 'Họ tên', 'Lớp', 'Tên tài khoản', 'Mật khẩu']);
-    
+
             foreach ($sinhViens as $sinhVien) {
                 fputcsv($handle, [
                     $sinhVien->mssv,
@@ -471,11 +469,66 @@ class SinhVienController extends Controller
                     $sinhVien->taiKhoan->mat_khau
                 ]);
             }
-    
+
             fclose($handle);
         }, $filename, [
             'Content-Type' => 'text/csv; charset=UTF-8',
             'Content-Disposition' => "attachment; filename={$filename}",
         ]);
+    }
+
+    public function capNhatTrangThai()
+    {
+        $thietLap = ThietLap::where('trang_thai', 1)->first();
+        $sinhViens = SinhVien::where('nam_hoc', $thietLap->nam_hoc)->get();
+
+        foreach ($sinhViens as $sinhVien) {
+            $diemSV = [];
+            $diemTong = 0;
+
+            if ($sinhVien->loai_sv == null) continue;
+            if ($sinhVien->loai_sv == 'de_xuat') {
+                $sinhVienDTSV = SinhVienDeTaiSV::where('ma_sv', $sinhVien->ma_sv)->where('trang_thai', '!=', 0)->first();
+                $deTai = DeTaiSinhVien::where(['ma_de_tai' => $sinhVienDTSV->ma_de_tai, 'da_huy' => 0])->first();
+            } else {
+                $phanCongSVDK = BangPhanCongSVDK::where('ma_sv', $sinhVien->ma_sv)->first();
+                $deTai = DeTaiGiangVien::where(['ma_de_tai' => $phanCongSVDK->ma_de_tai, 'da_huy' => 0])->first();
+            }
+            foreach ($deTai->giangVienHuongDans()->wherePivot('ma_sv', $sinhVien->ma_sv)->get() as $gv) {
+                $diemSV[] = $gv->pivot->diem_gvhd;
+            }
+            $diemSV[] = $deTai->giangVienPhanBiens()->wherePivot('ma_sv', $sinhVien->ma_sv)->first()->pivot->diem_gvpb;
+
+            $hoiDong = $deTai->hoiDongs()->first();
+            $chuTich = $hoiDong->giangViens()->wherePivot('chuc_vu', 'Chủ tịch')->first();
+            $thuKy = $hoiDong->giangViens()->wherePivot('chuc_vu', 'Thư ký')->first();
+            $uyViens = $hoiDong->giangViens()->wherePivot('chuc_vu', 'Ủy viên')->get();
+
+            $deTaiHoiDong = [];
+
+            if (isset($deTai->so_luong_sv_dang_ky)) {
+                $deTaiHoiDong = BangDiemGVTHDChoSVDK::where(['ma_de_tai' => $deTai->ma_de_tai, 'ma_sv' => $sinhVien->ma_sv])->get();
+            } else {
+                $deTaiHoiDong = BangDiemGVTHDChoSVDX::where(['ma_de_tai' => $deTai->ma_de_tai, 'ma_sv' => $sinhVien->ma_sv])->get();
+            }
+
+            $diemSV[] = $deTaiHoiDong->where('ma_gvthd', $chuTich->ma_gv)->first()->diem_gvthd;
+            $diemSV[] = $deTaiHoiDong->where('ma_gvthd', $thuKy->ma_gv)->first()->diem_gvthd;
+            foreach ($uyViens as $uyVien) {
+                $diemSV[] = $deTaiHoiDong->where('ma_gvthd', $uyVien->ma_gv)->first()->diem_gvthd;
+            }
+
+            if (in_array(null, $diemSV, true)) continue;
+
+            $diemTong = array_sum($diemSV) / count($diemSV);
+
+            if ($diemTong >= 5.5) {
+                SinhVien::where('ma_sv', $sinhVien->ma_sv)->update([
+                    'trang_thai' => 2,
+                    'diem' => number_format($diemTong, 2)
+                ]);
+            }
+        }
+        return back()->with('success', "Cập trạng thái sinh viên thành công.");
     }
 }

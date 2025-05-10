@@ -41,11 +41,12 @@
         </div>
     </div>
     <div>
-        <table class="table table-bordered table-striped table-hover">
+        <table class="table table-bordered table-striped table-hover" style="font-size: 13px">
             <thead style="background: #222e3c;">
                 <tr>
                     <th scope="col" class="text-white">#</th>
                     <th scope="col" class="text-white" style="width: 40%;">Tên đề tài</th>
+                    <th scope="col" class="text-white">Lĩnh vực</th>
                     <th scope="col" class="text-white">Giảng viên</th>
                     <th scope="col" class="text-white">Ngày đưa ra</th>
                     <th scope="col" class="text-white">Trạng thái</th>
@@ -61,6 +62,7 @@
                             style="width: 40%; word-wrap: break-word; overflow-wrap: break-word; white-space: normal; word-break: break-word;">
                             {{ $deTaiGV->ten_de_tai }}
                         </td>
+                        <td> {{ $deTaiGV->linhVuc->ten_linh_vuc }} </td>
                         <td> {!! $deTaiGV->giangViens->pluck('ho_ten')->implode('<br>') !!} </td>
                         <td> {{ \Carbon\Carbon::parse($deTaiGV->ngayDuaRa->ngay_dua_ra)->format('d-m-Y') }} </td>
                         <td>

@@ -41,9 +41,15 @@
                             @php
                                 $sinhVien = $deTai->sinhViens->first();
                                 if (isset($deTai->so_luong_sv_dang_ky)) {
-                                    $phanCongSV = $phanCongHoiDong->where('ma_sv', $sinhVien->ma_sv)->first();
+                                    $phanCongSV = $phanCongHoiDongSVDK
+                                        ->where('ma_de_tai', $deTai->ma_de_tai)
+                                        ->where('ma_sv', $sinhVien->ma_sv)
+                                        ->first();
                                 } else {
-                                    $phanCongSV = $phanCongHoiDong->where('ma_sv', $sinhVien->ma_sv)->first();
+                                    $phanCongSV = $phanCongHoiDongSVDX
+                                        ->where('ma_de_tai', $deTai->ma_de_tai)
+                                        ->where('ma_sv', $sinhVien->ma_sv)
+                                        ->first();
                                 }
                             @endphp
                             <p><strong>Sinh viên thực hiện:</strong> {{ $sinhVien->ho_ten }} ({{ $sinhVien->mssv }}) - Điểm:
@@ -54,9 +60,15 @@
                                 @foreach ($deTai->sinhViens as $sinhVien)
                                     @php
                                         if (isset($deTai->so_luong_sv_dang_ky)) {
-                                            $phanCongSV = $phanCongHoiDong->where('ma_sv', $sinhVien->ma_sv)->first();
+                                            $phanCongSV = $phanCongHoiDongSVDK
+                                                ->where('ma_de_tai', $deTai->ma_de_tai)
+                                                ->where('ma_sv', $sinhVien->ma_sv)
+                                                ->first();
                                         } else {
-                                            $phanCongSV = $phanCongHoiDong->where('ma_sv', $sinhVien->ma_sv)->first();
+                                            $phanCongSV = $phanCongHoiDongSVDX
+                                                ->where('ma_de_tai', $deTai->ma_de_tai)
+                                                ->where('ma_sv', $sinhVien->ma_sv)
+                                                ->first();
                                         }
                                     @endphp
                                     <li>{{ $sinhVien->ho_ten }} ({{ $sinhVien->mssv }}) - Điểm:
@@ -81,13 +93,12 @@
 
                         @if ($deTai->hoiDongs->count() == 0)
                             <p><strong>Hội đồng:</strong> Chưa có</p>
-                        @elseif ($deTai->giangVienPhanBiens->count() == 1)
+                        @elseif ($deTai->hoiDongs->count() == 1)
                             @php $hoiDong = $deTai->hoiDongs->first(); @endphp
                             <p><strong>Hội đồng:</strong> {{ $hoiDong->ten_hoi_dong }}</p>
                             <p><strong>Phòng:</strong> {{ $hoiDong->phong }}</p>
                             <p><strong>Ngày tổ chức:</strong>
                                 {{ \Carbon\Carbon::parse($hoiDong->ngay)->format('H:i d-m-Y') }}</p>
-                            <p><strong>Năm học:</strong> {{ $hoiDong->nam_hoc }}</p>
 
                             @php $chuTich = $hoiDong->giangViens()->wherePivot('chuc_vu', 'Chủ tịch')->first(); @endphp
                             <p><strong>Chủ tịch:</strong> {{ $chuTich->ho_ten }} - Email:

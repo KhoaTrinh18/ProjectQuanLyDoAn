@@ -6,8 +6,26 @@
         <div class="row">
             <div class="col-12">
                 <div class="card">
+                    @php
+                        $thietLap = DB::table('thiet_lap')->where('trang_thai', 1)->first();
+                        $duDeTai = 0;
+
+                        foreach ($deTai->giangViens as $giangVien) {
+                            if (
+                                $giangVien->deTaiDangKys->where('nam_hoc', $thietLap->nam_hoc)->count() >=
+                                $giangVien->hocVi->sl_de_tai_huong_dan
+                            ) {
+                                $duDeTai = 1;
+                                break;
+                            }
+                        }
+                    @endphp
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <h2 style="font-weight: bold">Đăng ký đề tài</h2>
+                        <h2 style="font-weight: bold">Đăng ký đề tài 
+                                @if($duDeTai && $deTai->so_luong_sv_dang_ky == 0)
+                                    (<span class="text-secondary"><i>Giảng viên này đã đạt đủ số lượng đề tài hướng dẫn</i></span>)
+                                @endif
+                            </h2>
                     </div>
                     <div class="card-body" style="font-size: 16px">
                         <h3 class="text-center mb-4" style="font-weight: bold">{{ $deTai->ten_de_tai }}</h3>
@@ -31,7 +49,7 @@
 
                         @if ($deTai->so_luong_sv_dang_ky < 1)
                             <p><strong>Sinh viên đã đăng ký:
-                                </strong>chưa có</p>
+                                </strong><i>Chưa có</i></p>
                         @elseif ($deTai->so_luong_sv_dang_ky == 1)
                             @php $sinhVien = $deTai->sinhViens->first(); @endphp
                             <p><strong>Sinh viên đã đăng ký:
@@ -51,7 +69,7 @@
                             <div class="text-center">
                                 <a href="{{ route('dang_ky_de_tai.danh_sach') }}" class="btn btn-secondary btn-lg">Quay
                                     lại</a>
-                                @if ($deTai->so_luong_sv_dang_ky < $deTai->so_luong_sv_toi_da && !$daDangKy)
+                                @if ($deTai->so_luong_sv_dang_ky < $deTai->so_luong_sv_toi_da && !$daDangKy && !$duDeTai)
                                     <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal"
                                         data-bs-target="#confirmModal">Xác nhận đăng
                                         ký</button>

@@ -10,7 +10,7 @@
                         <h2 style="font-weight: bold">Danh sách đề tài phản biện</h2>
                     </div>
                     <div class="card-body">
-                        <table class="table table-bordered table-striped table-hover">
+                        <table class="table table-bordered table-striped table-hover" style="font-size: 13px">
                             <thead style="background: #222e3c;">
                                 <tr>
                                     <th scope="col" class="text-white">#</th>
@@ -24,24 +24,6 @@
                             </thead>
                             <tbody id="table-body">
                                 @foreach ($deTais as $key => $deTai)
-                                    @php
-                                        if (isset($deTai->so_luong_sv_dang_ky)) {
-                                            $phanCongPhanBien = $phanCongPhanBienSVDK
-                                                ->where('ma_de_tai', $deTai->ma_de_tai)
-                                                ->first();
-                                        } else {
-                                            $phanCongPhanBien = $phanCongPhanBienSVDX
-                                                ->where('ma_de_tai', $deTai->ma_de_tai)
-                                                ->first();
-                                        }
-
-                                        $daChamDiem = 0;
-                                        if ($phanCongPhanBien->diem_gvpb) {
-                                            $daChamDiem = 1;
-                                        } else {
-                                            $daChamDiem = 0;
-                                        }
-                                    @endphp
                                     <tr>
                                         <td scope="row">
                                             {{ $key + 1 }}</td>
@@ -56,16 +38,25 @@
                                             @foreach ($deTai->sinhViens as $sinhVien)
                                                 @php
                                                     if (isset($deTai->so_luong_sv_dang_ky)) {
-                                                        $phanCongSV = $phanCongPhanBien
+                                                        $phanCongPhanBien = $phanCongPhanBienSVDK
+                                                            ->where('ma_de_tai', $deTai->ma_de_tai)
                                                             ->where('ma_sv', $sinhVien->ma_sv)
                                                             ->first();
                                                     } else {
-                                                        $phanCongSV = $phanCongPhanBien
+                                                        $phanCongPhanBien = $phanCongPhanBienSVDX
+                                                            ->where('ma_de_tai', $deTai->ma_de_tai)
                                                             ->where('ma_sv', $sinhVien->ma_sv)
                                                             ->first();
                                                     }
+
+                                                    $daChamDiem = 0;
+                                                    if ($phanCongPhanBien->diem_gvpb) {
+                                                        $daChamDiem = 1;
+                                                    } else {
+                                                        $daChamDiem = 0;
+                                                    }
                                                 @endphp
-                                                {{ $sinhVien->ho_ten }} ({!! $phanCongSV->diem_gvpb !== null ? number_format($phanCongSV->diem_gvpb, 2) : '<em>Chưa có</em>' !!})<br>
+                                                {{ $sinhVien->ho_ten }} ({!! $phanCongPhanBien->diem_gvpb !== null ? number_format($phanCongPhanBien->diem_gvpb, 2) : '<em>Chưa có</em>' !!})<br>
                                             @endforeach
                                         </td>
                                         <td>

@@ -32,11 +32,28 @@
                             @endif
 
                             @if ($checkNgayHetHan == 1)
+                                <p><strong>Trạng thái:</strong>
+                                    @if ($sinhVien->trang_thai == 0)
+                                        <span class="text-danger">Không hoàn thành</span>
+                                    @elseif($sinhVien->trang_thai == 1)
+                                        <span class="text-warning">Đang thực hiện</span>
+                                    @elseif($sinhVien->trang_thai == 2)
+                                        <span class="text-success">Đã hoàn thành</span>
+                                    @else
+                                        <span class="text-danger">Nghỉ giữa chừng</span>
+                                    @endif
+                                </p>
                                 @if ($deTai->giangVienHuongDans->isEmpty())
                                     <p><strong>Giảng viên hướng dẫn: </strong><i>Chưa có</i></p>
                                 @else
-                                    @if ($deTai->giangVienHuongDans->count() === 1)
-                                        @php $gv = $deTai->giangVienHuongDans->first(); @endphp
+                                    @php
+                                        $giangVienHDs = $deTai
+                                            ->giangVienHuongDans()
+                                            ->wherePivot('ma_sv', $sinhVien->ma_sv)
+                                            ->get();
+                                    @endphp
+                                    @if ($giangVienHDs->count() === 1)
+                                        @php $gv = $giangVienHDs->first(); @endphp
                                         <p class="mb-0"><strong>Giảng viên hướng dẫn: </strong>{{ $gv->ho_ten }}</p>
                                         <ul>
                                             <li><strong>Điểm:
@@ -47,7 +64,7 @@
                                     @else
                                         <p class="mb-0"><strong>Giảng viên hướng dẫn:</strong></p>
                                         <ul>
-                                            @foreach ($deTai->giangVienHuongDans as $gv)
+                                            @foreach ($giangVienHDs as $gv)
                                                 <li class="mb-2">
                                                     {{ $gv->ho_ten }}<br>
                                                     <strong>Điểm:
@@ -136,6 +153,9 @@
                                         </ul>
                                     @endif
                                 @endif
+                                <p style="font-size: 20px"><strong>Điểm tổng:</strong>
+                                    <i>{{ $sinhVien->diem ?? 'Chưa có'}}</i>
+                                </p>
                             @else
                                 @if ($loaiDeTai == 'de_tai_sv')
                                     <p><strong>Trạng thái: </strong>

@@ -41,9 +41,15 @@
                             @php
                                 $sinhVien = $deTai->sinhViens->first();
                                 if (isset($deTai->so_luong_sv_dang_ky)) {
-                                    $phanCongSV = $phanCongPhanBien->where('ma_sv', $sinhVien->ma_sv)->first();
+                                    $phanCongSV = $phanCongPhanBienSVDK
+                                        ->where('ma_de_tai', $deTai->ma_de_tai)
+                                        ->where('ma_sv', $sinhVien->ma_sv)
+                                        ->first();
                                 } else {
-                                    $phanCongSV = $phanCongPhanBien->where('ma_sv', $sinhVien->ma_sv)->first();
+                                    $phanCongSV = $phanCongPhanBienSVDX
+                                        ->where('ma_de_tai', $deTai->ma_de_tai)
+                                        ->where('ma_sv', $sinhVien->ma_sv)
+                                        ->first();
                                 }
                             @endphp
                             <p><strong>Sinh viên thực hiện:</strong> {{ $sinhVien->ho_ten }} ({{ $sinhVien->mssv }}) - Điểm:
@@ -54,9 +60,15 @@
                                 @foreach ($deTai->sinhViens as $sinhVien)
                                     @php
                                         if (isset($deTai->so_luong_sv_dang_ky)) {
-                                            $phanCongSV = $phanCongPhanBien->where('ma_sv', $sinhVien->ma_sv)->first();
+                                            $phanCongSV = $phanCongPhanBienSVDK
+                                                ->where('ma_de_tai', $deTai->ma_de_tai)
+                                                ->where('ma_sv', $sinhVien->ma_sv)
+                                                ->first();
                                         } else {
-                                            $phanCongSV = $phanCongPhanBien->where('ma_sv', $sinhVien->ma_sv)->first();
+                                            $phanCongSV = $phanCongPhanBienSVDX
+                                                ->where('ma_de_tai', $deTai->ma_de_tai)
+                                                ->where('ma_sv', $sinhVien->ma_sv)
+                                                ->first();
                                         }
                                     @endphp
                                     <li>{{ $sinhVien->ho_ten }}
@@ -75,20 +87,6 @@
                             <p><strong>Giảng viên hướng dẫn:</strong></p>
                             <ul>
                                 @foreach ($deTai->giangViens as $giangVien)
-                                    <li>{{ $giangVien->ho_ten }} - Email: {{ $giangVien->email }} - SĐT:
-                                        {{ $giangVien->so_dien_thoai }}</li>
-                                @endforeach
-                            </ul>
-                        @endif
-
-                        @if ($deTai->giangVienPhanBiens->count() == 1)
-                            @php $giangVien = $deTai->giangVienPhanBiens->first(); @endphp
-                            <p><strong>Giảng viên phản biện:</strong> {{ $giangVien->ho_ten }} - Email:
-                                {{ $giangVien->email }} - Số điện thoại: {{ $giangVien->so_dien_thoai }}</p>
-                        @else
-                            <p><strong>Giảng viên phản biện:</strong></p>
-                            <ul>
-                                @foreach ($deTai->giangVienPhanBiens as $giangVien)
                                     <li>{{ $giangVien->ho_ten }} - Email: {{ $giangVien->email }} - SĐT:
                                         {{ $giangVien->so_dien_thoai }}</li>
                                 @endforeach

@@ -41,16 +41,18 @@
         </div>
     </div>
     <div>
-        <table class="table table-bordered table-striped table-hover">
+        <table class="table table-bordered table-striped table-hover" style="font-size: 12px">
             <thead style="background: #222e3c;">
                 <tr>
                     <th scope="col" class="text-white">#</th>
                     <th scope="col" class="text-white">MSSV</th>
                     <th scope="col" class="text-white">Tên sinh viên</th>
                     <th scope="col" class="text-white">Lớp</th>
-                    <th scope="col" class="text-white" width="20%">Tên đề tài</th>
+                    <th scope="col" class="text-white" width="18%">Tên đề tài</th>
                     <th scope="col" class="text-white">Giảng viên hướng dẫn</th>
-                    <th scope="col" class="text-white">Trạng thái</th>
+                    <th scope="col" class="text-white">Điểm</th>
+                    <th scope="col" class="text-white">Trạng thái (<a
+                            href="{{ route('sinh_vien.cap_nhat_trang_thai') }}">Cập nhật</a>)</th>
                     <th scope="col" class="text-white"></th>
                 </tr>
             </thead>
@@ -86,17 +88,20 @@
                                     ])->first();
                                 }
                             @endphp
-                            <td width="20%">{{ $deTai->ten_de_tai }}</td>
+                            <td width="18%">{{ $deTai->ten_de_tai }}</td>
                             <td>{!! $deTai->giangViens->pluck('ho_ten')->implode('<br>') !!}</td>
                         @endif
                         </td>
+                        <td> {!! $sinhVien->diem ?? '<em>Chưa có</em>' !!} </td>
                         <td>
                             @if ($sinhVien->trang_thai == 0)
                                 <span class="text-danger">Không hoàn thành</span>
                             @elseif($sinhVien->trang_thai == 1)
                                 <span class="text-warning">Đang thực hiện</span>
-                            @else
+                            @elseif($sinhVien->trang_thai == 2)
                                 <span class="text-success">Đã hoàn thành</span>
+                            @else
+                                <span class="text-danger">Nghỉ giữa chừng</span>
                             @endif
                         </td>
                         <td class="text-center">

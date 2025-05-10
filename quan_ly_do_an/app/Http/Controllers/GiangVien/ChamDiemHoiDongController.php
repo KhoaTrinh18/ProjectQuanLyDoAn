@@ -63,8 +63,8 @@ class ChamDiemHoiDongController extends Controller
             abort(404, 'Đề tài không tồn tại');
         }
 
-        $phanCongHoiDongSVDK = BangDiemGVTHDChoSVDK::where('ma_gvpb', $giangVien->ma_gv)->get();
-        $phanCongHoiDongSVDX = BangDiemGVTHDChoSVDX::where('ma_gvpb', $giangVien->ma_gv)->get();
+        $phanCongHoiDongSVDK = BangDiemGVTHDChoSVDK::where('ma_gvthd', $giangVien->ma_gv)->get();
+        $phanCongHoiDongSVDX = BangDiemGVTHDChoSVDX::where('ma_gvthd', $giangVien->ma_gv)->get();
 
         return view('giangvien.chamdiemhoidong.chiTiet', compact('deTai', 'phanCongHoiDongSVDK', 'phanCongHoiDongSVDX'));
     }

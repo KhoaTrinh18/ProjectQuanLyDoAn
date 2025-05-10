@@ -39,8 +39,7 @@ class ChamDiemHuongDanController extends Controller
             ->get();
 
         $deTais = $deTaiSVs->merge($deTaiGVs)->unique('ma_de_tai')->values();
-
-        return view('giangvien.chamdiemhuongdan.danhSach', compact('deTais', 'phanCongSVDK', 'phanCongSVDX'));
+        return view('giangvien.chamdiemhuongdan.danhSach', compact('deTais', 'phanCongSVDK', 'phanCongSVDX', 'giangVien'));
     }
 
     public function chiTiet($ma_de_tai)

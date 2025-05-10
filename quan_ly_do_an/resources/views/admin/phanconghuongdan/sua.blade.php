@@ -31,13 +31,13 @@
                         @if ($deTai->giangViens->count() == 0)
                             <p><strong>Giảng viên hướng dẫn:</strong> Chưa có</p>
                         @elseif ($deTai->giangViens->count() == 1)
-                            @php $giangVien = $deTai->giangVienHuongDans->first(); @endphp
+                            @php $giangVien = $deTai->giangViens->first(); @endphp
                             <p><strong>Giảng viên hướng dẫn:</strong> {{ $giangVien->ho_ten }} - Email:
                                 {{ $giangVien->email }} - Số điện thoại: {{ $giangVien->so_dien_thoai }}
                             @else
                             <p><strong>Giảng viên hướng dẫn:</strong></p>
                             <ul>
-                                @foreach ($deTai->giangVienHuongDans as $giangVien)
+                                @foreach ($deTai->giangViens as $giangVien)
                                     <li>{{ $giangVien->ho_ten }} - Email: {{ $giangVien->email }} - Số điện thoại:
                                         {{ $giangVien->so_dien_thoai }}
                                 @endforeach
@@ -187,7 +187,7 @@
                         updateAllSelects();
                     });
             }
-            $('#so_luong_giang_vien').val(@json($deTai->giangVienHuongDans->count())).trigger('change');
+            $('#so_luong_giang_vien').val(@json($deTai->giangViens->count())).trigger('change');
 
             $("#capNhat").click(function(event) {
                 event.preventDefault();

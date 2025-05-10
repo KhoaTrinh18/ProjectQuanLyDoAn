@@ -10,7 +10,7 @@
                         <h2 style="font-weight: bold">Danh sách đề tài hội đồng</h2>
                     </div>
                     <div class="card-body">
-                        <table class="table table-bordered table-striped table-hover">
+                        <table class="table table-bordered table-striped table-hover" style="font-size: 13px">
                             <thead style="background: #222e3c;">
                                 <tr>
                                     <th scope="col" class="text-white">#</th>
@@ -54,16 +54,25 @@
                                             @foreach ($deTai->sinhViens as $sinhVien)
                                                 @php
                                                     if (isset($deTai->so_luong_sv_dang_ky)) {
-                                                        $phanCongSV = $phanCongHoiDong
+                                                        $phanCongHoiDong = $phanCongHoiDongSVDK
+                                                            ->where('ma_de_tai', $deTai->ma_de_tai)
                                                             ->where('ma_sv', $sinhVien->ma_sv)
                                                             ->first();
                                                     } else {
-                                                        $phanCongSV = $phanCongHoiDong
+                                                        $phanCongHoiDong = $phanCongHoiDongSVDX
+                                                            ->where('ma_de_tai', $deTai->ma_de_tai)
                                                             ->where('ma_sv', $sinhVien->ma_sv)
                                                             ->first();
                                                     }
+
+                                                    $daChamDiem = 0;
+                                                    if ($phanCongHoiDong->diem_gvthd) {
+                                                        $daChamDiem = 1;
+                                                    } else {
+                                                        $daChamDiem = 0;
+                                                    }
                                                 @endphp
-                                                {{ $sinhVien->ho_ten }} ({!! $phanCongSV->diem_gvthd !== null ? number_format($phanCongSV->diem_gvthd, 2) : '<em>Chưa có</em>' !!})<br>
+                                                {{ $sinhVien->ho_ten }} ({!! $phanCongHoiDong->diem_gvthd !== null ? number_format($phanCongHoiDong->diem_gvthd, 2) : '<em>Chưa có</em>' !!})<br>
                                             @endforeach
                                         </td>
                                         <td>

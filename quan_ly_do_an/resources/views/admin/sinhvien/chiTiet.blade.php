@@ -22,24 +22,27 @@
                             <p><strong>Mật khẩu:</strong> {{ $sinhVien->taiKhoan->mat_khau }}</p>
                         @endif
                         <p><strong>Trạng thái:</strong>
-
                             @if ($sinhVien->trang_thai == 0)
                                 <span class="text-danger">Không hoàn thành</span>
                             @elseif($sinhVien->trang_thai == 1)
                                 <span class="text-warning">Đang thực hiện</span>
-                            @else
+                            @elseif($sinhVien->trang_thai == 2)
                                 <span class="text-success">Đã hoàn thành</span>
+                            @else
+                                <span class="text-danger">Nghỉ giữa chừng</span>
                             @endif
                         </p>
                         @if ($sinhVien->dang_ky == 0)
                             <p><strong>Tên đề tài: </strong><i>Chưa có</i></p>
                         @else
                             <p><strong>Tên đề tài: </strong>{{ $deTai->ten_de_tai }}</p>
+
                             @if ($deTai->giangVienHuongDans->isEmpty())
                                 <p><strong>Giảng viên hướng dẫn: </strong><i>Chưa có</i></p>
                             @else
-                                @if ($deTai->giangVienHuongDans->count() === 1)
-                                    @php $gv = $deTai->giangVienHuongDans->first(); @endphp
+                                @php $giangVienHDs = $deTai->giangVienHuongDans()->wherePivot('ma_sv', $sinhVien->ma_sv)->get(); @endphp
+                                @if ($giangVienHDs->count() === 1)
+                                    @php $gv = $giangVienHDs->first(); @endphp
                                     <p class="mb-0"><strong>Giảng viên hướng dẫn: </strong>{{ $gv->ho_ten }}</p>
                                     <ul>
                                         <li><strong>Điểm:
@@ -50,7 +53,7 @@
                                 @else
                                     <p class="mb-0"><strong>Giảng viên hướng dẫn:</strong></p>
                                     <ul>
-                                        @foreach ($deTai->giangVienHuongDans as $gv)
+                                        @foreach ($giangVienHDs as $gv)
                                             <li class="mb-2">
                                                 {{ $gv->ho_ten }}<br>
                                                 <strong>Điểm:
@@ -62,10 +65,11 @@
                                 @endif
                             @endif
 
+                            @php $giangVienPB = $deTai->giangVienPhanBiens()->wherePivot('ma_sv', $sinhVien->ma_sv)->first(); @endphp
                             @if ($deTai->giangVienPhanBiens->isEmpty())
                                 <p><strong>Giảng viên phản biện: </strong><i>Chưa có</i></p>
                             @else
-                                @php $gv = $deTai->giangVienPhanBiens->first(); @endphp
+                                @php $gv = $giangVienPB; @endphp
                                 <p class="mb-0"><strong>Giảng viên phản biện: </strong>{{ $gv->ho_ten }}</p>
                                 <ul>
                                     <li><strong>Điểm:
@@ -79,7 +83,7 @@
                                 <p><strong>Hội đồng: </strong><i>Chưa có</i></p>
                             @else
                                 @php
-                                    $hoiDong = $deTai->hoiDongs->first();
+                                    $hoiDong = $deTai->hoiDongs()->first();
                                     $chuTich = $hoiDong->giangViens()->wherePivot('chuc_vu', 'Chủ tịch')->first();
                                     $thuKy = $hoiDong->giangViens()->wherePivot('chuc_vu', 'Thư ký')->first();
                                     $uyViens = $hoiDong->giangViens()->wherePivot('chuc_vu', 'Ủy viên')->get();
@@ -88,11 +92,11 @@
 
                                     if (isset($deTai->so_luong_sv_dang_ky)) {
                                         $deTaiHoiDong = DB::table('bang_diem_gvthd_cho_svdk')
-                                            ->where('ma_de_tai', $deTai->ma_de_tai)
+                                            ->where(['ma_de_tai' => $deTai->ma_de_tai, 'ma_sv' => $sinhVien->ma_sv])
                                             ->get();
                                     } else {
                                         $deTaiHoiDong = DB::table('bang_diem_gvthd_cho_svdx')
-                                            ->where('ma_de_tai', $deTai->ma_de_tai)
+                                            ->where(['ma_de_tai' => $deTai->ma_de_tai, 'ma_sv' => $sinhVien->ma_sv])
                                             ->get();
                                     }
                                 @endphp
@@ -140,6 +144,9 @@
                                 @endif
                             @endif
                         @endif
+                        <p style="font-size: 20px"><strong>Điểm tổng:</strong>
+                            <i>{{ $sinhVien->diem ?? 'Chưa có' }}</i>
+                        </p>
 
                         <div class="text-center">
                             <a href="{{ route('sinh_vien.danh_sach') }}" class="btn btn-secondary btn-lg">Quay
