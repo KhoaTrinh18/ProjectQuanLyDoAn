@@ -175,17 +175,20 @@
                         </li>
                         <li class="sidebar-item {{ request()->is('hoc-vi*') ? 'active' : '' }}">
                             <a class="sidebar-link" href="{{ route('hoc_vi.danh_sach') }}">
-                                <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Học vị</span>
+                                <i class="align-middle" data-feather="bar-chart-2"></i> <span
+                                    class="align-middle">Học vị</span>
                             </a>
                         </li>
                         <li class="sidebar-item {{ request()->is('sinh-vien/*') ? 'active' : '' }}">
                             <a class="sidebar-link" href="{{ route('sinh_vien.danh_sach') }}">
-                                <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Sinh viên</span>
+                                <i class="align-middle" data-feather="bar-chart-2"></i> <span
+                                    class="align-middle">Sinh viên</span>
                             </a>
                         </li>
                         <li class="sidebar-item {{ request()->is('sinh-vien-de-tai-all*') ? 'active' : '' }}">
                             <a class="sidebar-link" href="{{ route('sinh_vien_de_tai_all.danh_sach') }}">
-                                <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Sinh viên và đề tài (All)</span>
+                                <i class="align-middle" data-feather="bar-chart-2"></i> <span
+                                    class="align-middle">Sinh viên và đề tài (All)</span>
                             </a>
                         </li>
                     </ul>
@@ -224,17 +227,25 @@
                     <ul class="navbar-nav navbar-align">
                         <li class="nav-item d-flex align-items-center">
                             @if (session('ten_sinh_vien') != null)
-                                {{ session('ten_sinh_vien') }}
+                                <a href="{{ route('thong_tin_sinh_vien') }}" class="open-modal" data-bs-toggle="modal" data-bs-target="#myModal"
+                                    style="color: inherit; text-decoration: underline;"><strong>{{ session('ten_sinh_vien') }}</strong></a>
                             @elseif (session('ten_giang_vien') != null)
                                 {{ session('ten_giang_vien') }}
                             @else
                                 {{ session('ten_admin') }}
                             @endif
+                            <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="modalLabel">
+                                <div class="modal-dialog">
+                                    <div class="modal-content" id="modal-content">
+                                    </div>
+                                </div>
+                            </div>
                         </li>
                         <li class="nav-item ms-2">
                             <button type="submit" class="btn btn-danger" id="dangXuatBtn">Đăng xuất</button>
                         </li>
                     </ul>
+
                 </div>
             </nav>
             <main class="content p-2">
@@ -269,6 +280,15 @@
                     error: function() {
                         alert("Có lỗi xảy ra khi gửi yêu cầu. Vui lòng thử lại!");
                     }
+                });
+            });
+
+            $('.open-modal').on('click', function(e) {
+                e.preventDefault();
+                var url = $(this).attr('href');
+
+                $.get(url, function(data) {
+                    $('#modal-content').html(data);
                 });
             });
         });

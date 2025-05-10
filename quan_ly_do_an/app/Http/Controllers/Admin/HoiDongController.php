@@ -11,7 +11,6 @@ use App\Models\{
     BangDiemGVTHDChoSVDK,
     BangDiemGVTHDChoSVDX,
     BoMon,
-    GiangVien,
     HoiDong,
     HoiDongGiangVien,
     ThietLap

@@ -43,7 +43,7 @@ class ChamDiemHoiDongController extends Controller
 
         $deTais = $deTaiSVs->merge($deTaiGVs)->unique('ma_de_tai')->values();
 
-        $HoiDong_GiangVien = HoiDongGiangVien::where(['da_huy' => 0, 'ma_gv' => $giangVien->ma_gv])->get();
+        $HoiDong_GiangVien = HoiDongGiangVien::where('ma_gv', $giangVien->ma_gv)->get();
 
         return view('giangvien.chamdiemhoidong.danhSach', compact('deTais', 'phanCongHoiDongSVDK', 'phanCongHoiDongSVDX', 'HoiDong_GiangVien'));
     }

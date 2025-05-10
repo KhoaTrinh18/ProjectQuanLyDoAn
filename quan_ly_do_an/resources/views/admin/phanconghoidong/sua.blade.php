@@ -14,12 +14,16 @@
 
                         @if ($deTai->sinhViens->count() == 1)
                             @php $sinhVien = $deTai->sinhViens->first(); @endphp
-                            <p><strong>Sinh viên thực hiện:</strong> {{ $sinhVien->ho_ten }} - MSSV: {{ $sinhVien->mssv }}
+                            <p><strong>Sinh viên thực hiện:</strong> {{ $sinhVien->ho_ten }} ({{ $sinhVien->mssv }}) -
+                                Email: {{ $sinhVien->email }} - Số điện thoại:
+                                {{ $sinhVien->so_dien_thoai }}
                             @else
                             <p><strong>Sinh viên thực hiện:</strong></p>
                             <ul>
                                 @foreach ($deTai->sinhViens as $sinhVien)
-                                    <li>{{ $sinhVien->ho_ten }} - MSSV: {{ $sinhVien->mssv }}
+                                    <li>{{ $sinhVien->ho_ten }} ({{ $sinhVien->mssv }}) -
+                                        Email: {{ $sinhVien->email }} - Số điện thoại:
+                                        {{ $sinhVien->so_dien_thoai }}
                                 @endforeach
                             </ul>
                         @endif
@@ -38,6 +42,14 @@
                                         {{ $giangVien->so_dien_thoai }}
                                 @endforeach
                             </ul>
+                        @endif
+
+                        @if ($deTai->giangVienPhanBiens->count() == 0)
+                            <p><strong>Giảng viên phản biện:</strong> <i>Chưa có</i></p>
+                        @else
+                            @php $giangVien = $deTai->giangVienPhanBiens->first(); @endphp
+                            <p><strong>Giảng viên phản biện:</strong> {{ $giangVien->ho_ten }} - Email:
+                                {{ $giangVien->email }} - Số điện thoại: {{ $giangVien->so_dien_thoai }}
                         @endif
 
                         @if ($deTai->sinhViens->first()->loai_sv == 'dang_ky')

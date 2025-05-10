@@ -14,7 +14,7 @@
                             <thead style="background: #222e3c;">
                                 <tr>
                                     <th scope="col" class="text-white">#</th>
-                                    <th scope="col" class="text-white" style="width: 25%;">Tên đề tài</th>
+                                    <th scope="col" class="text-white" style="width: 23%;">Tên đề tài</th>
                                     <th scope="col" class="text-white">Sinh viên thực hiện</th>
                                     <th scope="col" class="text-white">Giảng viên hướng dẫn</th>
                                     <th scope="col" class="text-white">Hội đồng</th>
@@ -27,9 +27,13 @@
                                 @foreach ($deTais as $key => $deTai)
                                     @php
                                         if (isset($deTai->so_luong_sv_dang_ky)) {
-                                            $phanCongHoiDong = $phanCongHoiDongSVDK->where('ma_de_tai', $deTai->ma_de_tai)->first();
+                                            $phanCongHoiDong = $phanCongHoiDongSVDK
+                                                ->where('ma_de_tai', $deTai->ma_de_tai)
+                                                ->first();
                                         } else {
-                                            $phanCongHoiDong = $phanCongHoiDongSVDX->where('ma_de_tai', $deTai->ma_de_tai)->first();
+                                            $phanCongHoiDong = $phanCongHoiDongSVDX
+                                                ->where('ma_de_tai', $deTai->ma_de_tai)
+                                                ->first();
                                         }
 
                                         $daChamDiem = 0;
@@ -43,11 +47,24 @@
                                         <td scope="row">
                                             {{ $key + 1 }}</td>
                                         <td
-                                            style="width: 25%; word-wrap: break-word; overflow-wrap: break-word; white-space: normal; word-break: break-word;">
+                                            style="width: 23%; word-wrap: break-word; overflow-wrap: break-word; white-space: normal; word-break: break-word;">
                                             {{ $deTai->ten_de_tai }}
                                         </td>
                                         <td>
-                                            {!! $deTai->sinhViens->pluck('ho_ten')->implode('<br>') !!}
+                                            @foreach ($deTai->sinhViens as $sinhVien)
+                                                @php
+                                                    if (isset($deTai->so_luong_sv_dang_ky)) {
+                                                        $phanCongSV = $phanCongHoiDong
+                                                            ->where('ma_sv', $sinhVien->ma_sv)
+                                                            ->first();
+                                                    } else {
+                                                        $phanCongSV = $phanCongHoiDong
+                                                            ->where('ma_sv', $sinhVien->ma_sv)
+                                                            ->first();
+                                                    }
+                                                @endphp
+                                                {{ $sinhVien->ho_ten }} ({!! $phanCongSV->diem_gvthd !== null ? number_format($phanCongSV->diem_gvthd, 2) : '<em>Chưa có</em>' !!})<br>
+                                            @endforeach
                                         </td>
                                         <td>
                                             {!! $deTai->giangViens->pluck('ho_ten')->implode('<br>') !!}

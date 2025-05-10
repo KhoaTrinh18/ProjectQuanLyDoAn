@@ -17,7 +17,7 @@ use App\Http\Controllers\Admin\{
 };
 use App\Http\Middleware\KiemTraDangNhap;
 
-Route::middleware([KiemTraDangNhap::class])->group(function () {
+Route::middleware([KiemTraDangNhap::class. ':admin'])->group(function () {
     Route::get('/thiet-lap/danh-sach', [ThietLapController::class, 'danhSach'])->name('thiet_lap.danh_sach');
     Route::get('/thiet-lap/them', [ThietLapController::class, 'them'])->name('thiet_lap.them');
     Route::post('/thiet-lap/xac-nhan-them', [ThietLapController::class, 'xacNhanThem'])->name('thiet_lap.xac_nhan_them');

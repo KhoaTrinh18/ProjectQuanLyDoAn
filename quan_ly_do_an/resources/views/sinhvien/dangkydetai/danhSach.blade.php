@@ -5,6 +5,39 @@
     <div class="container-fluid p-0">
         <div class="row">
             <div class="col-12">
+                <div class="modal fade" id="modalDoiMatKhau" tabindex="-1" aria-labelledby="modalLabel">
+                    <div class="modal-dialog">
+                        <form id="form_doi_mk">
+                            <div class="modal-content">
+                                <div class="modal-header bg-secondary">
+                                    <h5 class="modal-title text-white" id="modalLabel">Đổi mật khẩu</h5>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="mb-3">
+                                        <label for="mat_khau_cu" class="form-label">Mật khẩu cũ</label>
+                                        <input type="password" name="MatKhau[mk_cu]" class="form-control shadow-none">
+                                        <span class="error-message text-danger d-none mt-2 error-mk_cu"></span>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="mat_khau_moi" class="form-label">Mật khẩu mới</label>
+                                        <input type="password" name="MatKhau[mk_moi]" class="form-control shadow-none">
+                                        <span class="error-message text-danger d-none mt-2 error-mk_moi"></span>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="mat_khau_moi_confirmation" class="form-label">Xác nhận mật khẩu
+                                            mới</label>
+                                        <input type="password" name="MatKhau[mk_xac_nhan]" class="form-control shadow-none">
+                                        <span class="error-message text-danger d-none mt-2 error-mk_xac_nhan"></span>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-success" id="luu">Lưu mật khẩu</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h2 style="font-weight: bold">Danh sách đề tài</h2>
@@ -71,6 +104,15 @@
 @section('scripts')
     <script>
         $(document).ready(function() {
+            const daDangNhap = @json($taiKhoan->da_dang_nhap);
+
+            if (daDangNhap == 0) {
+                $('#modalDoiMatKhau').modal({
+                    backdrop: 'static',
+                    keyboard: false,
+                }).modal('show');
+            }
+
             let isLoading = false;
             let lastSearchParams = {};
 
@@ -176,6 +218,59 @@
                     clearInterval(interval);
                 }
             }, 10);
+            $("#luu").click(function(event) {
+                event.preventDefault();
+
+                let form = $("#form_doi_mk").get(0);
+                let formData = new FormData(form);
+
+                $(".error-message").text('').removeClass(
+                    "d-block").addClass("d-none");
+                $(".is-invalid").removeClass("is-invalid");
+
+                $.ajax({
+                    url: "{{ route('doi_mat_khau') }}",
+                    type: "POST",
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    headers: {
+                        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+                    },
+                    success: function(result) {
+                        if (result.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Thành công!',
+                                text: 'Đổi mật khẩu thành công!',
+                                confirmButtonText: 'OK',
+                                timer: 1000,
+                                showConfirmButton: false
+                            }).then(() => {
+                                window.location.href =
+                                    "{{ route('dang_ky_de_tai.danh_sach') }}";
+                            });
+                        } else {
+                            $.each(result.errors, function(field, messages) {
+                                let inputField = $("[name='MatKhau[" + field + "]']");
+                                $('.error-' + field).text(messages[0]).removeClass(
+                                    "d-none").addClass("d-block");
+                                inputField.addClass("is-invalid");
+                            });
+                        }
+                    },
+                    error: function(xhr) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Thất bại!',
+                            text: 'Đổi mật khẩu thất bại! Vui lòng thử lại',
+                            confirmButtonText: 'OK',
+                            timer: 1000,
+                            showConfirmButton: false
+                        })
+                    }
+                });
+            });
         });
     </script>
 @endsection

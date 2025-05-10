@@ -10,7 +10,8 @@ use App\Models\{
     GiangVien,
     TaiKhoanSV,
     TaiKhoanGV,
-    SinhVien
+    SinhVien,
+    ThietLap
 };
 
 class DangNhapController extends Controller
@@ -27,9 +28,10 @@ class DangNhapController extends Controller
 
         $taiKhoanSV = TaiKhoanSV::where('ten_tk', $tenTaiKhoan)->first();
         $taiKhoanGV = TaiKhoanGV::where('ten_tk', $tenTaiKhoan)->first();
+        $thietLap = ThietLap::where('trang_thai', 1)->first();
 
         if($taiKhoanSV) {
-            if (!$taiKhoanSV || $taiKhoanSV->mat_khau !== $matKhau){
+            if (!$taiKhoanSV || $taiKhoanSV->mat_khau !== $matKhau || $taiKhoanSV->nam_hoc !== $thietLap->nam_hoc){
                 return response()->json([
                     'success' => false,
                     'error' => 'Tên tài khoản hoặc mật khẩu không đúng!',

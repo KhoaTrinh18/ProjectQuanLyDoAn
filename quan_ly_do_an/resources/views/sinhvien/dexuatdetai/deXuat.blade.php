@@ -26,7 +26,6 @@
                                         <input type="text" class="form-control form-control-lg shadow-none"
                                             placeholder="Nhập tên đề tài" name="DeTai[ten_de_tai]">
                                         <span class="error-message text-danger d-none mt-2 error-ten_de_tai"></span>
-
                                     </div>
                                 </div>
                                 <div class="d-flex mb-3">

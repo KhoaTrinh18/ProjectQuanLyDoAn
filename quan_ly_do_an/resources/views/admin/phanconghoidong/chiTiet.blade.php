@@ -14,18 +14,22 @@
 
                         @if ($deTai->sinhViens->count() == 1)
                             @php $sinhVien = $deTai->sinhViens->first(); @endphp
-                            <p><strong>Sinh viên thực hiện:</strong> {{ $sinhVien->ho_ten }} - MSSV: {{ $sinhVien->mssv }}
+                            <p><strong>Sinh viên thực hiện:</strong> {{ $sinhVien->ho_ten }} ({{ $sinhVien->mssv }}) -
+                                Email: {{ $sinhVien->email }} - Số điện thoại:
+                                {{ $sinhVien->so_dien_thoai }}
                             @else
                             <p><strong>Sinh viên thực hiện:</strong></p>
                             <ul>
                                 @foreach ($deTai->sinhViens as $sinhVien)
-                                    <li>{{ $sinhVien->ho_ten }} - MSSV: {{ $sinhVien->mssv }}
+                                    <li>{{ $sinhVien->ho_ten }} ({{ $sinhVien->mssv }}) -
+                                        Email: {{ $sinhVien->email }} - Số điện thoại:
+                                        {{ $sinhVien->so_dien_thoai }}
                                 @endforeach
                             </ul>
                         @endif
 
                         @if ($deTai->giangViens->count() == 0)
-                            <p><strong>Giảng viên hướng dẫn:</strong> Chưa có</p>
+                            <p><strong>Giảng viên hướng dẫn:</strong> <i>Chưa có</i></p>
                         @elseif ($deTai->giangViens->count() == 1)
                             @php $giangVien = $deTai->giangViens->first(); @endphp
                             <p><strong>Giảng viên hướng dẫn:</strong> {{ $giangVien->ho_ten }} - Email:
@@ -40,41 +44,17 @@
                             </ul>
                         @endif
 
-                        @if ($deTai->sinhViens->first()->loai_sv == 'dang_ky')
-                            @if ($deTai->giangViens->count() == 1)
-                                @php $giangVien = $deTai->giangViens->first(); @endphp
-                                <p><strong>Giảng viên ra đề tài:</strong> {{ $giangVien->ho_ten }} - Email:
-                                    {{ $giangVien->email }} - Số điện thoại: {{ $giangVien->so_dien_thoai }}
-                                @else
-                                <p><strong>Giảng viên ra đề tài:</strong></p>
-                                <ul>
-                                    @foreach ($deTai->giangViens as $giangVien)
-                                        <li>{{ $giangVien->ho_ten }} - Email: {{ $giangVien->email }} - Số điện thoại:
-                                            {{ $giangVien->so_dien_thoai }}
-                                    @endforeach
-                                </ul>
-                            @endif
-                        @endif
-
                         @if ($deTai->giangVienPhanBiens->count() == 0)
-                            <p><strong>Giảng viên phản biện:</strong> Chưa có</p>
-                        @elseif ($deTai->giangVienPhanBiens->count() == 1)
+                            <p><strong>Giảng viên phản biện:</strong> <i>Chưa có</i></p>
+                        @else
                             @php $giangVien = $deTai->giangVienPhanBiens->first(); @endphp
                             <p><strong>Giảng viên phản biện:</strong> {{ $giangVien->ho_ten }} - Email:
                                 {{ $giangVien->email }} - Số điện thoại: {{ $giangVien->so_dien_thoai }}
-                            @else
-                            <p><strong>Giảng viên phản biện:</strong></p>
-                            <ul>
-                                @foreach ($deTai->giangVienPhanBiens as $giangVien)
-                                    <li>{{ $giangVien->ho_ten }} - Email: {{ $giangVien->email }} - Số điện thoại:
-                                        {{ $giangVien->so_dien_thoai }}
-                                @endforeach
-                            </ul>
                         @endif
 
                         @if ($deTai->hoiDongs->count() == 0)
-                            <p><strong>Hội đồng:</strong> Chưa có</p>
-                        @elseif ($deTai->giangVienPhanBiens->count() == 1)
+                            <p><strong>Hội đồng:</strong> <i>Chưa có</i></p>
+                        @elseif ($deTai->hoiDongs->count() == 1)
                             @php $hoiDong = $deTai->hoiDongs->first(); @endphp
                             <p><strong>Hội đồng:</strong> {{ $hoiDong->ten_hoi_dong }}</p>
                             <p><strong>Phòng:</strong> {{ $hoiDong->phong }}</p>

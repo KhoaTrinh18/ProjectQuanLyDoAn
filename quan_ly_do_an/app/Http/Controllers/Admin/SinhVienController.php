@@ -21,12 +21,8 @@ use App\Models\{
     TaiKhoanSV,
     ThietLap
 };
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Response;
-use Illuminate\Support\Facades\DB;
-use League\Csv\Writer;
-use SplTempFileObject;
 
 class SinhVienController extends Controller
 {
@@ -383,14 +379,14 @@ class SinhVienController extends Controller
         $thietLap = ThietLap::where('trang_thai', 1)->first();
         TaiKhoanSV::where('nam_hoc', $thietLap->nam_hoc)->delete();
 
-        $sinhViens = SinhVien::where(['da_huy' => 0, 'nam_hoc' => $thietLap->nam_hoc])->orderBy('ma_sv', 'desc')->get();
+        $sinhViens = SinhVien::where('nam_hoc', $thietLap->nam_hoc)->orderBy('ma_sv', 'desc')->get();
         $count = 1;
 
         foreach ($sinhViens as $sinhVien) {
             $randomStr = Str::random(8);
 
             $taiKhoan = new TaiKhoanSV();
-            $taiKhoan->ten_tk = "sv{$count}";
+            $taiKhoan->ten_tk = $sinhVien->mssv;
             $taiKhoan->mat_khau = $randomStr;
             $taiKhoan->nam_hoc = $thietLap->nam_hoc;
             $taiKhoan->save();

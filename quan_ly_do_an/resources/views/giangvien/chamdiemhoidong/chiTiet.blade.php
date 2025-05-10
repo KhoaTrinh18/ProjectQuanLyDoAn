@@ -38,13 +38,29 @@
                         </p>
 
                         @if ($deTai->sinhViens->count() == 1)
-                            @php $sinhVien = $deTai->sinhViens->first(); @endphp
-                            <p><strong>Sinh viên thực hiện:</strong> {{ $sinhVien->ho_ten }} - MSSV: {{ $sinhVien->mssv }}
+                            @php
+                                $sinhVien = $deTai->sinhViens->first();
+                                if (isset($deTai->so_luong_sv_dang_ky)) {
+                                    $phanCongSV = $phanCongHoiDong->where('ma_sv', $sinhVien->ma_sv)->first();
+                                } else {
+                                    $phanCongSV = $phanCongHoiDong->where('ma_sv', $sinhVien->ma_sv)->first();
+                                }
+                            @endphp
+                            <p><strong>Sinh viên thực hiện:</strong> {{ $sinhVien->ho_ten }} ({{ $sinhVien->mssv }}) - Điểm:
+                                {!! $phanCongSV->diem_gvthd !== null ? number_format($phanCongSV->diem_gvthd, 2) : '<em>Chưa có</em>' !!}
                             @else
                             <p><strong>Sinh viên thực hiện:</strong></p>
                             <ul>
                                 @foreach ($deTai->sinhViens as $sinhVien)
-                                    <li>{{ $sinhVien->ho_ten }} - MSSV: {{ $sinhVien->mssv }}
+                                    @php
+                                        if (isset($deTai->so_luong_sv_dang_ky)) {
+                                            $phanCongSV = $phanCongHoiDong->where('ma_sv', $sinhVien->ma_sv)->first();
+                                        } else {
+                                            $phanCongSV = $phanCongHoiDong->where('ma_sv', $sinhVien->ma_sv)->first();
+                                        }
+                                    @endphp
+                                    <li>{{ $sinhVien->ho_ten }} ({{ $sinhVien->mssv }}) - Điểm:
+                                        {!! $phanCongSV->diem_gvthd !== null ? number_format($phanCongSV->diem_gvthd, 2) : '<em>Chưa có</em>' !!}</li>
                                 @endforeach
                             </ul>
                         @endif

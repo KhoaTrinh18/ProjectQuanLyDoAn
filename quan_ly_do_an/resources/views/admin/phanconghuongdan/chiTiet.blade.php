@@ -14,18 +14,23 @@
 
                         @if ($deTai->sinhViens->count() == 1)
                             @php $sinhVien = $deTai->sinhViens->first(); @endphp
-                            <p><strong>Sinh viên thực hiện:</strong> {{ $sinhVien->ho_ten }} - MSSV: {{ $sinhVien->mssv }}
+                            <p><strong>Sinh viên thực hiện:</strong> {{ $sinhVien->ho_ten }} ({{ $sinhVien->mssv }}) -
+                                Email: {{ $sinhVien->email }} - Số điện thoại:
+                                {{ $sinhVien->so_dien_thoai }}
                             @else
                             <p><strong>Sinh viên thực hiện:</strong></p>
                             <ul>
                                 @foreach ($deTai->sinhViens as $sinhVien)
-                                    <li>{{ $sinhVien->ho_ten }} - MSSV: {{ $sinhVien->mssv }}
+                                    <li>{{ $sinhVien->ho_ten }} ({{ $sinhVien->mssv }}) - Email: {{ $sinhVien->email }} - Số
+                                        điện thoại:
+                                        {{ $sinhVien->so_dien_thoai }}
+                                    </li>
                                 @endforeach
                             </ul>
                         @endif
 
                         @if ($deTai->giangViens->count() == 0)
-                            <p><strong>Giảng viên hướng dẫn:</strong> Chưa có</p>
+                            <p><strong>Giảng viên hướng dẫn:</strong> <i>Chưa có</i></p>
                         @elseif ($deTai->giangViens->count() == 1)
                             @php $giangVien = $deTai->giangViens->first(); @endphp
                             <p><strong>Giảng viên hướng dẫn:</strong> {{ $giangVien->ho_ten }} - Email:

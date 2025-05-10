@@ -34,51 +34,29 @@
                         </p>
 
                         @if ($deTai->sinhViens->count() == 1)
-                            @php $sinhVien = $deTai->sinhViens->first(); @endphp
                             @php
-                                $phanCong = DB::table('bang_phan_cong_svdk')
-                                    ->where([
-                                        'ma_de_tai' => $deTai->ma_de_tai,
-                                        'ma_gvhd' => $giangVien->ma_gv,
-                                        'ma_sv' => $sinhVien->ma_sv,
-                                    ])
-                                    ->first();
-                                if (!$phanCong) {
-                                    $phanCong = DB::table('bang_phan_cong_svdx')
-                                        ->where([
-                                            'ma_de_tai' => $deTai->ma_de_tai,
-                                            'ma_gvhd' => $giangVien->ma_gv,
-                                            'ma_sv' => $sinhVien->ma_sv,
-                                        ])
-                                        ->first();
+                                $sinhVien = $deTai->sinhViens->first();
+                                if (isset($deTai->so_luong_sv_dang_ky)) {
+                                    $phanCongSV = $phanCong->where('ma_sv', $sinhVien->ma_sv)->first();
+                                } else {
+                                    $phanCongSV = $phanCong->where('ma_sv', $sinhVien->ma_sv)->first();
                                 }
                             @endphp
                             <p><strong>Sinh viên thực hiện:</strong> {{ $sinhVien->ho_ten }} ({{ $sinhVien->mssv }}) - Điểm:
-                                {{ number_format($phanCong->diem_gvhd, 2) ?? '<i>Chưa có</i>' }}
+                                {!! $phanCongSV->diem_gvhd !== null ? number_format($phanCongSV->diem_gvhd, 2) : '<em>Chưa có</em>' !!}
                             @else
                             <p><strong>Sinh viên thực hiện:</strong></p>
                             <ul>
                                 @foreach ($deTai->sinhViens as $sinhVien)
                                     @php
-                                        $phanCong = DB::table('bang_phan_cong_svdk')
-                                            ->where([
-                                                'ma_de_tai' => $deTai->ma_de_tai,
-                                                'ma_gvhd' => $giangVien->ma_gv,
-                                                'ma_sv' => $sinhVien->ma_sv,
-                                            ])
-                                            ->first();
-                                        if (!$phanCong) {
-                                            $phanCong = DB::table('bang_phan_cong_svdx')
-                                                ->where([
-                                                    'ma_de_tai' => $deTai->ma_de_tai,
-                                                    'ma_gvhd' => $giangVien->ma_gv,
-                                                    'ma_sv' => $sinhVien->ma_sv,
-                                                ])
-                                                ->first();
+                                        if (isset($deTai->so_luong_sv_dang_ky)) {
+                                            $phanCongSV = $phanCong->where('ma_sv', $sinhVien->ma_sv)->first();
+                                        } else {
+                                            $phanCongSV = $phanCong->where('ma_sv', $sinhVien->ma_sv)->first();
                                         }
                                     @endphp
                                     <li>{{ $sinhVien->ho_ten }} ({{ $sinhVien->mssv }}) - Điểm:
-                                        {!! number_format($phanCong->diem_gvhd, 2) ?? '<em>Chưa có</em>' !!}
+                                        {!! $phanCongSV->diem_gvhd !== null ? number_format($phanCongSV->diem_gvhd, 2) : '<em>Chưa có</em>' !!}
                                 @endforeach
                             </ul>
                         @endif

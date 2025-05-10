@@ -40,7 +40,7 @@ class ChamDiemHuongDanController extends Controller
 
         $deTais = $deTaiSVs->merge($deTaiGVs)->unique('ma_de_tai')->values();
 
-        return view('giangvien.chamdiemhuongdan.danhSach', compact('deTais', 'phanCongSVDK', 'phanCongSVDX', 'giangVien'));
+        return view('giangvien.chamdiemhuongdan.danhSach', compact('deTais', 'phanCongSVDK', 'phanCongSVDX'));
     }
 
     public function chiTiet($ma_de_tai)
@@ -61,7 +61,7 @@ class ChamDiemHuongDanController extends Controller
         $phanCongSVDK = BangPhanCongSVDK::where('ma_gvhd', $giangVien->ma_gv)->get();
         $phanCongSVDX = BangPhanCongSVDX::where('ma_gvhd', $giangVien->ma_gv)->get();
 
-        return view('giangvien.chamdiemhuongdan.chiTiet', compact('deTai', 'phanCongSVDK', 'phanCongSVDX', 'giangVien'));
+        return view('giangvien.chamdiemhuongdan.chiTiet', compact('deTai', 'phanCongSVDK', 'phanCongSVDX'));
     }
 
 

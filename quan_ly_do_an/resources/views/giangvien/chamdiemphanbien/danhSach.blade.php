@@ -15,9 +15,9 @@
                                 <tr>
                                     <th scope="col" class="text-white">#</th>
                                     <th scope="col" class="text-white" style="width: 25%;">Tên đề tài</th>
-                                    <th scope="col" class="text-white">Sinh viên thực hiện</th>
+                                    <th scope="col" class="text-white">Lĩnh vực</th>
+                                    <th scope="col" class="text-white">Sinh viên thực hiện (Điểm)</th>
                                     <th scope="col" class="text-white">Giảng viên hướng dẫn</th>
-                                    <th scope="col" class="text-white">Giảng viên phản biện</th>
                                     <th scope="col" class="text-white">Trạng thái</th>
                                     <th scope="col" class="text-white"></th>
                                 </tr>
@@ -26,9 +26,13 @@
                                 @foreach ($deTais as $key => $deTai)
                                     @php
                                         if (isset($deTai->so_luong_sv_dang_ky)) {
-                                            $phanCongPhanBien = $phanCongPhanBienSVDK->where('ma_de_tai', $deTai->ma_de_tai)->first();
+                                            $phanCongPhanBien = $phanCongPhanBienSVDK
+                                                ->where('ma_de_tai', $deTai->ma_de_tai)
+                                                ->first();
                                         } else {
-                                            $phanCongPhanBien = $phanCongPhanBienSVDX->where('ma_de_tai', $deTai->ma_de_tai)->first();
+                                            $phanCongPhanBien = $phanCongPhanBienSVDX
+                                                ->where('ma_de_tai', $deTai->ma_de_tai)
+                                                ->first();
                                         }
 
                                         $daChamDiem = 0;
@@ -46,13 +50,26 @@
                                             {{ $deTai->ten_de_tai }}
                                         </td>
                                         <td>
-                                            {!! $deTai->sinhViens->pluck('ho_ten')->implode('<br>') !!}
+                                            {{ $deTai->linhVuc->ten_linh_vuc }}
+                                        </td>
+                                        <td>
+                                            @foreach ($deTai->sinhViens as $sinhVien)
+                                                @php
+                                                    if (isset($deTai->so_luong_sv_dang_ky)) {
+                                                        $phanCongSV = $phanCongPhanBien
+                                                            ->where('ma_sv', $sinhVien->ma_sv)
+                                                            ->first();
+                                                    } else {
+                                                        $phanCongSV = $phanCongPhanBien
+                                                            ->where('ma_sv', $sinhVien->ma_sv)
+                                                            ->first();
+                                                    }
+                                                @endphp
+                                                {{ $sinhVien->ho_ten }} ({!! $phanCongSV->diem_gvpb !== null ? number_format($phanCongSV->diem_gvpb, 2) : '<em>Chưa có</em>' !!})<br>
+                                            @endforeach
                                         </td>
                                         <td>
                                             {!! $deTai->giangViens->pluck('ho_ten')->implode('<br>') !!}
-                                        </td>
-                                        <td>
-                                            {!! $deTai->giangVienPhanBiens->pluck('ho_ten')->implode('<br>') !!}
                                         </td>
                                         <td class="text-center">
                                             @if ($daChamDiem)

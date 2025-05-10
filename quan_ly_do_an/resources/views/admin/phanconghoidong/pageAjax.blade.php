@@ -65,14 +65,14 @@
                             @if ($deTai->giangViens->count() != 0)
                                 {!! $deTai->giangViens->pluck('ho_ten')->implode('<br>') !!}
                             @else
-                                Chưa có
+                                <i>Chưa có</i>
                             @endif
                         </td>
                         <td>
                             @if ($deTai->hoiDongs->count() != 0)
                                 {!! $deTai->hoiDongs->pluck('ten_hoi_dong')->implode('<br>') !!}
                             @else
-                                Chưa có
+                                <i>Chưa có</i>
                             @endif
                         </td>
                         <td>

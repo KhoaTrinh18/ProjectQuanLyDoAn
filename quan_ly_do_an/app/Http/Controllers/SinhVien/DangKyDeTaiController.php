@@ -24,6 +24,7 @@ class DangKyDeTaiController extends Controller
         $limit = $request->query('limit', 10);
 
         $maTaiKhoan = session()->get('ma_tai_khoan');
+        $taiKhoan = TaiKhoanSV::where('ma_tk', $maTaiKhoan)->first();
         $sinhVien = SinhVien::where('ma_tk', $maTaiKhoan)->first();
         $daDangKy = $sinhVien->dang_ky;
 
@@ -34,8 +35,9 @@ class DangKyDeTaiController extends Controller
         $chuyenNganhs = BoMon::where('da_huy', 0)->orderBy('ma_bo_mon', 'desc')->get();
 
         $ngayHetHan = Carbon::create($thietLap->ngay_ket_thuc_dang_ky)->setTime(23, 59, 59)->toIso8601String();
+        Log::info($taiKhoan);
 
-        return view('sinhvien.dangkydetai.danhSach', compact('deTais', 'linhVucs', 'daDangKy', 'ngayHetHan', 'chuyenNganhs'));
+        return view('sinhvien.dangkydetai.danhSach', compact('deTais', 'linhVucs', 'daDangKy', 'ngayHetHan', 'chuyenNganhs', 'taiKhoan'));
     }
 
     public function pageAjax(Request $request)
