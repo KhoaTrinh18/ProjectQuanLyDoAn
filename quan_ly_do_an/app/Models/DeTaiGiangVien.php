@@ -40,17 +40,19 @@ class DeTaiGiangVien extends Model
 
     public function sinhViens()
     {
-        return $this->belongsToMany(SinhVien::class, 'bang_phan_cong_svdk', 'ma_de_tai', 'ma_sv')->distinct();
+        return $this->belongsToMany(SinhVien::class, 'bang_phan_cong_svdk', 'ma_de_tai', 'ma_sv')
+            ->where('sinh_vien.trang_thai', '!=', '3')
+            ->distinct();
     }
 
     public function sinhVienPhanBiens()
     {
-        return $this->belongsToMany(SinhVien::class, 'bang_diem_gvpb_cho_svdk', 'ma_de_tai', 'ma_sv')->distinct();
+        return $this->belongsToMany(SinhVien::class, 'bang_diem_gvpb_cho_svdk', 'ma_de_tai', 'ma_sv')->where('sinh_vien.trang_thai', '!=', '3')->distinct();
     }
 
     public function sinhVienHoiDongs()
     {
-        return $this->belongsToMany(SinhVien::class, 'bang_diem_gvthd_cho_svdk', 'ma_de_tai', 'ma_sv')->distinct();
+        return $this->belongsToMany(SinhVien::class, 'bang_diem_gvthd_cho_svdk', 'ma_de_tai', 'ma_sv')->where('sinh_vien.trang_thai', '!=', '3')->distinct();
     }
 
     public function ngayDuaRa()

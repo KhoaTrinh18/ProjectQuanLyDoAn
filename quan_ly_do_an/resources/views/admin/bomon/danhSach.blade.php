@@ -13,7 +13,7 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <table class="table table-bordered table-striped table-hover" style="font-size: 12px">
+                        <table class="table table-bordered table-striped table-hover" style="font-size: 13px">
                             <thead style="background: #222e3c;">
                                 <tr>
                                     <th scope="col" class="text-white">#</th>

@@ -27,14 +27,14 @@ class ChamDiemHoiDongController extends Controller
         $giangVien = GiangVien::where('ma_tk', $maTaiKhoan)->first();
         $thietLap = ThietLap::where('trang_thai', 1)->first();
 
-        $phanCongHoiDongSVDK = BangDiemGVTHDChoSVDK::where('ma_gvthd', $giangVien->ma_gv)->get();
+        $phanCongHoiDongSVDK = BangDiemGVTHDChoSVDK::where(['ma_gvthd' => $giangVien->ma_gv, 'da_huy' => 0])->get();
         $maDeTais = $phanCongHoiDongSVDK->pluck('ma_de_tai');
         $deTaiGVs = DeTaiGiangVien::whereIn('ma_de_tai', $maDeTais)
             ->where(['da_huy' => 0, 'trang_thai' => 2, 'nam_hoc' => $thietLap->nam_hoc])
             ->orderBy('ma_de_tai', 'desc')
             ->get();
 
-        $phanCongHoiDongSVDX = BangDiemGVTHDChoSVDX::where('ma_gvthd', $giangVien->ma_gv)->get();
+        $phanCongHoiDongSVDX = BangDiemGVTHDChoSVDX::where(['ma_gvthd' => $giangVien->ma_gv, 'da_huy' => 0])->get();
         $maDeTais = $phanCongHoiDongSVDX->pluck('ma_de_tai');
         $deTaiSVs = DeTaiSinhVien::whereIn('ma_de_tai', $maDeTais)
             ->where(['da_huy' => 0, 'trang_thai' => 2, 'nam_hoc' => $thietLap->nam_hoc])

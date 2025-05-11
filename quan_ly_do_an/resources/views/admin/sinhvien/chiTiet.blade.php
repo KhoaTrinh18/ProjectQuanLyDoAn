@@ -37,10 +37,10 @@
                         @else
                             <p><strong>Tên đề tài: </strong>{{ $deTai->ten_de_tai }}</p>
 
-                            @if ($deTai->giangVienHuongDans->isEmpty())
+                            @php $giangVienHDs = $deTai->giangVienHuongDans()->wherePivot('ma_sv', $sinhVien->ma_sv)->get(); @endphp
+                            @if ($giangVienHDs->isEmpty())
                                 <p><strong>Giảng viên hướng dẫn: </strong><i>Chưa có</i></p>
                             @else
-                                @php $giangVienHDs = $deTai->giangVienHuongDans()->wherePivot('ma_sv', $sinhVien->ma_sv)->get(); @endphp
                                 @if ($giangVienHDs->count() === 1)
                                     @php $gv = $giangVienHDs->first(); @endphp
                                     <p class="mb-0"><strong>Giảng viên hướng dẫn: </strong>{{ $gv->ho_ten }}</p>
@@ -66,7 +66,7 @@
                             @endif
 
                             @php $giangVienPB = $deTai->giangVienPhanBiens()->wherePivot('ma_sv', $sinhVien->ma_sv)->first(); @endphp
-                            @if ($deTai->giangVienPhanBiens->isEmpty())
+                            @if (empty($giangVienPB))
                                 <p><strong>Giảng viên phản biện: </strong><i>Chưa có</i></p>
                             @else
                                 @php $gv = $giangVienPB; @endphp
@@ -79,7 +79,21 @@
                                 </ul>
                             @endif
 
-                            @if ($deTai->hoiDongs->isEmpty())
+                            @php
+                                $deTaiHoiDong = [];
+
+                                if (isset($deTai->so_luong_sv_dang_ky)) {
+                                    $deTaiHoiDong = DB::table('bang_diem_gvthd_cho_svdk')
+                                        ->where(['ma_de_tai' => $deTai->ma_de_tai, 'ma_sv' => $sinhVien->ma_sv])
+                                        ->get();
+                                } else {
+                                    $deTaiHoiDong = DB::table('bang_diem_gvthd_cho_svdx')
+                                        ->where(['ma_de_tai' => $deTai->ma_de_tai, 'ma_sv' => $sinhVien->ma_sv])
+                                        ->get();
+                                }
+                            @endphp
+
+                            @if ($deTai->hoiDongs->isEmpty() || $deTaiHoiDong->isEmpty())
                                 <p><strong>Hội đồng: </strong><i>Chưa có</i></p>
                             @else
                                 @php
@@ -87,18 +101,6 @@
                                     $chuTich = $hoiDong->giangViens()->wherePivot('chuc_vu', 'Chủ tịch')->first();
                                     $thuKy = $hoiDong->giangViens()->wherePivot('chuc_vu', 'Thư ký')->first();
                                     $uyViens = $hoiDong->giangViens()->wherePivot('chuc_vu', 'Ủy viên')->get();
-
-                                    $deTaiHoiDong = [];
-
-                                    if (isset($deTai->so_luong_sv_dang_ky)) {
-                                        $deTaiHoiDong = DB::table('bang_diem_gvthd_cho_svdk')
-                                            ->where(['ma_de_tai' => $deTai->ma_de_tai, 'ma_sv' => $sinhVien->ma_sv])
-                                            ->get();
-                                    } else {
-                                        $deTaiHoiDong = DB::table('bang_diem_gvthd_cho_svdx')
-                                            ->where(['ma_de_tai' => $deTai->ma_de_tai, 'ma_sv' => $sinhVien->ma_sv])
-                                            ->get();
-                                    }
                                 @endphp
                                 <p><strong>Hội đồng:</strong> {{ $hoiDong->ten_hoi_dong }}</p>
                                 <p><strong>Ngày tổ chức:</strong>

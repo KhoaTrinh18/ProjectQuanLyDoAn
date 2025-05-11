@@ -188,7 +188,7 @@
                         <li class="sidebar-item {{ request()->is('sinh-vien-de-tai-all*') ? 'active' : '' }}">
                             <a class="sidebar-link" href="{{ route('sinh_vien_de_tai_all.danh_sach') }}">
                                 <i class="align-middle" data-feather="bar-chart-2"></i> <span
-                                    class="align-middle">Sinh viên và đề tài (All)</span>
+                                    class="align-middle">Sinh viên - Đề tài (Tất cả)</span>
                             </a>
                         </li>
                     </ul>

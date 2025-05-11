@@ -29,10 +29,10 @@ class PhanCongPhanBienController extends Controller
         $limit = $request->query('limit', 10);
         $thietLap = ThietLap::where('trang_thai', 1)->first();
 
-        $maDeTaiDXs = BangPhanCongSVDX::distinct()->where('nam_hoc', $thietLap->nam_hoc)->pluck('ma_de_tai');
+        $maDeTaiDXs = BangPhanCongSVDX::distinct()->where(['da_huy' => 0, 'nam_hoc' => $thietLap->nam_hoc])->pluck('ma_de_tai');
         $deTaiSVs = DeTaiSinhVien::whereIn('ma_de_tai', $maDeTaiDXs)->orderBy('ma_de_tai', 'desc')->get();
 
-        $maDeTaiDKs = BangPhanCongSVDK::distinct()->where('nam_hoc', $thietLap->nam_hoc)->pluck('ma_de_tai');
+        $maDeTaiDKs = BangPhanCongSVDK::distinct()->where(['da_huy' => 0, 'nam_hoc' => $thietLap->nam_hoc])->pluck('ma_de_tai');
         $deTaiGVs = DeTaiGiangVien::whereIn('ma_de_tai', $maDeTaiDKs)->orderBy('ma_de_tai', 'desc')->get();
 
         $merged = $deTaiSVs->merge($deTaiGVs)->unique('ma_de_tai')->values();
@@ -204,7 +204,7 @@ class PhanCongPhanBienController extends Controller
         $thietLap = ThietLap::where('trang_thai', 1)->first();
         $deTai = DeTaiSinhVien::where('ma_de_tai', $data['ma_de_tai'])->first();
         if ($deTai) {
-            $phanCongs = BangPhanCongSVDX::where('ma_de_tai', $data['ma_de_tai'])->get();
+            $phanCongs = BangPhanCongSVDX::where(['ma_de_tai' => $data['ma_de_tai'], 'da_huy' => 0])->get();
             foreach ($phanCongs as $phanCong) {
                 $phanCongPhanBien = new BangDiemGVPBChoSVDX();
                 $phanCongPhanBien->ma_sv = $phanCong->ma_sv;
@@ -215,7 +215,7 @@ class PhanCongPhanBienController extends Controller
                 $phanCongPhanBien->save();
             }
         } else {
-            $phanCongs = BangPhanCongSVDK::where('ma_de_tai', $data['ma_de_tai'])->get();
+            $phanCongs = BangPhanCongSVDK::where(['ma_de_tai' => $data['ma_de_tai'], 'da_huy' => 0])->get();
             foreach ($phanCongs as $phanCong) {
                 $phanCongPhanBien = new BangDiemGVPBChoSVDK();
                 $phanCongPhanBien->ma_sv = $phanCong->ma_sv;

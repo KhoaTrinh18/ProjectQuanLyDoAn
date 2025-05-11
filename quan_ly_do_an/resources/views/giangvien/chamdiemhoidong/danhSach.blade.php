@@ -15,7 +15,7 @@
                                 <tr>
                                     <th scope="col" class="text-white">#</th>
                                     <th scope="col" class="text-white" style="width: 23%;">Tên đề tài</th>
-                                    <th scope="col" class="text-white">Sinh viên thực hiện</th>
+                                    <th scope="col" class="text-white">Sinh viên thực hiện (Điểm)</th>
                                     <th scope="col" class="text-white">Giảng viên hướng dẫn</th>
                                     <th scope="col" class="text-white">Hội đồng</th>
                                     <th scope="col" class="text-white">Chức vụ</th>

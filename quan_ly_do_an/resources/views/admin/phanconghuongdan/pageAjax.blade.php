@@ -53,6 +53,7 @@
             </thead>
             <tbody id="table-body">
                 @foreach ($deTais as $key => $deTai)
+                    @continue($deTai->sinhViens->count() == 0)
                     <tr>
                         <td scope="row">
                             {{ $key + 1 }}</td>
@@ -103,7 +104,7 @@
                 @endforeach
                 @if ($deTais->isEmpty())
                     <tr>
-                        <td colspan="6" class="text-center">Không có thiết lập</td>
+                        <td colspan="7" class="text-center">Không có thiết lập</td>
                     </tr>
                 @endif
             </tbody>

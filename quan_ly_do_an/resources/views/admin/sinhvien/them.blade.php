@@ -105,31 +105,44 @@
                                     "{{ route('sinh_vien.danh_sach') }}";
                             });
                         } else {
-                            $('#confirmModal').modal('hide');
-                            if ($.isArray(result.errors)) {
-                                const allErrors = result.errors;
-                                const total = allErrors.length;
-                                const maxShow = 10;
-                                let display = [`Tổng cộng: ${total} lỗi.`]
-                                    .concat(allErrors.slice(0, maxShow));
-
-                                if (allErrors.length > maxShow) {
-                                    const remaining = allErrors.length - maxShow;
-                                    display.push(`...`);
-                                }
-
-                                $("[name='file']").addClass('is-invalid');
-                                $('.error-file')
-                                    .html(display.join('<br>'))
-                                    .removeClass('d-none')
-                                    .addClass('d-block');
+                            console.log(result.errors);
+                            if (result.errors == true) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Thất bại!',
+                                    text: 'Thêm mới thất bại! Đã có sinh viên đăng ký nên không thể đổi danh sách sinh viên',
+                                    confirmButtonText: 'OK',
+                                    timer: 2000,
+                                    showConfirmButton: false
+                                })
                             } else {
-                                $.each(result.errors, function(field, messages) {
-                                    let inputField = $("[name='" + field + "'");
-                                    inputField.addClass("is-invalid");
-                                    $('.error-' + field).text(messages[0]).removeClass(
-                                        "d-none").addClass("d-block");
-                                });
+                                $('#confirmModal').modal('hide');
+                                if ($.isArray(result.errors)) {
+                                    const allErrors = result.errors;
+                                    const total = allErrors.length;
+                                    const maxShow = 10;
+                                    let display = [`Tổng cộng: ${total} lỗi.`]
+                                        .concat(allErrors.slice(0, maxShow));
+
+                                    if (allErrors.length > maxShow) {
+                                        const remaining = allErrors.length - maxShow;
+                                        display.push(`...`);
+                                    }
+
+                                    $("[name='file']").addClass('is-invalid');
+                                    $('.error-file')
+                                        .html(display.join('<br>'))
+                                        .removeClass('d-none')
+                                        .addClass('d-block');
+                                } else {
+                                    $.each(result.errors, function(field, messages) {
+                                        let inputField = $("[name='" + field + "'");
+                                        inputField.addClass("is-invalid");
+                                        $('.error-' + field).text(messages[0])
+                                            .removeClass(
+                                                "d-none").addClass("d-block");
+                                    });
+                                }
                             }
                         }
                     },

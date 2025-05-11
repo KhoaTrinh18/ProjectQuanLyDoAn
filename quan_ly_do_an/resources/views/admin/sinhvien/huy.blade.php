@@ -143,7 +143,7 @@
                                                 aria-label="Đóng"></button>
                                         </div>
                                         <div class="modal-body text-center fs-5 text-secondary">
-                                            Khi hủy sinh viên này sẽ hủy toàn bộ thông tin liên quan đến sinh viên và cập nhật trạng thái sinh viên thành <strong>không hoàn thành</strong>. Bạn có chắc chắn muốn hủy sinh viên này không?
+                                            Khi hủy sinh viên này sẽ hủy toàn bộ thông tin liên quan đến sinh viên và cập nhật trạng thái sinh viên thành <strong>nghỉ giữa chừng</strong>. Bạn có chắc chắn muốn hủy sinh viên này không?
                                         </div>
                                         <div class="modal-footer bg-light border-top-0">
                                             <button type="button" class="btn btn-secondary"
@@ -190,7 +190,7 @@
                                 showConfirmButton: false
                             }).then(() => {
                                 window.location.href =
-                                    "{{ route('hoi_dong.danh_sach') }}";
+                                    "{{ route('sinh_vien.danh_sach') }}";
                             });
                         } else {
                             if (result.error == 'dua_ra') {

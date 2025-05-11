@@ -114,7 +114,7 @@
                             </div>
                         @endif
 
-                        <div class="text-center">
+                        <div class="text-center mt-3">
                             <a href="{{ route('thong_tin_de_tai.danh_sach_duyet') }}" class="btn btn-secondary btn-lg">Quay
                                 lại</a>
                         </div>

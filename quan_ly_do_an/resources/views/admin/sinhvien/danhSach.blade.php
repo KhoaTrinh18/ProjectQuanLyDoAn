@@ -89,6 +89,7 @@
                                         <option value="0">Không hoàn thành</option>
                                         <option value="1">Đang thực hiện</option>
                                         <option value="2">Đã hoàn thành</option>
+                                        <option value="3">Nghỉ giữa chừng</option>
                                     </select>
                                 </div>
                             </div>

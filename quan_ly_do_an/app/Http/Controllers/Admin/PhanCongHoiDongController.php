@@ -30,10 +30,10 @@ class PhanCongHoiDongController extends Controller
         $limit = $request->query('limit', 10);
         $thietLap = ThietLap::where('trang_thai', 1)->first();
 
-        $maDeTaiDXs = BangDiemGVPBChoSVDX::distinct()->where('nam_hoc', $thietLap->nam_hoc)->pluck('ma_de_tai');
+        $maDeTaiDXs = BangDiemGVPBChoSVDX::distinct()->where(['da_huy' => 0, 'nam_hoc' => $thietLap->nam_hoc])->pluck('ma_de_tai');
         $deTaiSVs = DeTaiSinhVien::whereIn('ma_de_tai', $maDeTaiDXs)->orderBy('ma_de_tai', 'desc')->get();
 
-        $maDeTaiDKs = BangDiemGVPBChoSVDK::distinct()->where('nam_hoc', $thietLap->nam_hoc)->pluck('ma_de_tai');
+        $maDeTaiDKs = BangDiemGVPBChoSVDK::distinct()->where(['da_huy' => 0, 'nam_hoc' => $thietLap->nam_hoc])->pluck('ma_de_tai');
         $deTaiGVs = DeTaiGiangVien::whereIn('ma_de_tai', $maDeTaiDKs)->orderBy('ma_de_tai', 'desc')->get();
 
         $merged = $deTaiSVs->merge($deTaiGVs)->unique('ma_de_tai')->values();
@@ -207,7 +207,7 @@ class PhanCongHoiDongController extends Controller
         $thietLap = ThietLap::where('trang_thai', 1)->first();
 
         if ($deTai) {
-            $phanCongs = BangDiemGVPBChoSVDX::where('ma_de_tai', $data['ma_de_tai'])->get();
+            $phanCongs = BangDiemGVPBChoSVDX::where(['ma_de_tai' => $data['ma_de_tai'], 'da_huy' => 0])->get();
             foreach ($phanCongs as $phanCong) {
                 foreach ($hoiDong->giangViens as $giangVien) {
                     $phanCongHoiDong = new BangDiemGVTHDChoSVDX();
@@ -222,7 +222,7 @@ class PhanCongHoiDongController extends Controller
                 }
             }
         } else {
-            $phanCongs = BangDiemGVPBChoSVDK::where('ma_de_tai', $data['ma_de_tai'])->get();
+            $phanCongs = BangDiemGVPBChoSVDK::where(['ma_de_tai' => $data['ma_de_tai'], 'da_huy' => 0])->get();
             foreach ($phanCongs as $phanCong) {
                 foreach ($hoiDong->giangViens as $giangVien) {
                     $phanCongHoiDong = new BangDiemGVTHDChoSVDK();

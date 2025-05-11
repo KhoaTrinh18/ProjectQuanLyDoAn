@@ -89,7 +89,7 @@
                 @endforeach
                 @if ($deTaiGVs->isEmpty())
                     <tr>
-                        <td colspan="6" class="text-center">Không có thiết lập</td>
+                        <td colspan="7" class="text-center">Không có thiết lập</td>
                     </tr>
                 @endif
             </tbody>

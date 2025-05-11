@@ -10,6 +10,71 @@
                         <h2 style="font-weight: bold">Danh sách sinh viên</h2>
                     </div>
                     <div class="card-body">
+                        <form class="d-flex mb-3" id="form_tim_kiem">
+                            <div class="d-flex flex-column" style="width: 420px">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <label for="sinh_vien" style="width: 200px">Sinh viên:</label>
+                                    <input type="text" name="sinh_vien" class="form-control ms-2 w-75 shadow-none"
+                                        placeholder="Tên sinh viên">
+                                </div>
+                                <div class="d-flex align-items-center justify-content-between mt-2">
+                                    <label for="ten_de_tai" style="width: 200px">Tên đề tài:</label>
+                                    <input type="text" name="ten_de_tai" class="form-control ms-2 w-75 shadow-none"
+                                        placeholder="Tên đề tài">
+                                </div>
+                                <div class="d-flex align-items-center justify-content-between mt-2">
+                                    <label for="giang_vien" style="width: 205px">Giảng viên hướng dẫn:</label>
+                                    <select class="form-select ms-2 w-75 shadow-none" name="giang_vien">
+                                        <option value="" selected disabled hidden>Chọn giảng viên</option>
+                                        <option value="">Tất cả</option>
+                                        @foreach ($chuyenNganhs as $chuyenNganh)
+                                            <optgroup label="{{ $chuyenNganh->ten_bo_mon }}">
+                                                @foreach ($chuyenNganh->giangViens as $giangVien)
+                                                    <option value="{{ $giangVien->ma_gv }}">
+                                                        {{ $giangVien->ho_ten }}</option>
+                                                @endforeach
+                                            </optgroup>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="d-flex align-items-center justify-content-between mt-2">
+                                    <label for="nam_hoc" style="width: 205px">Năm học:</label>
+                                    <select class="form-select ms-2 w-75 shadow-none" name="nam_hoc">
+                                        <option value="" selected hidden disabled>Chọn năm học</option>
+                                        <option value="">Tất cả</option>
+                                        @foreach ($thietLaps as $thietLap)
+                                            <option value="{{ $thietLap->nam_hoc }}">{{ $thietLap->nam_hoc }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="d-flex flex-column ms-3" style="width: 300px">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <label for="mssv" style="width: 150px">MSSV:</label>
+                                    <input type="text" name="mssv" class="form-control ms-2 w-100 shadow-none"
+                                        placeholder="MSSV">
+                                </div>
+                                <div class="d-flex align-items-center justify-content-between mt-2">
+                                    <label for="lop" style="width: 150px">Lớp:</label>
+                                    <input type="text" name="lop" class="form-control ms-2 w-100 shadow-none"
+                                        placeholder="Tên lớp">
+                                </div>
+                                <div class="d-flex align-items-center justify-content-between mt-2">
+                                    <label for="trang_thai" style="width: 156px">Trạng thái:</label>
+                                    <select class="form-select ms-2 w-100 shadow-none" name="trang_thai">
+                                        <option value="" selected hidden disabled>Chọn trạng thái</option>
+                                        <option value="">Tất cả</option>
+                                        <option value="0">Không hoàn thành</option>
+                                        <option value="2">Đã hoàn thành</option>
+                                        <option value="3">Nghỉ giữa chừng</option>
+                                    </select>
+                                </div>
+                                <div class="ms-3 d-flex justify-content-end mt-2">
+                                    <button id="clear" class="btn btn-secondary me-2">Tạo lại</button>
+                                    <button id="timKiem" class="btn btn-primary" type="submit">Tìm kiếm</button>
+                                </div>
+                            </div>
+                        </form>
                         @include('admin.sinhviendetaiall.pageAjax', ['sinhviens' => $sinhViens])
                     </div>
                 </div>
@@ -19,17 +84,6 @@
 @endsection
 
 @section('scripts')
-    @if (session('success'))
-        <script>
-            Swal.fire({
-                icon: 'success',
-                title: 'Thành công',
-                text: @json(session('success')),
-                timer: 2000,
-                showConfirmButton: false
-            });
-        </script>
-    @endif
     <script>
         $(document).ready(function() {
             let isLoading = false;
@@ -69,7 +123,7 @@
                 showTableLoading();
 
                 $.ajax({
-                    url: "{{ route('sinh_vien.page_ajax') }}",
+                    url: "{{ route('sinh_vien_de_tai_all.page_ajax') }}",
                     type: "GET",
                     data: requestData,
                     dataType: 'json',

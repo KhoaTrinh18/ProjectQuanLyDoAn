@@ -26,7 +26,7 @@ class SinhVien extends Model
             'ma_sv',
             'ma_de_tai'
         )->wherePivot('trang_thai', '!=', 0)
-         ->where('da_huy', 0);
+         ->where('de_tai_sv.da_huy', 0);
     }
     
     public function deTaiDangKy()
@@ -36,6 +36,6 @@ class SinhVien extends Model
             'bang_phan_cong_svdk',
             'ma_sv',
             'ma_de_tai'
-        )->where('da_huy', 0);
+        )->where('de_tai_gv.da_huy', 0);
     }
 }

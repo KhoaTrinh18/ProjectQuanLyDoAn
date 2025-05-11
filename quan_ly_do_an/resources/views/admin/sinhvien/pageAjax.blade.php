@@ -89,7 +89,14 @@
                                 }
                             @endphp
                             <td width="18%">{{ $deTai->ten_de_tai }}</td>
-                            <td>{!! $deTai->giangViens->pluck('ho_ten')->implode('<br>') !!}</td>
+                            <td>
+                                @php $giangVienHDs = $deTai->giangVienHuongDans()->wherePivot('ma_sv', $sinhVien->ma_sv)->get(); @endphp
+                                @if ($giangVienHDs->count() == 0)
+                                    <i>Chưa có</i>
+                                @else
+                                    {!! $giangVienHDs->pluck('ho_ten')->implode('<br>') !!}
+                                @endif
+                            </td>
                         @endif
                         </td>
                         <td> {!! $sinhVien->diem ?? '<em>Chưa có</em>' !!} </td>
@@ -118,7 +125,7 @@
                 @endforeach
                 @if ($sinhViens->isEmpty())
                     <tr>
-                        <td colspan="8" class="text-center">Không có sinh viên</td>
+                        <td colspan="9" class="text-center">Không có sinh viên</td>
                     </tr>
                 @endif
             </tbody>

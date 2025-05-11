@@ -75,11 +75,16 @@
                                         </ul>
                                     @endif
                                 @endif
-
-                                @if ($deTai->giangVienPhanBiens->isEmpty())
+                                @php
+                                    $giangVienPB = $deTai
+                                        ->giangVienPhanBiens()
+                                        ->wherePivot('ma_sv', $sinhVien->ma_sv)
+                                        ->first();
+                                @endphp
+                                @if (empty($giangVienPB))
                                     <p><strong>Giảng viên phản biện: </strong><i>Chưa có</i></p>
                                 @else
-                                    @php $gv = $deTai->giangVienPhanBiens->first(); @endphp
+                                    @php $gv = $giangVienPB; @endphp
                                     <p class="mb-0"><strong>Giảng viên phản biện: </strong>{{ $gv->ho_ten }}</p>
                                     <ul>
                                         <li><strong>Điểm:
@@ -89,27 +94,27 @@
                                     </ul>
                                 @endif
 
-                                @if ($deTai->hoiDongs->isEmpty())
+                                @php
+                                    $hoiDong = $deTai->hoiDongs->first();
+                                    $chuTich = $hoiDong->giangViens()->wherePivot('chuc_vu', 'Chủ tịch')->first();
+                                    $thuKy = $hoiDong->giangViens()->wherePivot('chuc_vu', 'Thư ký')->first();
+                                    $uyViens = $hoiDong->giangViens()->wherePivot('chuc_vu', 'Ủy viên')->get();
+
+                                    $deTaiHoiDong = [];
+
+                                    if (isset($deTai->so_luong_sv_dang_ky)) {
+                                        $deTaiHoiDong = DB::table('bang_diem_gvthd_cho_svdk')
+                                            ->where(['ma_de_tai' => $deTai->ma_de_tai, 'ma_sv' => $sinhVien->ma_sv])
+                                            ->get();
+                                    } else {
+                                        $deTaiHoiDong = DB::table('bang_diem_gvthd_cho_svdx')
+                                            ->where(['ma_de_tai' => $deTai->ma_de_tai, 'ma_sv' => $sinhVien->ma_sv])
+                                            ->get();
+                                    }
+                                @endphp
+                                @if ($deTaiHoiDong->isEmpty() || $deTai->hoiDongs->isEmpty())
                                     <p><strong>Hội đồng: </strong><i>Chưa có</i></p>
                                 @else
-                                    @php
-                                        $hoiDong = $deTai->hoiDongs->first();
-                                        $chuTich = $hoiDong->giangViens()->wherePivot('chuc_vu', 'Chủ tịch')->first();
-                                        $thuKy = $hoiDong->giangViens()->wherePivot('chuc_vu', 'Thư ký')->first();
-                                        $uyViens = $hoiDong->giangViens()->wherePivot('chuc_vu', 'Ủy viên')->get();
-
-                                        $deTaiHoiDong = [];
-
-                                        if (isset($deTai->so_luong_sv_dang_ky)) {
-                                            $deTaiHoiDong = DB::table('bang_diem_gvthd_cho_svdk')
-                                                ->where('ma_de_tai', $deTai->ma_de_tai)
-                                                ->get();
-                                        } else {
-                                            $deTaiHoiDong = DB::table('bang_diem_gvthd_cho_svdx')
-                                                ->where('ma_de_tai', $deTai->ma_de_tai)
-                                                ->get();
-                                        }
-                                    @endphp
                                     <p><strong>Hội đồng:</strong> {{ $hoiDong->ten_hoi_dong }}</p>
                                     <p><strong>Ngày tổ chức:</strong>
                                         {{ \Carbon\Carbon::parse($hoiDong->ngay)->format('H:i d-m-Y') }}</p>
@@ -154,7 +159,7 @@
                                     @endif
                                 @endif
                                 <p style="font-size: 20px"><strong>Điểm tổng:</strong>
-                                    <i>{{ $sinhVien->diem ?? 'Chưa có'}}</i>
+                                    <i>{{ $sinhVien->diem ?? 'Chưa có' }}</i>
                                 </p>
                             @else
                                 @if ($loaiDeTai == 'de_tai_sv')

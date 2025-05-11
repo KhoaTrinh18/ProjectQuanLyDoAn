@@ -23,7 +23,6 @@ use App\Models\{
 };
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Response;
-use PhpParser\Node\Stmt\Continue_;
 
 class SinhVienController extends Controller
 {
@@ -207,10 +206,16 @@ class SinhVienController extends Controller
             fclose($handle);
 
             if (!empty($errors)) {
-                Log::info($errors);
                 return response()->json([
                     'success' => false,
                     'errors' => $errors,
+                ]);
+            }
+
+            if (SinhVien::where('dang_ky', 1)->exists()) {
+                return response()->json([
+                    'success' => false,
+                    'errors' => true,
                 ]);
             }
 
@@ -323,32 +328,29 @@ class SinhVienController extends Controller
 
 
         if ($sinhVien->loai_sv == 'de_xuat') {
-            BangDiemGVTHDChoSVDX::where('ma_sv', $ma_sv)->delete();
-            BangDiemGVPBChoSVDX::where('ma_sv', $ma_sv)->delete();
-            BangPhanCongSVDX::where('ma_sv', $ma_sv)->delete();
-            $sinhVienDTSV = SinhVienDeTaiSV::where('ma_sv', $ma_sv)->where('trang_thai', '!=', 0)->first();
-            $deTai = DeTaiSinhVien::where(['ma_de_tai' => $sinhVienDTSV->ma_de_tai, 'da_huy' => 0])->first();
-            if ($deTai->so_luong_sv_de_xuat > 1) {
-                $deTai->so_luong_sv_de_xuat -= 1;
-            } else {
-                $deTai->da_huy = 1;
-            }
-            $deTai->save();
-            SinhVienDeTaiSV::where('ma_sv', $ma_sv)->delete();
+            BangDiemGVTHDChoSVDX::where('ma_sv', $ma_sv)->update([
+                'da_huy' => 1
+            ]);
+            BangDiemGVPBChoSVDX::where('ma_sv', $ma_sv)->update([
+                'da_huy' => 1
+            ]);
+            BangPhanCongSVDX::where('ma_sv', $ma_sv)->update([
+                'da_huy' => 1
+            ]);
         } else {
-            BangDiemGVTHDChoSVDK::where('ma_sv', $ma_sv)->delete();
-            BangDiemGVPBChoSVDK::where('ma_sv', $ma_sv)->delete();
-            $phanCongSVDK = BangPhanCongSVDK::where('ma_sv', $sinhVien->ma_sv)->first();
-            $deTai = DeTaiGiangVien::where(['ma_de_tai' => $phanCongSVDK->ma_de_tai, 'da_huy' => 0])->first();
-            $deTai->so_luong_sv_dang_ky -= 1;
-            $deTai->save();
-            BangPhanCongSVDK::where('ma_sv', $ma_sv)->delete();
+            BangDiemGVTHDChoSVDK::where('ma_sv', $ma_sv)->update([
+                'da_huy' => 1
+            ]);
+            BangDiemGVPBChoSVDK::where('ma_sv', $ma_sv)->update([
+                'da_huy' => 1
+            ]);
+            BangPhanCongSVDK::where('ma_sv', $ma_sv)->update([
+                'da_huy' => 1
+            ]);
         }
 
         SinhVien::where('ma_sv', $ma_sv)->update([
-            'loai_sv' => null,
-            'dang_ky' => 0,
-            'trang_thai' => 0
+            'trang_thai' => 3
         ]);
 
         return response()->json([
@@ -486,7 +488,7 @@ class SinhVienController extends Controller
             $diemSV = [];
             $diemTong = 0;
 
-            if ($sinhVien->loai_sv == null) continue;
+            if ($sinhVien->loai_sv == null || $sinhVien->trang_thai == 3) continue;
             if ($sinhVien->loai_sv == 'de_xuat') {
                 $sinhVienDTSV = SinhVienDeTaiSV::where('ma_sv', $sinhVien->ma_sv)->where('trang_thai', '!=', 0)->first();
                 $deTai = DeTaiSinhVien::where(['ma_de_tai' => $sinhVienDTSV->ma_de_tai, 'da_huy' => 0])->first();

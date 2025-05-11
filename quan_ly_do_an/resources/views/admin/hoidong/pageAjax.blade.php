@@ -74,7 +74,7 @@
                 @endforeach
                 @if ($hoiDongs->isEmpty())
                     <tr>
-                        <td colspan="6" class="text-center">Không có hội đồng</td>
+                        <td colspan="7" class="text-center">Không có hội đồng</td>
                     </tr>
                 @endif
             </tbody>

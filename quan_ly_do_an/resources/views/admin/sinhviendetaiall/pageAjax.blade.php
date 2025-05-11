@@ -41,17 +41,18 @@
         </div>
     </div>
     <div>
-        <table class="table table-bordered table-striped table-hover">
+        <table class="table table-bordered table-striped table-hover" style="font-size: 12px">
             <thead style="background: #222e3c;">
                 <tr>
                     <th scope="col" class="text-white">#</th>
                     <th scope="col" class="text-white">MSSV</th>
                     <th scope="col" class="text-white">Tên sinh viên</th>
                     <th scope="col" class="text-white">Lớp</th>
-                    <th scope="col" class="text-white" width="20%">Tên đề tài</th>
+                    <th scope="col" class="text-white" width="18%">Tên đề tài</th>
                     <th scope="col" class="text-white">Giảng viên hướng dẫn</th>
-                    <th scope="col" class="text-white">Năm học</th>
+                    <th scope="col" class="text-white">Điểm</th>
                     <th scope="col" class="text-white">Trạng thái</th>
+                    <th scope="col" class="text-white">Năm học</th>
                     <th scope="col" class="text-white"></th>
                 </tr>
             </thead>
@@ -87,28 +88,39 @@
                                     ])->first();
                                 }
                             @endphp
-                            <td width="20%">{{ $deTai->ten_de_tai }}</td>
-                            <td>{!! $deTai->giangViens->pluck('ho_ten')->implode('<br>') !!}</td>
+                            <td width="18%">{{ $deTai->ten_de_tai }}</td>
+                            <td>
+                                @php $giangVienHDs = $deTai->giangVienHuongDans()->wherePivot('ma_sv', $sinhVien->ma_sv)->get(); @endphp
+                                @if ($giangVienHDs->count() == 0)
+                                    <i>Chưa có</i>
+                                @else
+                                    {!! $giangVienHDs->pluck('ho_ten')->implode('<br>') !!}
+                                @endif
+                            </td>
                         @endif
-                        <td>{{ $sinhVien->nam_hoc }}</td>
+                        </td>
+                        <td> {!! $sinhVien->diem ?? '<em>Chưa có</em>' !!} </td>
                         <td>
                             @if ($sinhVien->trang_thai == 0)
                                 <span class="text-danger">Không hoàn thành</span>
                             @elseif($sinhVien->trang_thai == 1)
                                 <span class="text-warning">Đang thực hiện</span>
-                            @else
+                            @elseif($sinhVien->trang_thai == 2)
                                 <span class="text-success">Đã hoàn thành</span>
+                            @else
+                                <span class="text-danger">Nghỉ giữa chừng</span>
                             @endif
                         </td>
+                        <td> {{ $sinhVien->nam_hoc }} </td>
                         <td class="text-center">
-                            <a href="{{ route('sinh_vien.chi_tiet', ['ma_sv' => $sinhVien->ma_sv]) }}"
+                            <a href="{{ route('sinh_vien_de_tai_all.chi_tiet', ['ma_sv' => $sinhVien->ma_sv]) }}"
                                 class="btn btn-secondary btn-sm">Xem</a>
                         </td>
                     </tr>
                 @endforeach
                 @if ($sinhViens->isEmpty())
                     <tr>
-                        <td colspan="8" class="text-center">Không có sinh viên</td>
+                        <td colspan="10" class="text-center">Không có sinh viên</td>
                     </tr>
                 @endif
             </tbody>
