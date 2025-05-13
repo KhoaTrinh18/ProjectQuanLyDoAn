@@ -34,8 +34,8 @@
                         @elseif ($deTai->so_luong_sv_dang_ky == 1)
                             <form class="d-flex align-items-center" id="form_huy_sv">
                                 <p class="m-0"><strong>Sinh viên đã đăng ký:
-                                    </strong>{{ $deTai->sinhViens->first()->ho_ten }}
-                                    ({{ $deTai->sinhViens->first()->mssv }}) - Email: {{ $deTai->sinhViens->first()->email }} - Số điện thoại: {{ $deTai->sinhViens->first()->so_dien_thoai }}
+                                    </strong>{{ $deTai->sinhVienDangKys->first()->ho_ten }}
+                                    ({{ $deTai->sinhVienDangKys->first()->mssv }}) - Email: {{ $deTai->sinhVienDangKys->first()->email }} - Số điện thoại: {{ $deTai->sinhVienDangKys->first()->so_dien_thoai }}
                                 </p>
                                 <button class="btn btn-danger btn-sm ms-2" type="button" data-bs-toggle="modal"
                                     data-bs-target="#confirmModal">Hủy đăng
@@ -53,13 +53,13 @@
                                             </div>
                                             <div class="modal-body fs-5 text-secondary"> Bạn có chắc muốn hủy đăng ký của
                                                 sinh viên
-                                                {{ $deTai->sinhViens->first()->ho_ten }}
+                                                {{ $deTai->sinhVienDangKys->first()->ho_ten }}
                                             </div>
                                             <div class="modal-footer  bg-light border-top-0">
                                                 <button type="button" class="btn btn-secondary"
                                                     data-bs-dismiss="modal">Hủy</button>
                                                 <input type="hidden" name="ma_sv"
-                                                    value="{{ $deTai->sinhViens->first()->ma_sv }}">
+                                                    value="{{ $deTai->sinhVienDangKys->first()->ma_sv }}">
                                                 <input type="hidden" name="ma_de_tai" value="{{ $deTai->ma_de_tai }}">
                                                 <button type="submit" class="btn btn-primary" id="dangKy">Xác
                                                     nhận</button>
@@ -71,7 +71,7 @@
                         @else
                             <p><strong>Sinh viên đã đăng ký:</strong></p>
                             <ul>
-                                @foreach ($deTai->sinhViens as $sinhVien)
+                                @foreach ($deTai->sinhVienDangKys as $sinhVien)
                                     <li class="mt-2">
                                         <div class="d-flex align-items-center">
                                             <p class="student-name m-0">{{ $sinhVien->ho_ten }} ({{ $sinhVien->mssv }}) - Email: {{ $sinhVien->email }} - Số điện thoại: {{ $sinhVien->so_dien_thoai }}

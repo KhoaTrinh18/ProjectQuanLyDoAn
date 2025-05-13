@@ -6,22 +6,22 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
-use App\Models\BoMon;
+use App\Models\LinhVuc;
 
-class BoMonController extends Controller
+class LinhVucController extends Controller
 {
     public function danhSach(Request $request)
     {
         $limit = $request->query('limit', 10);
 
-        $boMons = BoMon::where('da_huy', 0)->orderBy('ma_bo_mon', 'desc')->paginate($limit);
+        $linhVucs = LinhVuc::where('da_huy', 0)->orderBy('ma_linh_vuc', 'desc')->paginate($limit);
 
-        return view('admin.bomon.danhSach', compact('boMons'));
+        return view('admin.linhvuc.danhSach', compact('linhVucs'));
     }
 
     public function them()
     {
-        return view('admin.bomon.them');
+        return view('admin.linhvuc.them');
     }
 
     public function xacNhanThem(Request $request)
@@ -30,20 +30,20 @@ class BoMonController extends Controller
             return redirect()->back()->with('error', 'Bạn không thể truy cập trực tiếp trang này!');
         }
 
-        $data = $request->input('BoMon', []);
+        $data = $request->input('LinhVuc', []);
 
         $validator = Validator::make($data, [
-            'ten_bo_mon' => [
+            'ten_linh_vuc' => [
                 'required',
                 'string',
                 'max:255',
                 'regex:/^[\p{L}\s]+$/u'
             ]
         ], [
-            'ten_bo_mon.required' => 'Tên bộ môn không được để trống.',
-            'ten_bo_mon.string' => 'Tên bộ môn phải là chuỗi ký tự.',
-            'ten_bo_mon.max' => 'Tên bộ môn không được vượt quá 255 ký tự.',
-            'ten_bo_mon.regex' => 'Tên bộ môn chỉ được chứa chữ cái và khoảng trắng, không chứa số hoặc ký tự đặc biệt.',
+            'ten_linh_vuc.required' => 'Tên lĩnh vực không được để trống.',
+            'ten_linh_vuc.string' => 'Tên lĩnh vực phải là chuỗi ký tự.',
+            'ten_linh_vuc.max' => 'Tên lĩnh vực không được vượt quá 255 ký tự.',
+            'ten_linh_vuc.regex' => 'Tên lĩnh vực chỉ được chứa chữ cái và khoảng trắng, không chứa số hoặc ký tự đặc biệt.',
         ]);
 
         if ($validator->fails()) {
@@ -54,9 +54,9 @@ class BoMonController extends Controller
         }
 
         try {
-            $boMon = new BoMon();
-            $boMon->ten_bo_mon = $data['ten_bo_mon'];
-            $boMon->save();
+            $linhvuc = new linhvuc();
+            $linhvuc->ten_linh_vuc = $data['ten_linh_vuc'];
+            $linhvuc->save();
 
             return response()->json([
                 'success' => true,
@@ -70,11 +70,11 @@ class BoMonController extends Controller
         }
     }
 
-    public function sua($ma_bo_mon)
+    public function sua($ma_linh_vuc)
     {
-        $boMon = BoMon::where('ma_bo_mon', $ma_bo_mon)->firstOrFail();
+        $linhVuc = LinhVuc::where('ma_linh_vuc', $ma_linh_vuc)->firstOrFail();
 
-        return view('admin.bomon.sua', compact('boMon'));
+        return view('admin.linhvuc.sua', compact('linhVuc'));
     }
 
     public function xacNhanSua(Request $request)
@@ -83,20 +83,20 @@ class BoMonController extends Controller
             return redirect()->back()->with('error', 'Bạn không thể truy cập trực tiếp trang này!');
         }
 
-        $data = $request->input('BoMon', []);
+        $data = $request->input('LinhVuc', []);
 
         $validator = Validator::make($data, [
-            'ten_bo_mon' => [
+            'ten_linh_vuc' => [
                 'required',
                 'string',
                 'max:255',
                 'regex:/^[\p{L}\s]+$/u'
             ]
         ], [
-            'ten_bo_mon.required' => 'Tên bộ môn không được để trống.',
-            'ten_bo_mon.string' => 'Tên bộ môn phải là chuỗi ký tự.',
-            'ten_bo_mon.max' => 'Tên bộ môn không được vượt quá 255 ký tự.',
-            'ten_bo_mon.regex' => 'Tên bộ môn chỉ được chứa chữ cái và khoảng trắng, không chứa số hoặc ký tự đặc biệt.',
+            'ten_linh_vuc.required' => 'Tên lĩnh vực không được để trống.',
+            'ten_linh_vuc.string' => 'Tên lĩnh vực phải là chuỗi ký tự.',
+            'ten_linh_vuc.max' => 'Tên lĩnh vực không được vượt quá 255 ký tự.',
+            'ten_linh_vuc.regex' => 'Tên lĩnh vực chỉ được chứa chữ cái và khoảng trắng, không chứa số hoặc ký tự đặc biệt.',
         ]);
 
         if ($validator->fails()) {
@@ -107,8 +107,8 @@ class BoMonController extends Controller
         }
 
         try {
-            BoMon::where('ma_bo_mon', $data['ma_bo_mon'])->update([
-                'ten_bo_mon' => $data['ten_bo_mon'],
+            LinhVuc::where('ma_linh_vuc', $data['ma_linh_vuc'])->update([
+                'ten_linh_vuc' => $data['ten_linh_vuc'],
             ]);
 
             return response()->json([
@@ -128,21 +128,21 @@ class BoMonController extends Controller
         if (!$request->isMethod('post')) {
             return redirect()->back()->with('error', 'Bạn không thể truy cập trực tiếp trang này!');
         }
-        $ma_bo_mon = $request->input('ma_bo_mon');
-        $boMon = BoMon::where('ma_bo_mon', $ma_bo_mon)->first();
+        $ma_linh_vuc = $request->input('ma_linh_vuc');
+        $linhVuc = LinhVuc::where('ma_linh_vuc', $ma_linh_vuc)->first();
 
-        if($boMon->giangViens->count() != 0) {
+        if($linhVuc->deTaiGVs->count() != 0) {
             return response()->json([
                 'success' => false,
-                'error' => 'giang_vien'
+                'error' => 'de_tai_gv'
             ]);
-        } else if ($boMon->hoiDongs->count() != 0) {
+        } else if($linhVuc->deTaiSVs->count() != 0){
             return response()->json([
                 'success' => false,
-                'error' => 'hoi_dong'
+                'error' => 'de_tai_sv'
             ]);
         } else {
-            BoMon::where('ma_bo_mon', $ma_bo_mon)->update([
+            LinhVuc::where('ma_linh_vuc', $ma_linh_vuc)->update([
                 'da_huy' => 1
             ]);
         }

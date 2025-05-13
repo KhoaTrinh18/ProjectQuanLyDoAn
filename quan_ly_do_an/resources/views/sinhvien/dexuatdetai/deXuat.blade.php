@@ -79,16 +79,6 @@
                                                 placeholder="Nhập MSSV" name="DeTai[mssv][2]" style="width: 150px">
                                             <span class="error-message text-danger d-none error-mssv-2"></span>
                                         </div>
-                                        <div class="d-flex mt-2 align-items-center">
-                                            <input type="text" class="form-control form-control-lg shadow-none me-2"
-                                                placeholder="Nhập MSSV" name="DeTai[mssv][3]" style="width: 150px">
-                                            <span class="error-message text-danger d-none error-mssv-3"></span>
-                                        </div>
-                                        <div class="d-flex mt-2 align-items-center">
-                                            <input type="text" class="form-control form-control-lg shadow-none me-2"
-                                                placeholder="Nhập MSSV" name="DeTai[mssv][4]" style="width: 150px">
-                                            <span class="error-message text-danger d-none error-mssv-4"></span>
-                                        </div>
                                     </div>
                                 </div>
                                 <div class="text-center">

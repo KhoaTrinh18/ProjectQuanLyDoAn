@@ -12,4 +12,12 @@ class LinhVuc extends Model
     protected $table = 'linh_vuc';
     protected $primaryKey = 'ma_linh_vuc';
     public $timestamps = false;
+
+    public function deTaiGVs() {
+        return $this->hasMany(DeTaiGiangVien::class, 'ma_linh_vuc', 'ma_linh_vuc');
+    }
+
+    public function deTaiSVs() {
+        return $this->hasMany(DeTaiSinhVien::class, 'ma_linh_vuc', 'ma_linh_vuc');
+    }
 }

@@ -17,6 +17,7 @@
                             <p><strong>Giảng viên ra đề tài:</strong> {{ $giangVien->ho_ten }} - Email:
                                 {{ $giangVien->email }} - Số điện thoại: {{ $giangVien->so_dien_thoai }}</p>
                         @else
+                            <p><strong>Giảng viên ra đề tài:</strong></p>
                             <ul>
                                 @foreach ($deTaiGV->giangViens as $giangVien)
                                     <li>{{ $giangVien->ho_ten }} - Email: {{ $giangVien->email }} - SĐT:
@@ -100,13 +101,13 @@
                             });
                         } else {
                             Swal.fire({
-                            icon: 'error',
-                            title: 'Thất bại!',
-                            text: 'Hủy thất bại! Đề tài đã được phân công',
-                            confirmButtonText: 'OK',
-                            timer: 1000,
-                            showConfirmButton: false
-                        })
+                                icon: 'error',
+                                title: 'Thất bại!',
+                                text: 'Hủy thất bại! Đề tài đã được phân công',
+                                confirmButtonText: 'OK',
+                                timer: 1000,
+                                showConfirmButton: false
+                            })
                         }
                     },
                     error: function(xhr) {

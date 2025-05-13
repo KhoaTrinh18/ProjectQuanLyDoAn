@@ -25,7 +25,7 @@ class DeXuatDeTaiController extends Controller
         $sinhVien = SinhVien::where('ma_tk', $maTaiKhoan)->first();
         $daDangKy = $sinhVien->dang_ky;
 
-        $linhVucs = LinhVuc::orderBy('ma_linh_vuc', 'desc')->get();
+        $linhVucs = LinhVuc::orderBy('ma_linh_vuc', 'desc')->where('da_huy', 0)->get();
 
         $thietLap = ThietLap::where('trang_thai', 1)->first();
         $ngayHetHan = Carbon::create($thietLap->ngay_ket_thuc_dang_ky)->setTime(23, 59, 59)->toIso8601String();

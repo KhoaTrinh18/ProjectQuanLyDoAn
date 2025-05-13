@@ -23,11 +23,11 @@ class DeTaiSinhVien extends Model
     }
 
     public function sinhVienPhanBiens(){
-        return $this->belongsToMany(SinhVien::class, 'bang_diem_gvpb_cho_svdx', 'ma_de_tai', 'ma_sv')->where('sinh_vien.trang_thai', '!=', '3')->distinct();
+        return $this->belongsToMany(SinhVien::class, 'bang_diem_gvpb_cho_svdx', 'ma_de_tai', 'ma_sv')->distinct();
     }
 
     public function sinhVienHoiDongs(){
-        return $this->belongsToMany(SinhVien::class, 'bang_diem_gvthd_cho_svdx', 'ma_de_tai', 'ma_sv')->where('sinh_vien.trang_thai', '!=', '3')->distinct();
+        return $this->belongsToMany(SinhVien::class, 'bang_diem_gvthd_cho_svdx', 'ma_de_tai', 'ma_sv')->distinct();
     }
 
     public function giangViens(){

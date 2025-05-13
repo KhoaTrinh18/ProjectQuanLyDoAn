@@ -51,7 +51,7 @@ class DuaRaDeTaiController extends Controller
 
     public function duaRa()
     {
-        $linhVucs = LinhVuc::orderBy('ma_linh_vuc', 'desc')->get();
+        $linhVucs = LinhVuc::orderBy('ma_linh_vuc', 'desc')->where('da_huy', 0)->get();
         $chuyenNganhs = BoMon::where('da_huy', 0)->with('giangViens')->orderBy('ma_bo_mon', 'desc')->get();
         $thietLap = ThietLap::where('trang_thai', 1)->first();
         $ngayHetHan = Carbon::create($thietLap->ngay_dang_ky)->subDays(8)->setTime(23, 59, 59)->toIso8601String();
@@ -149,7 +149,7 @@ class DuaRaDeTaiController extends Controller
 
     public function sua($ma_de_tai)
     {
-        $linhVucs = LinhVuc::orderBy('ma_linh_vuc', 'desc')->get();
+        $linhVucs = LinhVuc::orderBy('ma_linh_vuc', 'desc')->where('da_huy', 0)->get();
         $deTai = DeTaiGiangVien::where('ma_de_tai', $ma_de_tai)->firstOrFail();
         $chuyenNganhs = BoMon::where('da_huy', 0)->with('giangViens')->orderBy('ma_bo_mon', 'desc')->get();
 
@@ -225,6 +225,7 @@ class DuaRaDeTaiController extends Controller
             $data['giang_vien'][] = $giangVien->ma_gv;
 
             foreach ($data['giang_vien'] as $gv) {
+                if($gv == null) continue;
                 $GV_DT = new GiangVienDeTaiGV();
                 $GV_DT->ma_gv = $gv;
                 $GV_DT->ma_de_tai = $data['ma_de_tai'];

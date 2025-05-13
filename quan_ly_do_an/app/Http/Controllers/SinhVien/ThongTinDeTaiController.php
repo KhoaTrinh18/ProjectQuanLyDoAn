@@ -114,7 +114,7 @@ class ThongTinDeTaiController extends Controller
         $sinhVien = SinhVien::where('ma_tk', $maTaiKhoan)->first();
         $daDangKy = $sinhVien->dang_ky;
 
-        $linhVucs = LinhVuc::orderBy('ma_linh_vuc', 'desc')->get();
+        $linhVucs = LinhVuc::orderBy('ma_linh_vuc', 'desc')->where('da_huy', 0)->get();
 
         $taikhoan = TaiKhoanSV::where('ma_tk', $maTaiKhoan)->first();
         $thietLap = ThietLap::where('nam_hoc', $taikhoan->nam_hoc)->first();

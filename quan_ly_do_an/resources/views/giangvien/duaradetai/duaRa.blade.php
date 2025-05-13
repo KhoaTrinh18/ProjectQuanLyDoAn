@@ -60,7 +60,7 @@
                                 <div class="ms-2 w-100">
                                     <select name="DeTai[slsv_toi_da]" class="form-select form-select-lg shadow-none"
                                         style="width: 70px">
-                                        @for ($i = 1; $i <= 6; $i++)
+                                        @for ($i = 1; $i <= 4; $i++)
                                             <option value="{{ $i }}" {{ $i == 1 ? 'selected' : '' }}>
                                                 {{ $i }}</option>
                                         @endfor
@@ -77,7 +77,7 @@
                                 <div class="ms-2 w-100">
                                     <select id="so_luong_giang_vien" class="form-select form-select-lg shadow-none"
                                         style="width: 70px">
-                                        @for ($i = 1; $i <= 5; $i++)
+                                        @for ($i = 1; $i <= 3; $i++)
                                             <option value="{{ $i }}" {{ $i == 1 ? 'selected' : '' }}>
                                                 {{ $i }}</option>
                                         @endfor
@@ -119,7 +119,7 @@
                         .addClass('form-select form-select-lg shadow-none')
                         .css('width', '250px');
 
-                    select.append('<option value="">Chọn giảng viên ' + (i + 1) + '</option>');
+                    select.append('<option value="" selected hidden disabled>Chọn giảng viên ' + (i + 1) + '</option>');
 
                     chuyenNganhs.forEach(function(cn) {
                         var optgroup = $('<optgroup>')

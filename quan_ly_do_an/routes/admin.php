@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\{
     PhanCongHuongDanController,
     PhanCongPhanBienController,
     HoiDongController,
+    LinhVucController,
     PhanCongHoiDongController,
     SinhVienController,
     SinhVienDeTaiAllController
@@ -208,6 +209,22 @@ Route::middleware([KiemTraDangNhap::class. ':admin'])->group(function () {
     Route::get('/hoc-vi/sua/{ma_hoc_vi}', [HocViController::class, 'sua'])->name('hoc_vi.sua');
     Route::post('/hoc-vi/xac-nhan-sua', [HocViController::class, 'xacNhanSua'])->name('hoc_vi.xac_nhan_sua');
     Route::get('/hoc-vi/xac-nhan-sua', function () {
+        return redirect()->back()->with('error', 'Sai đường dẫn');
+    });
+
+    Route::get('/linh-vuc/danh-sach', [LinhVucController::class, 'danhSach'])->name('linh_vuc.danh_sach');
+    Route::get('/linh-vuc/them', [LinhVucController::class, 'them'])->name('linh_vuc.them');
+    Route::post('/linh-vuc/xac-nhan-them', [LinhVucController::class, 'xacNhanThem'])->name('linh_vuc.xac_nhan_them');
+    Route::get('/linh-vuc/xac-nhan-them', function () {
+        return redirect()->back()->with('error', 'Sai đường dẫn');
+    });
+    Route::post('/linh-vuc/huy', [LinhVucController::class, 'huy'])->name('linh_vuc.huy');
+    Route::get('/linh-vuc/huy', function () {
+        return redirect()->back()->with('error', 'Sai đường dẫn');
+    });
+    Route::get('/linh-vuc/sua/{ma_linh_vuc}', [LinhVucController::class, 'sua'])->name('linh_vuc.sua');
+    Route::post('/linh-vuc/xac-nhan-sua', [LinhVucController::class, 'xacNhanSua'])->name('linh_vuc.xac_nhan_sua');
+    Route::get('/linh-vuc/xac-nhan-sua', function () {
         return redirect()->back()->with('error', 'Sai đường dẫn');
     });
 

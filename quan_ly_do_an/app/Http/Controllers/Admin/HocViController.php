@@ -6,12 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
-use Carbon\Carbon;
-use App\Models\{
-    HocVi,
-    GiangVien,
-};
-use Illuminate\Validation\Rule;
+use App\Models\HocVi;
 
 class HocViController extends Controller
 {

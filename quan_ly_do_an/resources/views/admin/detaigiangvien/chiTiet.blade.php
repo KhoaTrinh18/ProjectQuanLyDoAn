@@ -17,6 +17,7 @@
                             <p><strong>Giảng viên ra đề tài:</strong> {{ $giangVien->ho_ten }} - Email:
                                 {{ $giangVien->email }} - Số điện thoại: {{ $giangVien->so_dien_thoai }}</p>
                         @else
+                            <p><strong>Giảng viên ra đề tài:</strong></p>
                             <ul>
                                 @foreach ($deTaiGV->giangViens as $giangVien)
                                     <li>{{ $giangVien->ho_ten }} - Email: {{ $giangVien->email }} - SĐT:
@@ -25,7 +26,8 @@
                             </ul>
                         @endif
 
-                        <p><strong>Ngày đưa ra:</strong> {{ \Carbon\Carbon::parse($deTaiGV->ngayDuaRa->ngay_dua_ra)->format('d-m-Y') }}</p>
+                        <p><strong>Ngày đưa ra:</strong>
+                            {{ \Carbon\Carbon::parse($deTaiGV->ngayDuaRa->ngay_dua_ra)->format('d-m-Y') }}</p>
                         <p><strong>Lĩnh vực:</strong> {{ $deTaiGV->linhVuc->ten_linh_vuc }}</p>
                         <p><strong>Mô tả:</strong> {!! $deTaiGV->mo_ta !!}</p>
 

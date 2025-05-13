@@ -29,7 +29,7 @@
         <nav id="sidebar" class="sidebar js-sidebar">
             <div class="sidebar-content js-simplebar">
                 <a class="sidebar-brand" href="index.html">
-                    <span class="align-middle">AdminKit</span>
+                    <span class="align-middle">Quản lý đề tài</span>
                 </a>
                 @if (session('ten_sinh_vien') != null)
                     <ul class="sidebar-nav">
@@ -38,7 +38,7 @@
                         </li>
                         <li class="sidebar-item {{ request()->is('dang-ky-de-tai*') ? 'active' : '' }}">
                             <a class="sidebar-link" href="{{ route('dang_ky_de_tai.danh_sach') }}">
-                                <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Đăng
+                                <i class="align-middle bi bi-pencil-square"></i> <span class="align-middle">Đăng
                                     ký
                                     đề tài</span>
                             </a>
@@ -46,7 +46,7 @@
 
                         <li class="sidebar-item {{ request()->is('de-xuat-de-tai*') ? 'active' : '' }}">
                             <a class="sidebar-link" href="{{ route('de_xuat_de_tai.de_xuat') }}">
-                                <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Đề
+                                <i class="align-middle bi bi-plus-square"></i> <span class="align-middle">Đề
                                     xuất
                                     đề tài</span>
                             </a>
@@ -57,7 +57,7 @@
                         <li
                             class="sidebar-item {{ request()->is('thong-tin-de-tai/thong-tin') || request()->is('thong-tin-de-tai/chi-tiet') || request()->is('thong-tin-de-tai/sua*') ? 'active' : '' }}">
                             <a class="sidebar-link" href="{{ route('thong_tin_de_tai.thong_tin') }}">
-                                <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Đề
+                                <i class="align-middle bi bi-info-square"></i> <span class="align-middle">Đề
                                     tài
                                     của tôi</span>
                             </a>
@@ -66,7 +66,7 @@
                         <li
                             class="sidebar-item {{ request()->is('thong-tin-de-tai/danh-sach-khong-duyet') || request()->is('thong-tin-de-tai/chi-tiet-khong-duyet*') ? 'active' : '' }}">
                             <a class="sidebar-link" href="{{ route('thong_tin_de_tai.danh_sach_khong_duyet') }}">
-                                <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Danh
+                                <i class="align-middle bi bi-list-task"></i> <span class="align-middle">Danh
                                     sách không duyệt</span>
                             </a>
                         </li>
@@ -78,7 +78,7 @@
                         </li>
                         <li class="sidebar-item {{ request()->is('thong-tin-de-tai*') ? 'active' : '' }}">
                             <a class="sidebar-link" href="{{ route('thong_tin_de_tai.danh_sach_duyet') }}">
-                                <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Đề
+                                <i class="align-middle bi bi-list-task"></i> <span class="align-middle">Đề
                                     tài đã duyệt</span>
                             </a>
                         </li>
@@ -87,7 +87,7 @@
                         </li>
                         <li class="sidebar-item {{ request()->is('dua-ra-de-tai*') ? 'active' : '' }}">
                             <a class="sidebar-link" href="{{ route('dua_ra_de_tai.danh_sach') }}">
-                                <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Đưa
+                                <i class="align-middle bi bi-plus-square"></i> <span class="align-middle">Đưa
                                     ra đề tài</span>
                             </a>
                         </li>
@@ -96,19 +96,19 @@
                         </li>
                         <li class="sidebar-item {{ request()->is('cham-diem-huong-dan*') ? 'active' : '' }}">
                             <a class="sidebar-link" href="{{ route('cham_diem_huong_dan.danh_sach') }}">
-                                <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Đề
+                                <i class="align-middle bi bi-check-square"></i> <span class="align-middle">Đề
                                     tài hướng dẫn</span>
                             </a>
                         </li>
                         <li class="sidebar-item {{ request()->is('cham-diem-phan-bien*') ? 'active' : '' }}">
                             <a class="sidebar-link" href="{{ route('cham_diem_phan_bien.danh_sach') }}">
-                                <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Đề
+                                <i class="align-middle bi bi-check-square"></i> <span class="align-middle">Đề
                                     tài phản biện</span>
                             </a>
                         </li>
                         <li class="sidebar-item {{ request()->is('cham-diem-hoi-dong*') ? 'active' : '' }}">
                             <a class="sidebar-link" href="{{ route('cham_diem_hoi_dong.danh_sach') }}">
-                                <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Đề
+                                <i class="align-middle bi bi-check-square"></i> <span class="align-middle">Đề
                                     tài hội đồng</span>
                             </a>
                         </li>
@@ -116,81 +116,99 @@
                 @else
                     <ul class="sidebar-nav">
                         <li class="sidebar-header">
-                            Thực hiện
+                            Thông tin
                         </li>
-                        <li class="sidebar-item {{ request()->is('thiet-lap*') ? 'active' : '' }}">
-                            <a class="sidebar-link" href="{{ route('thiet_lap.danh_sach') }}">
-                                <i class="align-middle" data-feather="bar-chart-2"></i> <span
-                                    class="align-middle">Thiết
-                                    lập</span>
+                         <li class="sidebar-item {{ request()->is('sinh-vien-de-tai-all*') ? 'active' : '' }}">
+                            <a class="sidebar-link" href="{{ route('sinh_vien_de_tai_all.danh_sach') }}">
+                                <i class="align-middle bi bi-list-task"></i> <span
+                                    class="align-middle">Sinh viên - Đề tài (Tất cả)</span>
                             </a>
+                        </li>
+                        <li class="sidebar-header">
+                            Thực hiện
                         </li>
                         <li class="sidebar-item {{ request()->is('de-tai-giang-vien*') ? 'active' : '' }}">
                             <a class="sidebar-link" href="{{ route('de_tai_giang_vien.danh_sach') }}">
-                                <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Đề
+                                <i class="align-middle bi bi-clipboard-check"></i> <span class="align-middle">Đề
                                     tài giảng viên</span>
                             </a>
                         </li>
                         <li class="sidebar-item {{ request()->is('de-tai-sinh-vien*') ? 'active' : '' }}">
                             <a class="sidebar-link" href="{{ route('de_tai_sinh_vien.danh_sach') }}">
-                                <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Đề
+                                <i class="align-middle bi bi-clipboard-check"></i> <span class="align-middle">Đề
                                     tài sinh viên</span>
                             </a>
                         </li>
                         <li class="sidebar-item {{ request()->is('phan-cong-huong-dan*') ? 'active' : '' }}">
                             <a class="sidebar-link" href="{{ route('phan_cong_huong_dan.danh_sach') }}">
-                                <i class="align-middle" data-feather="bar-chart-2"></i> <span
+                                <i class="align-middle bi bi-ui-checks-grid"></i> <span
                                     class="align-middle">Phân công hướng dẫn</span>
                             </a>
                         </li>
                         <li class="sidebar-item {{ request()->is('phan-cong-phan-bien*') ? 'active' : '' }}">
                             <a class="sidebar-link" href="{{ route('phan_cong_phan_bien.danh_sach') }}">
-                                <i class="align-middle" data-feather="bar-chart-2"></i> <span
+                                <i class="align-middle bi bi-ui-checks-grid"></i> <span
                                     class="align-middle">Phân công phản biện</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-item {{ request()->is('hoi-dong*') ? 'active' : '' }}">
-                            <a class="sidebar-link" href="{{ route('hoi_dong.danh_sach') }}">
-                                <i class="align-middle" data-feather="bar-chart-2"></i> <span
-                                    class="align-middle">Hội đồng</span>
                             </a>
                         </li>
                         <li class="sidebar-item {{ request()->is('phan-cong-hoi-dong*') ? 'active' : '' }}">
                             <a class="sidebar-link" href="{{ route('phan_cong_hoi_dong.danh_sach') }}">
-                                <i class="align-middle" data-feather="bar-chart-2"></i> <span
+                                <i class="align-middle bi bi-ui-checks-grid"></i> <span
                                     class="align-middle">Phân công hội đồng</span>
                             </a>
                         </li>
-                        <li class="sidebar-item {{ request()->is('giang-vien*') ? 'active' : '' }}">
-                            <a class="sidebar-link" href="{{ route('giang_vien.danh_sach') }}">
-                                <i class="align-middle" data-feather="bar-chart-2"></i> <span
-                                    class="align-middle">Giảng viên</span>
+                        <li class="sidebar-header">
+                            Hệ thống
+                        </li>
+                        <li class="sidebar-item {{ request()->is('thiet-lap*') ? 'active' : '' }}">
+                            <a class="sidebar-link" href="{{ route('thiet_lap.danh_sach') }}">
+                                <i class="align-middle bi bi-gear-wide-connected"></i> <span
+                                    class="align-middle">Thiết
+                                    lập</span>
                             </a>
                         </li>
+                        <li class="sidebar-item {{ request()->is('hoi-dong*') ? 'active' : '' }}">
+                            <a class="sidebar-link" href="{{ route('hoi_dong.danh_sach') }}">
+                                <i class="align-middle bi bi-collection-fill"></i> <span
+                                    class="align-middle">Hội đồng</span>
+                            </a>
+                        </li>
+
                         <li class="sidebar-item {{ request()->is('bo-mon*') ? 'active' : '' }}">
                             <a class="sidebar-link" href="{{ route('bo_mon.danh_sach') }}">
-                                <i class="align-middle" data-feather="bar-chart-2"></i> <span class="align-middle">Bộ
+                                <i class="align-middle bi bi-journal"></i> <span class="align-middle">Bộ
                                     môn</span>
                             </a>
                         </li>
                         <li class="sidebar-item {{ request()->is('hoc-vi*') ? 'active' : '' }}">
                             <a class="sidebar-link" href="{{ route('hoc_vi.danh_sach') }}">
-                                <i class="align-middle" data-feather="bar-chart-2"></i> <span
+                                <i class="align-middle bi bi-briefcase"></i> <span
                                     class="align-middle">Học vị</span>
                             </a>
                         </li>
-                        <li class="sidebar-item {{ request()->is('sinh-vien/*') ? 'active' : '' }}">
+                        <li class="sidebar-item {{ request()->is('linh-vuc*') ? 'active' : '' }}">
+                            <a class="sidebar-link" href="{{ route('linh_vuc.danh_sach') }}">
+                                <i class="align-middle bi bi-grid-1x2"></i> <span
+                                    class="align-middle">Lĩnh vực</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-header">
+                            Người dùng
+                        </li>
+                        <li class="sidebar-item {{ request()->is('giang-vien*') ? 'active' : '' }}">
+                            <a class="sidebar-link" href="{{ route('giang_vien.danh_sach') }}">
+                                <i class="align-middle bi bi-person-fill"></i> <span class="align-middle">Giảng
+                                    viên</span>
+                            </a>
+                        </li>
+                          <li class="sidebar-item {{ request()->is('sinh-vien/*') ? 'active' : '' }}">
                             <a class="sidebar-link" href="{{ route('sinh_vien.danh_sach') }}">
-                                <i class="align-middle" data-feather="bar-chart-2"></i> <span
+                                <i class="align-middle bi bi-person-fill"></i> <span
                                     class="align-middle">Sinh viên</span>
                             </a>
                         </li>
-                        <li class="sidebar-item {{ request()->is('sinh-vien-de-tai-all*') ? 'active' : '' }}">
-                            <a class="sidebar-link" href="{{ route('sinh_vien_de_tai_all.danh_sach') }}">
-                                <i class="align-middle" data-feather="bar-chart-2"></i> <span
-                                    class="align-middle">Sinh viên - Đề tài (Tất cả)</span>
-                            </a>
-                        </li>
+                      
+                       
                     </ul>
                 @endif
             </div>
@@ -227,7 +245,8 @@
                     <ul class="navbar-nav navbar-align">
                         <li class="nav-item d-flex align-items-center">
                             @if (session('ten_sinh_vien') != null)
-                                <a href="{{ route('thong_tin_sinh_vien') }}" class="open-modal" data-bs-toggle="modal" data-bs-target="#myModal"
+                                <a href="{{ route('thong_tin_sinh_vien') }}" class="open-modal"
+                                    data-bs-toggle="modal" data-bs-target="#myModal"
                                     style="color: inherit; text-decoration: underline;"><strong>{{ session('ten_sinh_vien') }}</strong></a>
                             @elseif (session('ten_giang_vien') != null)
                                 {{ session('ten_giang_vien') }}

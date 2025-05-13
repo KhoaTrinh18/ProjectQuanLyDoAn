@@ -139,11 +139,14 @@ class HoiDongController extends Controller
         }
 
         try {
+            $thietLap = ThietLap::where('trang_thai', 1)->first();
+
             $hoiDong = new HoiDong();
             $hoiDong->ten_hoi_dong = $data['ten_hoi_dong'];
             $hoiDong->ma_bo_mon = $data['chuyen_nganh'];
             $hoiDong->phong = $data['phong'];
             $hoiDong->ngay = Carbon::createFromFormat('H:i d-m-Y', $data['ngay']);
+            $hoiDong->nam_hoc = $thietLap->nam_hoc;
             $hoiDong->save();
 
             $GV_HD = new HoiDongGiangVien();
