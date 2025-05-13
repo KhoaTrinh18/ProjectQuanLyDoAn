@@ -15,8 +15,8 @@
                                 <tr>
                                     <th scope="col" class="text-white">#</th>
                                     <th scope="col" class="text-white" style="width: 35%;">Tên đề tài</th>
-                                    <th scope="col" class="text-white">Lĩnh vực</th>
                                     <th scope="col" class="text-white">Sinh viên thực hiện (Điểm)</th>
+                                    <th scope="col" class="text-white">Xác nhận bảo vệ</th>
                                     <th scope="col" class="text-white">Trạng thái</th>
                                     <th scope="col" class="text-white"></th>
                                 </tr>
@@ -29,9 +29,6 @@
                                         <td
                                             style="width: 35%; word-wrap: break-word; overflow-wrap: break-word; white-space: normal; word-break: break-word;">
                                             {{ $deTai->ten_de_tai }}
-                                        </td>
-                                        <td>
-                                            {{ $deTai->linhVuc->ten_linh_vuc }}
                                         </td>
                                         <td>
                                             @foreach ($deTai->sinhViens as $sinhVien)
@@ -49,7 +46,7 @@
                                                     }
 
                                                     $daChamDiem = 0;
-                                                    if ($phanCong->diem_gvhd) {
+                                                    if (isset($phanCong->diem_gvhd)) {
                                                         $daChamDiem = 1;
                                                     } else {
                                                         $daChamDiem = 0;
@@ -58,7 +55,16 @@
                                                 {{ $sinhVien->ho_ten }} ({!! $phanCong->diem_gvhd !== null ? number_format($phanCong->diem_gvhd, 2) : '<em>Chưa có</em>' !!})<br>
                                             @endforeach
                                         </td>
-                                        <td class="text-center">
+                                        <td>
+                                            @if ($deTai->duoc_bao_ve == 1)
+                                                <span class="text-success">Được bảo vệ</span>
+                                            @elseif (isset($deTai->duoc_bao_ve))
+                                                <span class="text-danger">Không được bảo vệ</span>
+                                            @else
+                                                <i>Chưa có</i>
+                                            @endif
+                                        </td>
+                                        <td>
                                             @if ($daChamDiem)
                                                 <span class="text-success">Đã chấm điểm</span>
                                             @else

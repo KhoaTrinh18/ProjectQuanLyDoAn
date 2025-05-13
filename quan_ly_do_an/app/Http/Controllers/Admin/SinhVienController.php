@@ -212,7 +212,7 @@ class SinhVienController extends Controller
                 ]);
             }
 
-            if (SinhVien::where('dang_ky', 1)->exists()) {
+            if (SinhVien::where(['dang_ky' => 1, 'nam_hoc' => $thietLap->nam_hoc])->exists()) {
                 return response()->json([
                     'success' => false,
                     'errors' => true,

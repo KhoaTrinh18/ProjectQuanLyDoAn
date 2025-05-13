@@ -26,12 +26,13 @@ class DangNhapController extends Controller
         $tenTaiKhoan = $request->input('ten_tai_khoan');
         $matKhau = $request->input('mat_khau');
 
-        $taiKhoanSV = TaiKhoanSV::where('ten_tk', $tenTaiKhoan)->first();
-        $taiKhoanGV = TaiKhoanGV::where('ten_tk', $tenTaiKhoan)->first();
         $thietLap = ThietLap::where('trang_thai', 1)->first();
 
+        $taiKhoanSV = TaiKhoanSV::where(['ten_tk' => $tenTaiKhoan, 'nam_hoc' => $thietLap->nam_hoc])->first();
+        $taiKhoanGV = TaiKhoanGV::where('ten_tk', $tenTaiKhoan)->first();
+
         if($taiKhoanSV) {
-            if (!$taiKhoanSV || $taiKhoanSV->mat_khau !== $matKhau || $taiKhoanSV->nam_hoc !== $thietLap->nam_hoc){
+            if (!$taiKhoanSV || $taiKhoanSV->mat_khau !== $matKhau){
                 return response()->json([
                     'success' => false,
                     'error' => 'Tên tài khoản hoặc mật khẩu không đúng!',

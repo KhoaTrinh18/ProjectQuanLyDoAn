@@ -24,7 +24,7 @@
                                 }
 
                                 $daChamDiem = 0;
-                                if ($phanCongHoiDong->diem_gvthd) {
+                                if (isset($phanCongHoiDong->diem_gvthd)) {
                                     $daChamDiem = 1;
                                 } else {
                                     $daChamDiem = 0;

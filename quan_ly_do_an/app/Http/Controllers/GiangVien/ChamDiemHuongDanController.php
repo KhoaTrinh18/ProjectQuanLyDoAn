@@ -8,11 +8,16 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use App\Models\{
+    BangDiemGVPBChoSVDK,
+    BangDiemGVPBChoSVDX,
+    BangDiemGVTHDChoSVDK,
+    BangDiemGVTHDChoSVDX,
     BangPhanCongSVDK,
     BangPhanCongSVDX,
     DeTaiGiangVien,
     DeTaiSinhVien,
     GiangVien,
+    SinhVien,
     ThietLap
 };
 
@@ -88,6 +93,40 @@ class ChamDiemHuongDanController extends Controller
         $data = $request->input('ChamDiem', []);
         $ma_de_tai = $request->input('ma_de_tai');
 
+        $maTaiKhoan = session()->get('ma_tai_khoan');
+        $giangVien = GiangVien::where('ma_tk', $maTaiKhoan)->first();
+
+        if ($data[0]['bao_ve'] == 0) {
+            $deTai = DeTaiGiangVien::where('ma_de_tai', $ma_de_tai)->first();
+            if (isset($deTai)) {
+                $deTai->duoc_bao_ve = 0;
+                $deTai->save();
+                BangPhanCongSVDK::where('ma_de_tai', $ma_de_tai)
+                    ->update([
+                        'diem_gvhd' => 0,
+                        'nhan_xet' => ''
+                    ]);
+            } else {
+                $deTai = DeTaiSinhVien::where('ma_de_tai', $ma_de_tai)->first();
+                $deTai->duoc_bao_ve = 0;
+                $deTai->save();
+                BangPhanCongSVDX::where('ma_de_tai', $ma_de_tai)
+                    ->update([
+                        'diem_gvhd' => 0,
+                        'nhan_xet' => ''
+                    ]);
+            }
+            $maSinhViens = $deTai->sinhViens->pluck('ma_sv');
+            SinhVien::whereIn('ma_sv', $maSinhViens)->update([
+                'trang_thai' => 0
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'errors' => [],
+            ]);
+        }
+
         $rules = [];
         $messages = [];
 
@@ -125,9 +164,12 @@ class ChamDiemHuongDanController extends Controller
         }
 
         try {
-            $maTaiKhoan = session()->get('ma_tai_khoan');
-            $giangVien = GiangVien::where('ma_tk', $maTaiKhoan)->first();
-
+            $deTai = DeTaiGiangVien::where('ma_de_tai', $ma_de_tai)->first();
+            if (!isset($deTai)) {
+                $deTai = DeTaiSinhVien::where('ma_de_tai', $ma_de_tai)->first();
+            }
+            $deTai->duoc_bao_ve = 1;
+            $deTai->save();
             foreach ($data as $chamDiem) {
                 $updated = BangPhanCongSVDK::where(['ma_de_tai' => $ma_de_tai, 'ma_gvhd' => $giangVien->ma_gv, 'ma_sv' => $chamDiem['ma_sv']])
                     ->update([
@@ -164,7 +206,7 @@ class ChamDiemHuongDanController extends Controller
     {
         $maTaiKhoan = session()->get('ma_tai_khoan');
         $giangVien = GiangVien::where('ma_tk', $maTaiKhoan)->first();
-        
+
         $deTai = DeTaiGiangVien::where('ma_de_tai', $ma_de_tai)->first();
 
         if (!$deTai) {
@@ -189,6 +231,39 @@ class ChamDiemHuongDanController extends Controller
 
         $data = $request->input('ChamDiem', []);
         $ma_de_tai = $request->input('ma_de_tai');
+        $maTaiKhoan = session()->get('ma_tai_khoan');
+        $giangVien = GiangVien::where('ma_tk', $maTaiKhoan)->first();
+
+        if ($data[0]['bao_ve'] == 0) {
+            $deTai = DeTaiGiangVien::where('ma_de_tai', $ma_de_tai)->first();
+            if (isset($deTai)) {
+                $deTai->duoc_bao_ve = 0;
+                $deTai->save();
+                BangPhanCongSVDK::where('ma_de_tai', $ma_de_tai)
+                    ->update([
+                        'diem_gvhd' => 0,
+                        'nhan_xet' => ''
+                    ]);
+            } else {
+                $deTai = DeTaiSinhVien::where('ma_de_tai', $ma_de_tai)->first();
+                $deTai->duoc_bao_ve = 0;
+                $deTai->save();
+                $updated = BangPhanCongSVDX::where('ma_de_tai', $ma_de_tai)
+                    ->update([
+                        'diem_gvhd' => 0,
+                        'nhan_xet' => ''
+                    ]);
+            }
+            $maSinhViens = $deTai->sinhViens->pluck('ma_sv');
+            SinhVien::whereIn('ma_sv', $maSinhViens)->update([
+                'trang_thai' => 0
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'errors' => [],
+            ]);
+        }
 
         $rules = [];
         $messages = [];
@@ -227,9 +302,16 @@ class ChamDiemHuongDanController extends Controller
         }
 
         try {
-            $maTaiKhoan = session()->get('ma_tai_khoan');
-            $giangVien = GiangVien::where('ma_tk', $maTaiKhoan)->first();
-
+            $deTai = DeTaiGiangVien::where('ma_de_tai', $ma_de_tai)->first();
+            if (!isset($deTai)) {
+                $deTai = DeTaiSinhVien::where('ma_de_tai', $ma_de_tai)->first();
+            }
+            $deTai->duoc_bao_ve = 1;
+            $deTai->save();
+            $maSinhViens = $deTai->sinhViens->pluck('ma_sv');
+            SinhVien::whereIn('ma_sv', $maSinhViens)->update([
+                'trang_thai' => 1
+            ]);
             foreach ($data as $chamDiem) {
                 $updated = BangPhanCongSVDK::where(['ma_de_tai' => $ma_de_tai, 'ma_gvhd' => $giangVien->ma_gv,  'ma_sv' => $chamDiem['ma_sv']])
                     ->update([
@@ -241,7 +323,7 @@ class ChamDiemHuongDanController extends Controller
                     break;
                 }
             }
-           
+
             foreach ($data as $chamDiem) {
                 $updated = BangPhanCongSVDX::where(['ma_de_tai' => $ma_de_tai, 'ma_gvhd' => $giangVien->ma_gv, 'ma_sv' => $chamDiem['ma_sv']])
                     ->update([

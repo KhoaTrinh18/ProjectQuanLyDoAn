@@ -31,10 +31,16 @@ class PhanCongHoiDongController extends Controller
         $thietLap = ThietLap::where('trang_thai', 1)->first();
 
         $maDeTaiDXs = BangDiemGVPBChoSVDX::distinct()->where(['da_huy' => 0, 'nam_hoc' => $thietLap->nam_hoc])->pluck('ma_de_tai');
-        $deTaiSVs = DeTaiSinhVien::whereIn('ma_de_tai', $maDeTaiDXs)->orderBy('ma_de_tai', 'desc')->get();
+        $deTaiSVs = DeTaiSinhVien::whereIn('ma_de_tai', $maDeTaiDXs)->where(function ($query) {
+            $query->whereNull('duoc_bao_ve')
+                ->orWhere('duoc_bao_ve', 1);
+        })->orderBy('ma_de_tai', 'desc')->get();
 
         $maDeTaiDKs = BangDiemGVPBChoSVDK::distinct()->where(['da_huy' => 0, 'nam_hoc' => $thietLap->nam_hoc])->pluck('ma_de_tai');
-        $deTaiGVs = DeTaiGiangVien::whereIn('ma_de_tai', $maDeTaiDKs)->orderBy('ma_de_tai', 'desc')->get();
+        $deTaiGVs = DeTaiGiangVien::whereIn('ma_de_tai', $maDeTaiDKs)->where(function ($query) {
+            $query->whereNull('duoc_bao_ve')
+                ->orWhere('duoc_bao_ve', 1);
+        })->orderBy('ma_de_tai', 'desc')->get();
 
         $merged = $deTaiSVs->merge($deTaiGVs)->unique('ma_de_tai')->values();
 

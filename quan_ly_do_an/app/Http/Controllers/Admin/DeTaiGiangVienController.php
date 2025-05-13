@@ -97,12 +97,14 @@ class DeTaiGiangVienController extends Controller
 
         $tatCaDeTaiGV = DeTaiGiangVien::where('ma_de_tai', '!=', $ma_de_tai)->where('so_luong_sv_dang_ky', '>=', 1)->where([
             'trang_thai' => 2,
-            'da_huy' => 0
+            'da_huy' => 0,
+            'duoc_bao_ve' => 1
         ])->pluck('ten_de_tai');
 
         $tatCaDeTaiSV = DeTaiSinhVien::where([
             'trang_thai' => 2,
-            'da_huy' => 0
+            'da_huy' => 0,
+            'duoc_bao_ve' => 1
         ])->pluck('ten_de_tai');
 
         $tatCaDeTai = $tatCaDeTaiGV->merge($tatCaDeTaiSV);

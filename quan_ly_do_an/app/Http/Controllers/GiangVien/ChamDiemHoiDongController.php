@@ -31,6 +31,10 @@ class ChamDiemHoiDongController extends Controller
         $maDeTais = $phanCongHoiDongSVDK->pluck('ma_de_tai');
         $deTaiGVs = DeTaiGiangVien::whereIn('ma_de_tai', $maDeTais)
             ->where(['da_huy' => 0, 'trang_thai' => 2, 'nam_hoc' => $thietLap->nam_hoc])
+            ->where(function ($query) {
+                $query->whereNull('duoc_bao_ve')
+                    ->orWhere('duoc_bao_ve', 1);
+            })
             ->orderBy('ma_de_tai', 'desc')
             ->get();
 
@@ -38,6 +42,10 @@ class ChamDiemHoiDongController extends Controller
         $maDeTais = $phanCongHoiDongSVDX->pluck('ma_de_tai');
         $deTaiSVs = DeTaiSinhVien::whereIn('ma_de_tai', $maDeTais)
             ->where(['da_huy' => 0, 'trang_thai' => 2, 'nam_hoc' => $thietLap->nam_hoc])
+            ->where(function ($query) {
+                $query->whereNull('duoc_bao_ve')
+                    ->orWhere('duoc_bao_ve', 1);
+            })
             ->orderBy('ma_de_tai', 'desc')
             ->get();
 

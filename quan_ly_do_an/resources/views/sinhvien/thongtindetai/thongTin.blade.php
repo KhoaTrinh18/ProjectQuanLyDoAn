@@ -32,7 +32,16 @@
                             @endif
 
                             @if ($checkNgayHetHan == 1)
-                                <p><strong>Trạng thái:</strong>
+                                <p><strong>Xác nhận bảo vệ:</strong>
+                                    @if ($deTai->duoc_bao_ve == 1)
+                                        <span class="text-success">Được bảo vệ</span>
+                                    @elseif (isset($deTai->duoc_bao_ve))
+                                        <span class="text-danger">Không được bảo vệ</span>
+                                    @else
+                                        <i>Chưa có</i>
+                                    @endif
+                                </p>
+                                <p><strong>Trạng thái: </strong>
                                     @if ($sinhVien->trang_thai == 0)
                                         <span class="text-danger">Không hoàn thành</span>
                                     @elseif($sinhVien->trang_thai == 1)
@@ -95,10 +104,6 @@
                                 @endif
 
                                 @php
-                                    $hoiDong = $deTai->hoiDongs->first();
-                                    $chuTich = $hoiDong->giangViens()->wherePivot('chuc_vu', 'Chủ tịch')->first();
-                                    $thuKy = $hoiDong->giangViens()->wherePivot('chuc_vu', 'Thư ký')->first();
-                                    $uyViens = $hoiDong->giangViens()->wherePivot('chuc_vu', 'Ủy viên')->get();
 
                                     $deTaiHoiDong = [];
 
@@ -115,6 +120,12 @@
                                 @if ($deTaiHoiDong->isEmpty() || $deTai->hoiDongs->isEmpty())
                                     <p><strong>Hội đồng: </strong><i>Chưa có</i></p>
                                 @else
+                                    @php
+                                        $hoiDong = $deTai->hoiDongs->first();
+                                        $chuTich = $hoiDong->giangViens()->wherePivot('chuc_vu', 'Chủ tịch')->first();
+                                        $thuKy = $hoiDong->giangViens()->wherePivot('chuc_vu', 'Thư ký')->first();
+                                        $uyViens = $hoiDong->giangViens()->wherePivot('chuc_vu', 'Ủy viên')->get();
+                                    @endphp
                                     <p><strong>Hội đồng:</strong> {{ $hoiDong->ten_hoi_dong }}</p>
                                     <p><strong>Ngày tổ chức:</strong>
                                         {{ \Carbon\Carbon::parse($hoiDong->ngay)->format('H:i d-m-Y') }}</p>

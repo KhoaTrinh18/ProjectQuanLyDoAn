@@ -20,7 +20,7 @@
                                 }
 
                                 $daChamDiem = 0;
-                                if ($phanCong->diem_gvhd) {
+                                if (isset($phanCong->diem_gvhd)) {
                                     $daChamDiem = 1;
                                 } else {
                                     $daChamDiem = 0;
@@ -30,6 +30,16 @@
                                 <span class="text-success">Đã chấm điểm</span>
                             @else
                                 <span class="text-warning">Chưa chấm điểm</span>
+                            @endif
+                        </p>
+
+                        <p><strong>Xác nhận bảo vệ: </strong>
+                            @if ($deTai->duoc_bao_ve == 1)
+                                <span class="text-success">Được bảo vệ</span>
+                            @elseif (isset($deTai->duoc_bao_ve))
+                                <span class="text-danger">Không được bảo vệ</span>
+                            @else
+                                <i>Chưa có</i>
                             @endif
                         </p>
 
