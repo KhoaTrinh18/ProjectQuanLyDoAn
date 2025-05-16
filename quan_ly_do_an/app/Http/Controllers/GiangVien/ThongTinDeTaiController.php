@@ -13,6 +13,7 @@ use App\Models\{
     GiangVien,
     SinhVien,
     GiangVienDeTaiGV,
+    LinhVuc,
     ThietLap
 };
 
@@ -64,5 +65,67 @@ class ThongTinDeTaiController extends Controller
         return response()->json([
             'success' => true,
         ]);
+    }
+
+    public function danhSachAll(Request $request)
+    {
+        $limit = $request->query('limit', 10);
+
+        $maTaiKhoan = session()->get('ma_tai_khoan');
+        $giangVien = GiangVien::where('ma_tk', $maTaiKhoan)->first();
+
+        $maDeTais = GiangVienDeTaiGV::where('ma_gv', $giangVien->ma_gv)->pluck('ma_de_tai');
+        $deTais = DeTaiGiangVien::whereIn('ma_de_tai', $maDeTais)
+            ->where(['da_huy' => 0, 'trang_thai' => 2])
+            ->where('so_luong_sv_dang_ky', '>', 0)
+            ->orderBy('ma_de_tai', 'desc')
+            ->paginate($limit);
+
+        $thietLaps = ThietLap::orderBy('ma_thiet_lap', 'desc')->get();
+        $linhVucs = LinhVuc::orderBy('ma_linh_vuc', 'desc')->where('da_huy', 0)->get();
+
+        return view('giangvien.thongtindetai.danhSachAll', compact('deTais', 'thietLaps', 'linhVucs'));
+    }
+
+    public function pageAjax(Request $request)
+    {
+        $query = DeTaiGiangVien::query();
+
+        if ($request->filled('ten_de_tai')) {
+            $query->where('ten_de_tai', 'like', '%' . $request->ten_de_tai . '%');
+        }
+
+        if ($request->filled('ma_linh_vuc')) {
+            $query->where('ma_linh_vuc', $request->ma_linh_vuc);
+        }
+
+        if ($request->filled('nam_hoc')) {
+            $query->where('nam_hoc', $request->nam_hoc);
+        }
+
+        $maTaiKhoan = session()->get('ma_tai_khoan');
+        $giangVien = GiangVien::where('ma_tk', $maTaiKhoan)->first();
+        $limit = $request->query('limit', 10);
+
+        $maDeTais = GiangVienDeTaiGV::where('ma_gv', $giangVien->ma_gv)->pluck('ma_de_tai');
+        $deTais = $query->whereIn('ma_de_tai', $maDeTais)
+            ->where(['da_huy' => 0, 'trang_thai' => 2])
+            ->where('so_luong_sv_dang_ky', '>', 0)
+            ->orderBy('ma_de_tai', 'desc')
+            ->paginate($limit);
+
+        return response()->json([
+            'success' => true,
+            'html' => view('giangvien.thongtindetai.pageAjax', compact('deTais'))->render(),
+        ]);
+    }
+
+    public function chiTietAll($ma_de_tai)
+    {
+        $deTai = DeTaiGiangVien::where('ma_de_tai', $ma_de_tai)->firstOrFail();
+        $thietLap = ThietLap::where('trang_thai', 1)->first();
+        $ngayHetHan = Carbon::create($thietLap->ngay_ket_thuc_dang_ky)->setTime(23, 59, 59)->toIso8601String();
+
+        return view('giangvien.thongtindetai.chiTiet', compact('deTai', 'ngayHetHan'));
     }
 }

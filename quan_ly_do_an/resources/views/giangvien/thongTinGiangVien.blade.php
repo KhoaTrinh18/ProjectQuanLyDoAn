@@ -5,28 +5,32 @@
 <div class="modal-body">
     @php
         $maTaiKhoan = session()->get('ma_tai_khoan');
-        $sinhVien = DB::table('sinh_vien')->where('ma_tk', $maTaiKhoan)->first();
+        $giangVien = \App\Models\GiangVien::where('ma_tk', $maTaiKhoan)->first();
     @endphp
 
     <div class="mb-2 d-flex">
         <div class="fw-bold me-2" style="width: 130px;">Tên tài khoản:</div>
-        <div>{{ $sinhVien->mssv }}</div>
+        <div>{{ $giangVien->taiKhoan->ten_tk }}</div>
     </div>
     <div class="mb-2 d-flex">
         <div class="fw-bold me-2" style="width: 130px;">Họ tên:</div>
-        <div>{{ $sinhVien->ho_ten }}</div>
+        <div>{{ $giangVien->ho_ten }}</div>
     </div>
     <div class="mb-2 d-flex">
         <div class="fw-bold me-2" style="width: 130px;">Email:</div>
-        <div>{{ $sinhVien->email }}</div>
+        <div>{{ $giangVien->email }}</div>
     </div>
     <div class="mb-2 d-flex">
         <div class="fw-bold me-2" style="width: 130px;">Số điện thoại:</div>
-        <div>{{ $sinhVien->so_dien_thoai }}</div>
+        <div>{{ $giangVien->so_dien_thoai }}</div>
     </div>
     <div class="mb-2 d-flex">
-        <div class="fw-bold me-2" style="width: 130px;">Lớp:</div>
-        <div>{{ $sinhVien->lop }}</div>
+        <div class="fw-bold me-2" style="width: 130px;">Học vị:</div>
+        <div>{{ $giangVien->hocVi->ten_hoc_vi }}</div>
+    </div>
+    <div class="mb-2 d-flex">
+        <div class="fw-bold me-2" style="width: 130px;">Bộ môn:</div>
+        <div>{{ $giangVien->boMon->ten_bo_mon }}</div>
     </div>
 </div>
 
@@ -70,7 +74,7 @@
             $(".is-invalid").removeClass("is-invalid");
 
             $.ajax({
-                url: "{{ route('doi_mat_khau') }}",
+                url: "{{ route('doi_mat_khau_gv') }}",
                 type: "POST",
                 data: formData,
                 contentType: false,
@@ -88,7 +92,7 @@
                             timer: 1000,
                             showConfirmButton: false
                         }).then(() => {
-                            window.location.reload()
+                            window.location.reload();
                         });
                     } else {
                         $.each(result.errors, function(field, messages) {

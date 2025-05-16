@@ -28,9 +28,9 @@
     <div class="wrapper">
         <nav id="sidebar" class="sidebar js-sidebar">
             <div class="sidebar-content js-simplebar">
-                <a class="sidebar-brand" href="index.html">
+                <span class="sidebar-brand">
                     <span class="align-middle">Quản lý đề tài</span>
-                </a>
+                </span>
                 @if (session('ten_sinh_vien') != null)
                     <ul class="sidebar-nav">
                         <li class="sidebar-header">
@@ -76,10 +76,17 @@
                         <li class="sidebar-header">
                             Thông tin
                         </li>
-                        <li class="sidebar-item {{ request()->is('thong-tin-de-tai*') ? 'active' : '' }}">
+                        <li class="sidebar-item {{ request()->is('thong-tin-de-tai/danh-sach-duyet') || request()->is('thong-tin-de-tai/chi-tiet-duyet*')  ? 'active' : '' }}">
                             <a class="sidebar-link" href="{{ route('thong_tin_de_tai.danh_sach_duyet') }}">
                                 <i class="align-middle bi bi-list-task"></i> <span class="align-middle">Đề
                                     tài đã duyệt</span>
+                            </a>
+
+                        </li>
+                        <li class="sidebar-item {{ request()->is('thong-tin-de-tai/danh-sach-all*') || request()->is('thong-tin-de-tai/chi-tiet-all*') ? 'active' : '' }}">
+                            <a class="sidebar-link" href="{{ route('thong_tin_de_tai.danh_sach_all') }}">
+                                <i class="align-middle bi bi-list-task"></i> <span class="align-middle">Danh sách đề tài
+                                    (Tất cả)</span>
                             </a>
                         </li>
                         <li class="sidebar-header">
@@ -118,10 +125,10 @@
                         <li class="sidebar-header">
                             Thông tin
                         </li>
-                         <li class="sidebar-item {{ request()->is('sinh-vien-de-tai-all*') ? 'active' : '' }}">
+                        <li class="sidebar-item {{ request()->is('sinh-vien-de-tai-all*') ? 'active' : '' }}">
                             <a class="sidebar-link" href="{{ route('sinh_vien_de_tai_all.danh_sach') }}">
-                                <i class="align-middle bi bi-list-task"></i> <span
-                                    class="align-middle">Sinh viên - Đề tài (Tất cả)</span>
+                                <i class="align-middle bi bi-list-task"></i> <span class="align-middle">Sinh viên - Đề
+                                    tài (Tất cả)</span>
                             </a>
                         </li>
                         <li class="sidebar-header">
@@ -141,20 +148,20 @@
                         </li>
                         <li class="sidebar-item {{ request()->is('phan-cong-huong-dan*') ? 'active' : '' }}">
                             <a class="sidebar-link" href="{{ route('phan_cong_huong_dan.danh_sach') }}">
-                                <i class="align-middle bi bi-ui-checks-grid"></i> <span
-                                    class="align-middle">Phân công hướng dẫn</span>
+                                <i class="align-middle bi bi-ui-checks-grid"></i> <span class="align-middle">Phân công
+                                    hướng dẫn</span>
                             </a>
                         </li>
                         <li class="sidebar-item {{ request()->is('phan-cong-phan-bien*') ? 'active' : '' }}">
                             <a class="sidebar-link" href="{{ route('phan_cong_phan_bien.danh_sach') }}">
-                                <i class="align-middle bi bi-ui-checks-grid"></i> <span
-                                    class="align-middle">Phân công phản biện</span>
+                                <i class="align-middle bi bi-ui-checks-grid"></i> <span class="align-middle">Phân công
+                                    phản biện</span>
                             </a>
                         </li>
                         <li class="sidebar-item {{ request()->is('phan-cong-hoi-dong*') ? 'active' : '' }}">
                             <a class="sidebar-link" href="{{ route('phan_cong_hoi_dong.danh_sach') }}">
-                                <i class="align-middle bi bi-ui-checks-grid"></i> <span
-                                    class="align-middle">Phân công hội đồng</span>
+                                <i class="align-middle bi bi-ui-checks-grid"></i> <span class="align-middle">Phân công
+                                    hội đồng</span>
                             </a>
                         </li>
                         <li class="sidebar-header">
@@ -169,8 +176,8 @@
                         </li>
                         <li class="sidebar-item {{ request()->is('hoi-dong*') ? 'active' : '' }}">
                             <a class="sidebar-link" href="{{ route('hoi_dong.danh_sach') }}">
-                                <i class="align-middle bi bi-collection-fill"></i> <span
-                                    class="align-middle">Hội đồng</span>
+                                <i class="align-middle bi bi-collection-fill"></i> <span class="align-middle">Hội
+                                    đồng</span>
                             </a>
                         </li>
 
@@ -182,14 +189,12 @@
                         </li>
                         <li class="sidebar-item {{ request()->is('hoc-vi*') ? 'active' : '' }}">
                             <a class="sidebar-link" href="{{ route('hoc_vi.danh_sach') }}">
-                                <i class="align-middle bi bi-briefcase"></i> <span
-                                    class="align-middle">Học vị</span>
+                                <i class="align-middle bi bi-briefcase"></i> <span class="align-middle">Học vị</span>
                             </a>
                         </li>
                         <li class="sidebar-item {{ request()->is('linh-vuc*') ? 'active' : '' }}">
                             <a class="sidebar-link" href="{{ route('linh_vuc.danh_sach') }}">
-                                <i class="align-middle bi bi-grid-1x2"></i> <span
-                                    class="align-middle">Lĩnh vực</span>
+                                <i class="align-middle bi bi-grid-1x2"></i> <span class="align-middle">Lĩnh vực</span>
                             </a>
                         </li>
                         <li class="sidebar-header">
@@ -201,14 +206,12 @@
                                     viên</span>
                             </a>
                         </li>
-                          <li class="sidebar-item {{ request()->is('sinh-vien/*') ? 'active' : '' }}">
+                        <li class="sidebar-item {{ request()->is('sinh-vien/*') ? 'active' : '' }}">
                             <a class="sidebar-link" href="{{ route('sinh_vien.danh_sach') }}">
-                                <i class="align-middle bi bi-person-fill"></i> <span
-                                    class="align-middle">Sinh viên</span>
+                                <i class="align-middle bi bi-person-fill"></i> <span class="align-middle">Sinh
+                                    viên</span>
                             </a>
                         </li>
-                      
-                       
                     </ul>
                 @endif
             </div>
@@ -249,13 +252,21 @@
                                     data-bs-toggle="modal" data-bs-target="#myModal"
                                     style="color: inherit; text-decoration: underline;"><strong>{{ session('ten_sinh_vien') }}</strong></a>
                             @elseif (session('ten_giang_vien') != null)
-                                {{ session('ten_giang_vien') }}
+                                 <a href="{{ route('thong_tin_giang_vien') }}" class="open-modal1"
+                                    data-bs-toggle="modal" data-bs-target="#myModal1"
+                                    style="color: inherit; text-decoration: underline;"><strong>{{ session('ten_giang_vien') }}</strong></a>
                             @else
                                 {{ session('ten_admin') }}
                             @endif
                             <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="modalLabel">
                                 <div class="modal-dialog">
                                     <div class="modal-content" id="modal-content">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal fade" id="myModal1" tabindex="-1" aria-labelledby="modalLabel">
+                                <div class="modal-dialog">
+                                    <div class="modal-content" id="modal-content1">
                                     </div>
                                 </div>
                             </div>
@@ -308,6 +319,15 @@
 
                 $.get(url, function(data) {
                     $('#modal-content').html(data);
+                });
+            });
+
+            $('.open-modal1').on('click', function(e) {
+                e.preventDefault();
+                var url = $(this).attr('href');
+
+                $.get(url, function(data) {
+                    $('#modal-content1').html(data);
                 });
             });
         });

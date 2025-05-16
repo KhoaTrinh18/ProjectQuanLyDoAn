@@ -489,6 +489,7 @@ class SinhVienController extends Controller
             $diemTong = 0;
 
             if ($sinhVien->loai_sv == null || $sinhVien->trang_thai == 3) continue;
+
             if ($sinhVien->loai_sv == 'de_xuat') {
                 $sinhVienDTSV = SinhVienDeTaiSV::where('ma_sv', $sinhVien->ma_sv)->where('trang_thai', '!=', 0)->first();
                 $deTai = DeTaiSinhVien::where(['ma_de_tai' => $sinhVienDTSV->ma_de_tai, 'da_huy' => 0])->first();
@@ -496,6 +497,9 @@ class SinhVienController extends Controller
                 $phanCongSVDK = BangPhanCongSVDK::where('ma_sv', $sinhVien->ma_sv)->first();
                 $deTai = DeTaiGiangVien::where(['ma_de_tai' => $phanCongSVDK->ma_de_tai, 'da_huy' => 0])->first();
             }
+
+            if($deTai->giangVienHuongDans->count() == 0 || $deTai->giangVienPhanBiens->count() == 0 || $deTai->HoiDongs->count() == 0) continue;
+            
             foreach ($deTai->giangVienHuongDans()->wherePivot('ma_sv', $sinhVien->ma_sv)->get() as $gv) {
                 $diemSV[] = $gv->pivot->diem_gvhd;
             }
