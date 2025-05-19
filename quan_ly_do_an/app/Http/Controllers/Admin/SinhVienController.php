@@ -498,14 +498,17 @@ class SinhVienController extends Controller
                 $deTai = DeTaiGiangVien::where(['ma_de_tai' => $phanCongSVDK->ma_de_tai, 'da_huy' => 0])->first();
             }
 
-            if($deTai->giangVienHuongDans->count() == 0 || $deTai->giangVienPhanBiens->count() == 0 || $deTai->HoiDongs->count() == 0) continue;
-            
+            $gvhd = $deTai->giangVienHuongDans()->wherePivot('ma_sv', $sinhVien->ma_sv)->first();
+            $gvpb = $deTai->giangVienPhanBiens()->wherePivot('ma_sv', $sinhVien->ma_sv)->first();
+            $hoiDong = $deTai->HoiDongs->first(); 
+
+            if (!$gvhd || !$gvpb || !$hoiDong) continue;
+
             foreach ($deTai->giangVienHuongDans()->wherePivot('ma_sv', $sinhVien->ma_sv)->get() as $gv) {
                 $diemSV[] = $gv->pivot->diem_gvhd;
             }
-            $diemSV[] = $deTai->giangVienPhanBiens()->wherePivot('ma_sv', $sinhVien->ma_sv)->first()->pivot->diem_gvpb;
+            $diemSV[] = $gvpb->pivot->diem_gvpb;
 
-            $hoiDong = $deTai->hoiDongs()->first();
             $chuTich = $hoiDong->giangViens()->wherePivot('chuc_vu', 'Chủ tịch')->first();
             $thuKy = $hoiDong->giangViens()->wherePivot('chuc_vu', 'Thư ký')->first();
             $uyViens = $hoiDong->giangViens()->wherePivot('chuc_vu', 'Ủy viên')->get();
@@ -531,6 +534,11 @@ class SinhVienController extends Controller
             if ($diemTong >= 5.5) {
                 SinhVien::where('ma_sv', $sinhVien->ma_sv)->update([
                     'trang_thai' => 2,
+                    'diem' => number_format($diemTong, 2)
+                ]);
+            } else {
+                SinhVien::where('ma_sv', $sinhVien->ma_sv)->update([
+                    'trang_thai' => 0,
                     'diem' => number_format($diemTong, 2)
                 ]);
             }

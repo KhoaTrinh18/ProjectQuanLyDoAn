@@ -21,12 +21,14 @@
                                 <div class="ms-2 w-100 d-flex align-items-center gap-3">
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" name="ChamDiem[0][bao_ve]"
-                                            id="ChamDiem_bao_ve_1" value="1" checked>
+                                            id="ChamDiem_bao_ve_1" value="1"
+                                            {{ $deTai->duoc_bao_ve == 1 ? 'checked' : '' }}>
                                         <label class="form-check-label" for="ChamDiem_bao_ve_1">Được bảo vệ</label>
                                     </div>
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" name="ChamDiem[0][bao_ve]"
-                                            id="ChamDiem_bao_ve_0" value="0">
+                                            id="ChamDiem_bao_ve_0" value="0"
+                                            {{ $deTai->duoc_bao_ve == 0 ? 'checked' : '' }}>
                                         <label class="form-check-label" for="ChamDiem_bao_ve_0">Không được bảo vệ</label>
                                     </div>
                                 </div>

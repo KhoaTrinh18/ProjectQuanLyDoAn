@@ -8,7 +8,7 @@ use App\Http\Middleware\{
 };
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/dang-nhap');
 });
 
 Route::middleware([KiemTraDangXuat::class])->group(function () {

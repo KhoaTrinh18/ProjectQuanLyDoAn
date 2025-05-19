@@ -92,6 +92,7 @@ class ChamDiemPhanBienController extends Controller
 
         $maTaiKhoan = session()->get('ma_tai_khoan');
         $giangVien = GiangVien::where('ma_tk', $maTaiKhoan)->first();
+        Log::info($data);
 
         if ($data[0]['bao_ve'] == 0) {
             $deTai = DeTaiGiangVien::where('ma_de_tai', $ma_de_tai)->first();
@@ -107,7 +108,7 @@ class ChamDiemPhanBienController extends Controller
                 $deTai = DeTaiSinhVien::where('ma_de_tai', $ma_de_tai)->first();
                 $deTai->duoc_bao_ve = 0;
                 $deTai->save();
-                BangDiemGVPBChoSVDK::where('ma_de_tai', $ma_de_tai)
+                BangDiemGVPBChoSVDX::where('ma_de_tai', $ma_de_tai)
                     ->update([
                         'diem_gvpb' => 0,
                         'nhan_xet' => ''
@@ -246,7 +247,7 @@ class ChamDiemPhanBienController extends Controller
                 $deTai = DeTaiSinhVien::where('ma_de_tai', $ma_de_tai)->first();
                 $deTai->duoc_bao_ve = 0;
                 $deTai->save();
-                BangDiemGVPBChoSVDK::where('ma_de_tai', $ma_de_tai)
+                BangDiemGVPBChoSVDX::where('ma_de_tai', $ma_de_tai)
                     ->update([
                         'diem_gvpb' => 0,
                         'nhan_xet' => ''

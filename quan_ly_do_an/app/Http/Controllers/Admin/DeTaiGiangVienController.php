@@ -25,7 +25,7 @@ class DeTaiGiangVienController extends Controller
         $limit = $request->query('limit', 10);
         $thietLap = ThietLap::where('trang_thai', 1)->first();
 
-        $deTaiGVs = DeTaiGiangVien::where(['da_huy' => 0, 'nam_hoc' => $thietLap->nam_hoc])->orderBy('ma_de_tai', 'desc')->paginate($limit);
+        $deTaiGVs = DeTaiGiangVien::where(['da_huy' => 0, 'nam_hoc' => $thietLap->nam_hoc])->orderByRaw("FIELD(trang_thai, 1, 2, 0)")->paginate($limit);
         $chuyenNganhs = BoMon::where('da_huy', 0)->orderBy('ma_bo_mon', 'desc')->get();
 
         return view('admin.detaigiangvien.danhSach', compact('deTaiGVs', 'chuyenNganhs'));

@@ -83,7 +83,7 @@ class ThongTinDeTaiController extends Controller
         $ngayHomNay = Carbon::now()->toDateString();
         $ngayKetThucDK = Carbon::parse($thietLap->ngay_ket_thuc_dang_ky)->toDateString();
 
-        if($ngayHomNay > $ngayKetThucDK) {
+        if ($ngayHomNay > $ngayKetThucDK) {
             return response()->json([
                 'success' => false,
             ]);
@@ -92,14 +92,14 @@ class ThongTinDeTaiController extends Controller
             $deTai->da_huy = 1;
             $deTai->trang_thai = null;
             $deTai->save();
-    
+
             $maSVs = $deTai->sinhViens->pluck('ma_sv')->toArray();
-    
+
             SinhVienDeTaiSV::where('ma_de_tai', $ma_de_tai)->delete();
-    
+
             SinhVien::whereIn('ma_sv', $maSVs)->update([
                 'loai_sv' => null,
-                'dang_ky' => 0 
+                'dang_ky' => 0
             ]);
         }
 
@@ -198,8 +198,10 @@ class ThongTinDeTaiController extends Controller
                 'errors' => $validator->errors()->toArray(),
             ]);
         }
-        
+
         try {
+            $thietLap = ThietLap::where('trang_thai', 1)->first();
+
             $deTai = DeTaiSinhVien::where('ma_de_tai', $data['ma_de_tai'])->first();
             DeTaiSinhVien::where('ma_de_tai', $data['ma_de_tai'])->update([
                 'ten_de_tai' =>  $data['ten_de_tai'],
@@ -213,22 +215,22 @@ class ThongTinDeTaiController extends Controller
             SinhVien::whereIn('mssv', $mssvDeTai)->update([
                 'dang_ky' => 0,
                 'loai_sv' => null,
-            ]); 
+            ]);
 
             $maTaiKhoan = session()->get('ma_tai_khoan');
-            $sinhVien = SinhVien::where('ma_tk', $maTaiKhoan)->first();
+            $sinhVien = SinhVien::where('ma_tk', $maTaiKhoan)->where('nam_hoc', $thietLap->nam_hoc)->first();
             $mssvList[] = $sinhVien->mssv;
-            $sinhViens = SinhVien::whereIn('mssv', $mssvList)->get();
+            $sinhViens = SinhVien::whereIn('mssv', $mssvList)->where('nam_hoc', $thietLap->nam_hoc)->get();
             SinhVien::whereIn('mssv', $mssvList)->update([
                 'dang_ky' => 1,
                 'loai_sv' => 'de_xuat',
-            ]); 
+            ]);
             $ngayDeXuat = SinhVienDeTaiSV::where('ma_de_tai', $data['ma_de_tai'])->first()->ngay_de_xuat;
 
             SinhVienDeTaiSV::where('ma_de_tai', $data['ma_de_tai'])->delete();
 
             $sinhVienDTSVs = [];
-            foreach($sinhViens as $sinhVien) {
+            foreach ($sinhViens as $sinhVien) {
                 $sinhVienDTSVs[] = [
                     'ma_sv' => $sinhVien->ma_sv,
                     'ma_de_tai' => $data['ma_de_tai'],
@@ -237,7 +239,7 @@ class ThongTinDeTaiController extends Controller
                 ];
             }
             SinhVienDeTaiSV::insert($sinhVienDTSVs);
-            
+
             return response()->json([
                 'success' => true,
                 'errors' => [],

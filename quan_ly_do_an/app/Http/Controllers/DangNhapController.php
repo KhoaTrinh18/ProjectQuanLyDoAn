@@ -68,7 +68,7 @@ class DangNhapController extends Controller
         } else if ($taiKhoanGV->loai_tk == 'admin') {
             Session::put('ten_admin', 'admin');
             Session::put('role', 'admin');
-            $route = route('thiet_lap.danh_sach');
+            $route = route('thong_ke');
         }
 
         return response()->json([

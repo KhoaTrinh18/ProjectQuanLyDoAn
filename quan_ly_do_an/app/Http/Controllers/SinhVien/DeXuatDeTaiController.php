@@ -115,9 +115,9 @@ class DeXuatDeTaiController extends Controller
             $deTaiSV->save();
 
             $maTaiKhoan = session()->get('ma_tai_khoan');
-            $sinhVien = SinhVien::where('ma_tk', $maTaiKhoan)->first();
+            $sinhVien = SinhVien::where('ma_tk', $maTaiKhoan)->where('nam_hoc', $thietLap->nam_hoc)->first();
             $mssvList[] = $sinhVien->mssv;
-            $sinhViens = SinhVien::whereIn('mssv', $mssvList)->get();
+            $sinhViens = SinhVien::whereIn('mssv', $mssvList)->where('nam_hoc', $thietLap->nam_hoc)->get();
             SinhVien::whereIn('mssv', $mssvList)->update([
                 'dang_ky' => 1,
                 'loai_sv' => 'de_xuat',

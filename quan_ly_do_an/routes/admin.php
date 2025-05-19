@@ -14,11 +14,12 @@ use App\Http\Controllers\Admin\{
     LinhVucController,
     PhanCongHoiDongController,
     SinhVienController,
-    SinhVienDeTaiAllController
+    SinhVienDeTaiAllController,
+    ThongKeController
 };
 use App\Http\Middleware\KiemTraDangNhap;
 
-Route::middleware([KiemTraDangNhap::class. ':admin'])->group(function () {
+Route::middleware([KiemTraDangNhap::class . ':admin'])->group(function () {
     Route::get('/thiet-lap/danh-sach', [ThietLapController::class, 'danhSach'])->name('thiet_lap.danh_sach');
     Route::get('/thiet-lap/them', [ThietLapController::class, 'them'])->name('thiet_lap.them');
     Route::post('/thiet-lap/xac-nhan-them', [ThietLapController::class, 'xacNhanThem'])->name('thiet_lap.xac_nhan_them');
@@ -255,4 +256,6 @@ Route::middleware([KiemTraDangNhap::class. ':admin'])->group(function () {
     Route::get('/sinh-vien-de-tai-all/danh-sach', [SinhVienDeTaiAllController::class, 'danhSach'])->name('sinh_vien_de_tai_all.danh_sach');
     Route::get('/sinh-vien-de-tai-all/page-ajax', [SinhVienDeTaiAllController::class, 'pageAjax'])->name('sinh_vien_de_tai_all.page_ajax');
     Route::get('/sinh-vien-de-tai-all/chi-tiet/{ma_sv}', [SinhVienDeTaiAllController::class, 'chiTiet'])->name('sinh_vien_de_tai_all.chi_tiet');
+
+    Route::get('/thong-ke', [ThongKeController::class, 'thongKe'])->name('thong_ke');
 });

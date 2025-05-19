@@ -19,7 +19,7 @@ class DeTaiSinhVien extends Model
     }
 
     public function sinhViens(){
-        return $this->belongsToMany(SinhVien::class, 'sinh_vien_de_tai_sv', 'ma_de_tai', 'ma_sv')->where('sinh_vien.trang_thai', '!=', '3');
+        return $this->belongsToMany(SinhVien::class, 'sinh_vien_de_tai_sv', 'ma_de_tai', 'ma_sv')->where('sinh_vien.trang_thai', '!=', '3')->distinct();
     }
 
     public function sinhVienPhanBiens(){
