@@ -14,12 +14,12 @@
 
                         @if ($deTaiSV->sinhViens->count() == 1)
                             @php $sinhVien = $deTaiSV->sinhViens->first(); @endphp
-                            <p><strong>Sinh viên ra đề tài:</strong> {{ $sinhVien->ho_ten }} - MSSV: {{ $sinhVien->mssv }}
+                            <p><strong>Sinh viên ra đề tài:</strong> {{ $sinhVien->ho_ten }} ({{ $sinhVien->mssv }}) - Email: {{ $sinhVien->email }} - Số điện thoại: {{ $sinhVien->so_dien_thoai }}
                             @else
                             <p><strong>Sinh viên ra đề tài:</strong></p>
                             <ul>
                                 @foreach ($deTaiSV->sinhViens as $sinhVien)
-                                    <li>{{ $sinhVien->ho_ten }} - MSSV: {{ $sinhVien->mssv }}
+                                    <li>{{ $sinhVien->ho_ten }} ({{ $sinhVien->mssv }}) - Email: {{ $sinhVien->email }} - Số điện thoại: {{ $sinhVien->so_dien_thoai }}
                                 @endforeach
                             </ul>
                         @endif

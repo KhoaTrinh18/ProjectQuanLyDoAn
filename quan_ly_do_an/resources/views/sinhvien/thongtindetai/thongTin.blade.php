@@ -176,9 +176,11 @@
                                 @if ($loaiDeTai == 'de_tai_sv')
                                     <p><strong>Trạng thái: </strong>
                                         @if ($deTai->trang_thai == 1)
-                                            <span class="text-warning">Đang xử lý</span>
+                                            <span class="text-warning">Chờ duyệt</span>
                                         @elseif($deTai->trang_thai == 2)
                                             <span class="text-success">Đã duyệt</span>
+                                        @elseif($deTai->trang_thai == 3)
+                                            <span class="text-info">Duyệt cần chỉnh sửa</span>
                                         @endif
                                     </p>
                                 @else

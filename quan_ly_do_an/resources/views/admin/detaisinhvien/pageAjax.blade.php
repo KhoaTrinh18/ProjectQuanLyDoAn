@@ -45,7 +45,7 @@
             <thead style="background: #222e3c;">
                 <tr>
                     <th scope="col" class="text-white">#</th>
-                    <th scope="col" class="text-white" style="width: 35%;">Tên đề tài</th>
+                    <th scope="col" class="text-white" style="width: 25%;">Tên đề tài</th>
                     <th scope="col" class="text-white">Lĩnh vực</th>
                     <th scope="col" class="text-white">Sinh viên</th>
                     <th scope="col" class="text-white">Ngày đề xuất</th>
@@ -59,7 +59,7 @@
                         <td scope="row">
                             {{ $key + 1 }}</td>
                         <td
-                            style="width: 35%; word-wrap: break-word; overflow-wrap: break-word; white-space: normal; word-break: break-word;">
+                            style="width: 25%; word-wrap: break-word; overflow-wrap: break-word; white-space: normal; word-break: break-word;">
                             {{ $deTaiSV->ten_de_tai }}
                         </td>
                         <td> {{ $deTaiSV->linhVuc->ten_linh_vuc }} </td>
@@ -70,6 +70,8 @@
                                 <span class="text-warning">Chờ duyệt</span>
                             @elseif ($deTaiSV->trang_thai == 2)
                                 <span class="text-success">Đã duyệt</span>
+                            @elseif ($deTaiSV->trang_thai == 3)
+                                <span class="text-info">Duyệt cần chỉnh sửa</span>
                             @else
                                 <span class="text-danger">Không duyệt</span>
                             @endif
@@ -78,6 +80,9 @@
                             @if ($deTaiSV->trang_thai == 1)
                                 <a href="{{ route('de_tai_sinh_vien.duyet', ['ma_de_tai' => $deTaiSV->ma_de_tai]) }}"
                                     class="btn btn-primary btn-sm">Duyệt</a>
+                            @elseif($deTaiSV->trang_thai == 3)
+                                <a href="{{ route('de_tai_sinh_vien.duyet', ['ma_de_tai' => $deTaiSV->ma_de_tai]) }}"
+                                    class="btn btn-primary btn-sm">Duyệt hoàn toàn</a>
                             @else
                                 <a href="{{ route('de_tai_sinh_vien.chi_tiet', ['ma_de_tai' => $deTaiSV->ma_de_tai]) }}"
                                     class="btn btn-secondary btn-sm">Xem</a>

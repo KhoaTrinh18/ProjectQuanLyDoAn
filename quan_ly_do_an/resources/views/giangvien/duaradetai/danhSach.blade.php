@@ -17,7 +17,7 @@
                             <thead style="background: #222e3c;">
                                 <tr>
                                     <th scope="col" class="text-white">#</th>
-                                    <th scope="col" class="text-white" style="width: 32%;">Tên đề tài</th>
+                                    <th scope="col" class="text-white" style="width: 30%;">Tên đề tài</th>
                                     <th scope="col" class="text-white">Lĩnh vực</th>
                                     <th scope="col" class="text-white">Số lượng sinh viên tối đa</th>
                                     <th scope="col" class="text-white">Ngày đưa ra</th>
@@ -31,17 +31,20 @@
                                         <td scope="row">
                                             {{ $key + 1 }}</td>
                                         <td
-                                            style="width: 32%; word-wrap: break-word; overflow-wrap: break-word; white-space: normal; word-break: break-word;">
+                                            style="width: 30%; word-wrap: break-word; overflow-wrap: break-word; white-space: normal; word-break: break-word;">
                                             {{ $deTai->ten_de_tai }}
                                         </td>
                                         <td>{{ $deTai->linhVuc->ten_linh_vuc }}</td>
                                         <td class="text-center">{{ $deTai->so_luong_sv_toi_da }}</td>
-                                        <td>{{ \Carbon\Carbon::create($deTai->ngayDuaRa->ngay_dua_ra)->format('d-m-Y') }}</td>
+                                        <td>{{ \Carbon\Carbon::create($deTai->ngayDuaRa->ngay_dua_ra)->format('d-m-Y') }}
+                                        </td>
                                         <td>
                                             @if ($deTai->trang_thai == 1)
                                                 <span class="text-warning">Chờ duyệt</span>
                                             @elseif ($deTai->trang_thai == 2)
                                                 <span class="text-success">Đã duyệt</span>
+                                            @elseif ($deTai->trang_thai == 3)
+                                                <span class="text-info">Duyệt cần chỉnh sửa</span>
                                             @else
                                                 <span class="text-danger">Không duyệt</span>
                                             @endif
@@ -49,11 +52,16 @@
                                         <td class="text-center">
                                             <a href="{{ route('dua_ra_de_tai.chi_tiet', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
                                                 class="btn btn-secondary btn-sm">Xem</a>
-                                            @if ($deTai->trang_thai == 1 && $checkNgayHetHan == 0)
-                                                <a href="{{ route('dua_ra_de_tai.huy', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
-                                                    class="btn btn-danger btn-sm">hủy</a>
-                                                <a href="{{ route('dua_ra_de_tai.sua', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
-                                                    class="btn btn-primary btn-sm">Sửa</a>
+                                            @if ($checkNgayHetHan == 0)
+                                                @if ($deTai->trang_thai == 1)
+                                                    <a href="{{ route('dua_ra_de_tai.huy', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
+                                                        class="btn btn-danger btn-sm">hủy</a>
+                                                    <a href="{{ route('dua_ra_de_tai.sua', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
+                                                        class="btn btn-primary btn-sm">Sửa</a>
+                                                @elseif ($deTai->trang_thai == 3)
+                                                    <a href="{{ route('dua_ra_de_tai.sua', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
+                                                        class="btn btn-primary btn-sm">Sửa</a>
+                                                @endif
                                             @endif
                                         </td>
                                     </tr>
@@ -66,7 +74,8 @@
                             </tbody>
                         </table>
                         <h5 class="text-center" style="font-weight: bold"><i>Khi đề tài đã được duyệt giảng viên không thể
-                                tự hủy. Nếu cần hủy thì phải liên hệ với trưởng khoa trước thời gian đăng ký 1 tuần ({{ $ngayHetHan }})!</i>
+                                tự hủy. Nếu cần hủy thì phải liên hệ với trưởng khoa trước thời gian đăng ký 1 tuần
+                                ({{ $ngayHetHan }})!</i>
                         </h5>
                     </div>
                 </div>

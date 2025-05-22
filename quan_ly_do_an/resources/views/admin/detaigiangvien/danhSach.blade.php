@@ -68,6 +68,7 @@
                                         <option value="0">Không duyệt</option>
                                         <option value="1">Chờ duyệt</option>
                                         <option value="2">Đã duyệt</option>
+                                        <option value="3">Duyệt cần chỉnh sửa</option>
                                     </select>
                                 </div>
                             </div>

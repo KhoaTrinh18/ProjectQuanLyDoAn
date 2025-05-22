@@ -128,13 +128,24 @@ class DeTaiSinhVienController extends Controller
 
         $data = $request->input('DeTai', []);
 
-        DeTaiSinhVien::where('ma_de_tai', $data['ma_de_tai'])->update([
-            'trang_thai' => 2
-        ]);
-        
+        $deTaiSV = DeTaiSinhVien::where('ma_de_tai', $data['ma_de_tai'])->first();
+        $deTaiSV->trang_thai = 2;
+        $deTaiSV->save();
+
         SinhVienDeTaiSV::where('ma_de_tai', $data['ma_de_tai'])->update([
             'trang_thai' => 2
         ]);
+
+        $ngayDeXuat = $deTaiSV->ngayDeXuat->ngay_de_xuat;
+        foreach ($deTaiSV->sinhViens as $sinhVien) {
+            if ($sinhVien && $sinhVien->email) {
+                $emailList[] = $sinhVien->email;
+            }
+        }
+
+        if (!empty($emailList)) {
+            SendEmailJob::dispatch($emailList, $deTaiSV, $ngayDeXuat, '', 'duyet');
+        }
 
         return response()->json(['success' => true]);
     }
@@ -149,9 +160,9 @@ class DeTaiSinhVienController extends Controller
         $lyDoTuChoi = $request->input('lyDoTuChoi');
 
         $validator = Validator::make(
-            ['lyDoTuChoi' => $lyDoTuChoi],  
+            ['lyDoTuChoi' => $lyDoTuChoi],
             [
-                'lyDoTuChoi' => 'required',  
+                'lyDoTuChoi' => 'required',
             ],
             [
                 'lyDoTuChoi.required' => 'Lý do từ chối không được để trống.',
@@ -174,7 +185,7 @@ class DeTaiSinhVienController extends Controller
         SinhVien::whereIn('mssv', $mssvDeTai)->update([
             'dang_ky' => 0,
             'loai_sv' => null,
-        ]); 
+        ]);
 
         SinhVienDeTaiSV::where('ma_de_tai',  $data['ma_de_tai'])->update([
             'trang_thai' => 0
@@ -187,8 +198,56 @@ class DeTaiSinhVienController extends Controller
             }
         }
 
-        if(!empty($emailList)) {
+        if (!empty($emailList)) {
             SendEmailJob::dispatch($emailList, $deTaiSV, $ngayDeXuat, $lyDoTuChoi);
+        }
+
+        return response()->json(['success' => true]);
+    }
+
+    public function xacNhanDuyetSua(Request $request)
+    {
+        if (!$request->isMethod('post')) {
+            return redirect()->back()->with('error', 'Bạn không thể truy cập trực tiếp trang này!');
+        }
+
+        $data = $request->input('DeTai', []);
+        $noiDungSua = $request->input('noiDungSua');
+
+        $validator = Validator::make(
+            ['noiDungSua' => $noiDungSua],
+            [
+                'noiDungSua' => 'required',
+            ],
+            [
+                'noiDungSua.required' => 'Nội dung cần chỉnh sửa không được để trống.',
+            ]
+        );
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()->toArray(),
+            ]);
+        }
+
+        $deTaiSV = DeTaiSinhVien::where('ma_de_tai', $data['ma_de_tai'])->first();
+        $deTaiSV->trang_thai = 3;
+        $deTaiSV->save();
+
+        SinhVienDeTaiSV::where('ma_de_tai', $data['ma_de_tai'])->update([
+            'trang_thai' => 3
+        ]);
+
+        $ngayDeXuat = $deTaiSV->ngayDeXuat->ngay_de_xuat;
+        foreach ($deTaiSV->sinhViens as $sinhVien) {
+            if ($sinhVien && $sinhVien->email) {
+                $emailList[] = $sinhVien->email;
+            }
+        }
+
+        if (!empty($emailList)) {
+            SendEmailJob::dispatch($emailList, $deTaiSV, $ngayDeXuat, $noiDungSua, 'duyet_sua');
         }
 
         return response()->json(['success' => true]);

@@ -28,6 +28,7 @@ class DuaRaDeTaiController extends Controller
         $maDeTais = GiangVienDeTaiGV::where('ma_gv', $giangVien->ma_gv)->pluck('ma_de_tai');
         $deTais = DeTaiGiangVien::whereIn('ma_de_tai', $maDeTais)
             ->where(['da_huy' => 0, 'nam_hoc' => $thietLap->nam_hoc])
+            ->orderByRaw("FIELD(trang_thai, 1, 3, 2, 0)")
             ->orderBy('ma_de_tai', 'desc')
             ->get();
 

@@ -15,7 +15,6 @@ use App\Models\{
     GiangVienDeTaiGV,
     ThietLap
 };
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class DeTaiGiangVienController extends Controller
@@ -25,7 +24,7 @@ class DeTaiGiangVienController extends Controller
         $limit = $request->query('limit', 10);
         $thietLap = ThietLap::where('trang_thai', 1)->first();
 
-        $deTaiGVs = DeTaiGiangVien::where(['da_huy' => 0, 'nam_hoc' => $thietLap->nam_hoc])->orderByRaw("FIELD(trang_thai, 1, 2, 0)")->paginate($limit);
+        $deTaiGVs = DeTaiGiangVien::where(['da_huy' => 0, 'nam_hoc' => $thietLap->nam_hoc])->orderByRaw("FIELD(trang_thai, 1, 3, 2, 0)")->orderBy('ma_de_tai', 'desc')->paginate($limit);
         $chuyenNganhs = BoMon::where('da_huy', 0)->orderBy('ma_bo_mon', 'desc')->get();
 
         return view('admin.detaigiangvien.danhSach', compact('deTaiGVs', 'chuyenNganhs'));
@@ -133,13 +132,26 @@ class DeTaiGiangVienController extends Controller
 
         $data = $request->input('DeTai', []);
 
-        DeTaiGiangVien::where('ma_de_tai', $data['ma_de_tai'])->update([
-            'trang_thai' => 2
-        ]);
+        $deTaiGV = DeTaiGiangVien::where('ma_de_tai', $data['ma_de_tai'])->first();
+        $deTaiGV->trang_thai = 2;
+        $deTaiGV->save();
 
         GiangVienDeTaiGV::where('ma_de_tai', $data['ma_de_tai'])->update([
             'trang_thai' => 2
         ]);
+
+        $ngayDuaRa = $deTaiGV->ngayDuaRa->ngay_dua_ra;
+
+        foreach ($deTaiGV->giangViens as $giangVien) {
+            if ($giangVien && $giangVien->email) {
+                $emailList[] = $giangVien->email;
+            }
+        }
+
+
+        if (!empty($emailList)) {
+            SendEmailJob::dispatch($emailList, $deTaiGV, $ngayDuaRa, '', 'duyet');
+        }
 
         return response()->json(['success' => true]);
     }
@@ -187,7 +199,56 @@ class DeTaiGiangVienController extends Controller
         }
 
         if (!empty($emailList)) {
-            SendEmailJob::dispatch($emailList, $deTaiGV, $ngayDuaRa, $lyDoTuChoi);
+            SendEmailJob::dispatch($emailList, $deTaiGV, $ngayDuaRa, $lyDoTuChoi, 'khong_duyet');
+        }
+
+        return response()->json(['success' => true]);
+    }
+
+    public function xacNhanDuyetSua(Request $request)
+    {
+        if (!$request->isMethod('post')) {
+            return redirect()->back()->with('error', 'Bạn không thể truy cập trực tiếp trang này!');
+        }
+
+        $data = $request->input('DeTai', []);
+        $noiDungSua = $request->input('noiDungSua');
+
+        $validator = Validator::make(
+            ['noiDungSua' => $noiDungSua],
+            [
+                'noiDungSua' => 'required',
+            ],
+            [
+                'noiDungSua.required' => 'Nội dung cần chỉnh sửa không được để trống.',
+            ]
+        );
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()->toArray(),
+            ]);
+        }
+
+        $deTaiGV = DeTaiGiangVien::where('ma_de_tai', $data['ma_de_tai'])->first();
+        $deTaiGV->trang_thai = 3;
+        $deTaiGV->save();
+
+        GiangVienDeTaiGV::where('ma_de_tai', $data['ma_de_tai'])->update([
+            'trang_thai' => 3
+        ]);
+
+        $ngayDuaRa = $deTaiGV->ngayDuaRa->ngay_dua_ra;
+
+        foreach ($deTaiGV->giangViens as $giangVien) {
+            if ($giangVien && $giangVien->email) {
+                $emailList[] = $giangVien->email;
+            }
+        }
+
+        if (!empty($emailList)) {
+            SendEmailJob::dispatch($emailList, $deTaiGV, $ngayDuaRa, $noiDungSua, 'duyet_sua');
         }
 
         return response()->json(['success' => true]);

@@ -14,12 +14,12 @@
 
                         @if ($deTaiSV->sinhViens->count() == 1)
                             @php $sinhVien = $deTaiSV->sinhViens->first(); @endphp
-                            <p><strong>Sinh viên ra đề tài:</strong> {{ $sinhVien->ho_ten }} - MSSV: {{ $sinhVien->mssv }}
+                            <p><strong>Sinh viên ra đề tài:</strong> {{ $sinhVien->ho_ten }} ({{ $sinhVien->mssv }}) - Email: {{ $sinhVien->email }} - Số điện thoại: {{ $sinhVien->so_dien_thoai }}
                             @else
                             <p><strong>Sinh viên ra đề tài:</strong></p>
                             <ul>
                                 @foreach ($deTaiSV->sinhViens as $sinhVien)
-                                    <li>{{ $sinhVien->ho_ten }} - MSSV: {{ $sinhVien->mssv }}
+                                    <li>{{ $sinhVien->ho_ten }} ({{ $sinhVien->mssv }}) - Email: {{ $sinhVien->email }} - Số điện thoại: {{ $sinhVien->so_dien_thoai }}
                                 @endforeach
                             </ul>
                         @endif
@@ -34,10 +34,17 @@
                             <div class="text-center">
                                 <a href="{{ route('de_tai_sinh_vien.danh_sach') }}" class="btn btn-secondary btn-lg">Quay
                                     lại</a>
-                                <button type="button" class="btn btn-danger btn-lg" data-bs-toggle="modal"
-                                    data-bs-target="#cancelModal">Xác nhận không duyệt</button>
-                                <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal"
-                                    data-bs-target="#confirmModal">Xác nhận duyệt</button>
+                                @if ($deTaiSV->trang_thai == 3)
+                                    <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal"
+                                        data-bs-target="#confirmModal">Xác nhận duyệt hoàn toàn</button>
+                                @else
+                                    <button type="button" class="btn btn-danger btn-lg" data-bs-toggle="modal"
+                                        data-bs-target="#cancelModal">Xác nhận không duyệt</button>
+                                    <button type="button" class="btn btn-info btn-lg" data-bs-toggle="modal"
+                                        data-bs-target="#editModal">Xác nhận duyệt cần chỉnh sửa</button>
+                                    <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal"
+                                        data-bs-target="#confirmModal">Xác nhận duyệt</button>
+                                @endif
                             </div>
                             <div class="modal fade" id="cancelModal" tabindex="-1" aria-labelledby="cancelModalLabel"
                                 aria-hidden="true">
@@ -76,12 +83,38 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel"
+                                aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content rounded-4 shadow-sm border-0">
+                                        <div class="modal-header bg-light border-bottom-0">
+                                            <h5 class="modal-title fw-semibold text-primary" id="editModalLabel">Xác nhận
+                                                duyệt cần chỉnh sửa</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Đóng"></button>
+                                        </div>
+                                        <div class="modal-body text-center fs-5 text-secondary">
+                                            <div class="text-start">
+                                                <label class="form-label fw-semibold">Nội dung cần chỉnh sửa:</label>
+                                                <textarea class="form-control mt-3" name="noiDungSua" rows="3" placeholder="Nhập nội dung cần chỉnh sửa..."></textarea>
+                                                <span class="error-message text-danger d-none mt-2 error-noiDungSua"></span>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer bg-light border-top-0">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Hủy</button>
+                                            <button type="submit" class="btn btn-primary" id="duyetSua">Xác nhận</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel"
                                 aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content rounded-4 shadow-sm border-0">
                                         <div class="modal-header bg-light border-bottom-0">
-                                            <h5 class="modal-title fw-semibold text-primary" id="confirmModalLabel">Xác nhận
+                                            <h5 class="modal-title fw-semibold text-primary" id="confirmModalLabel">Xác
+                                                nhận
                                                 duyệt</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                 aria-label="Đóng"></button>
@@ -207,6 +240,58 @@
                                 window.location.href =
                                     "{{ route('de_tai_sinh_vien.danh_sach') }}";
                             });
+                        } else {
+                            $.each(result.errors, function(field, messages) {
+                                $('.error-' + field).text(messages[0]).removeClass(
+                                    "d-none").addClass("d-block");
+                            });
+                        }
+                    },
+                    error: function(xhr) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Thất bại!',
+                            text: 'Không duyệt thất bại! Vui lòng thử lại',
+                            confirmButtonText: 'OK',
+                            timer: 1000,
+                            showConfirmButton: false
+                        })
+                    },
+                });
+            });
+
+            $("#duyetSua").click(function(event) {
+                event.preventDefault();
+
+                let form = $("#form_duyet").get(0);
+                let formData = new FormData(form);
+
+                $(".error-message").text('').removeClass(
+                    "d-block").addClass("d-none");
+
+                $.ajax({
+                    url: "{{ route('de_tai_sinh_vien.xac_nhan_duyet_sua') }}",
+                    type: "POST",
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    headers: {
+                        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+                    },
+                    success: function(result) {
+                        if (result.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Thành công!',
+                                text: 'Duyệt nhưng cần chỉnh sửa thành công!',
+                                confirmButtonText: 'OK',
+                                timer: 1000,
+                                showConfirmButton: false
+                            }).then(() => {
+                                window.location.href =
+                                    "{{ route('de_tai_sinh_vien.danh_sach') }}";
+                            });
+
                         } else {
                             $.each(result.errors, function(field, messages) {
                                 $('.error-' + field).text(messages[0]).removeClass(

@@ -44,6 +44,10 @@ Route::middleware([KiemTraDangNhap::class . ':admin'])->group(function () {
     Route::get('/de-tai-giang-vien/xac-nhan-khong-duyet', function () {
         return redirect()->back()->with('error', 'Sai đường dẫn');
     });
+    Route::post('/de-tai-giang-vien/xac-nhan-duyet-sua', [DeTaiGiangVienController::class, 'xacNhanDuyetSua'])->name('de_tai_giang_vien.xac_nhan_duyet_sua');
+    Route::get('/de-tai-giang-vien/xac-nhan-duyet-sua', function () {
+        return redirect()->back()->with('error', 'Sai đường dẫn');
+    });
     Route::post('/de-tai-giang-vien/xac-nhan-duyet', [DeTaiGiangVienController::class, 'xacNhanDuyet'])->name('de_tai_giang_vien.xac_nhan_duyet');
     Route::get('/de-tai-giang-vien/xac-nhan-duyet', function () {
         return redirect()->back()->with('error', 'Sai đường dẫn');
@@ -60,6 +64,10 @@ Route::middleware([KiemTraDangNhap::class . ':admin'])->group(function () {
     Route::get('/de-tai-sinh-vien/duyet/{ma_de_tai}', [DeTaiSinhVienController::class, 'duyet'])->name('de_tai_sinh_vien.duyet');
     Route::post('/de-tai-sinh-vien/xac-nhan-duyet', [DeTaiSinhVienController::class, 'xacNhanDuyet'])->name('de_tai_sinh_vien.xac_nhan_duyet');
     Route::get('/de-tai-sinh-vien/xac-nhan-duyet', function () {
+        return redirect()->back()->with('error', 'Sai đường dẫn');
+    });
+    Route::post('/de-tai-sinh-vien/xac-nhan-duyet-sua', [DeTaiSinhVienController::class, 'xacNhanDuyetSua'])->name('de_tai_sinh_vien.xac_nhan_duyet_sua');
+    Route::get('/de-tai-sinh-vien/xac-nhan-duyet-sua', function () {
         return redirect()->back()->with('error', 'Sai đường dẫn');
     });
     Route::post('/de-tai-sinh-vien/xac-nhan-khong-duyet', [DeTaiSinhVienController::class, 'xacNhanKhongDuyet'])->name('de_tai_sinh_vien.xac_nhan_khong_duyet');
