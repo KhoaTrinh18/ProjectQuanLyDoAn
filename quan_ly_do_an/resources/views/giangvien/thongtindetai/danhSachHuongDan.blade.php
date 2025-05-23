@@ -7,46 +7,51 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <h2 style="font-weight: bold">Danh sách đề tài đã đăng ký</h2>
+                        <h2 style="font-weight: bold">Danh sách đề tài hướng dẫn</h2>
                     </div>
                     <div class="card-body">
-                        <form class="d-flex mb-3" id="form_tim_kiem">
-                            <div class="d-flex flex-column" style="width: 350px">
-                                <div class="d-flex align-items-center justify-content-between">
-                                    <label for="ten_de_tai">Tên đề tài:</label>
-                                    <input type="text" name="ten_de_tai" class="form-control ms-2 w-75 shadow-none"
-                                        placeholder="Tên đề tài">
-                                </div>
-                                <div class="d-flex align-items-center justify-content-between mt-2">
-                                    <label for="ma_linh_vuc">Lĩnh vực:</label>
-                                    <select class="form-select ms-2 w-75 shadow-none" name="ma_linh_vuc">
-                                        <option value="" selected disabled hidden>Chọn lĩnh vực</option>
-                                        <option value="">Tất cả</option>
-                                        @foreach ($linhVucs as $linhVuc)
-                                            <option value="{{ $linhVuc->ma_linh_vuc }}">{{ $linhVuc->ten_linh_vuc }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="d-flex flex-column ms-3" style="width: 350px">
-                                <div class="d-flex align-items-center justify-content-between">
-                                    <label for="nam_hoc" style="width: 205px">Năm học:</label>
-                                    <select class="form-select ms-2 w-75 shadow-none" name="nam_hoc">
-                                        <option value="" selected hidden disabled>Chọn năm học</option>
-                                        <option value="">Tất cả</option>
-                                        @foreach ($thietLaps as $thietLap)
-                                            <option value="{{ $thietLap->nam_hoc }}">{{ $thietLap->nam_hoc }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="mt-2 d-flex justify-content-end">
-                                    <button id="clear" class="btn btn-secondary me-2">Tạo lại</button>
-                                    <button id="timKiem" class="btn btn-primary" type="submit">Tìm kiếm</button>
-                                </div>
-                            </div>
-                        </form>
-                        @include('giangvien.thongtindetai.pageAjax', ['deTais' => $deTais])
+                        <table class="table table-bordered table-striped table-hover" style="font-size: 13px">
+                            <thead style="background: #222e3c;">
+                                <tr>
+                                    <th scope="col" class="text-white">#</th>
+                                    <th scope="col" class="text-white" style="width: 35%;">Tên đề tài</th>
+                                    <th scope="col" class="text-white">Lĩnh vực</th>
+                                    <th scope="col" class="text-white">Sinh viên thực hiện</th>
+                                    <th scope="col" class="text-white"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-body">
+                                @foreach ($deTais as $key => $deTai)
+                                    <tr>
+                                        <td scope="row">
+                                            {{ $key + 1 }}</td>
+                                        <td
+                                            style="width: 35%; word-wrap: break-word; overflow-wrap: break-word; white-space: normal; word-break: break-word;">
+                                            {{ $deTai->ten_de_tai }}
+                                        </td>
+                                        <td>{{ $deTai->linhVuc->ten_linh_vuc }}</td>
+                                        <td>
+                                            @if ($deTai->sinhVienDangKys->count() == 0)
+                                                <i>Chưa có</i>
+                                            @else
+                                                @foreach ($deTai->sinhVienDangKys as $sinhVien)
+                                                    {{ $sinhVien->ho_ten }}</br>
+                                                @endforeach
+                                            @endif
+                                        </td>
+                                        <td class="text-center">
+                                            <a href="{{ route('thong_tin_de_tai.chi_tiet_huong_dan', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
+                                                class="btn btn-secondary btn-sm">Xem</a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                @if ($deTais->isEmpty())
+                                    <tr>
+                                        <td colspan="6" class="text-center">Không có đề tài</td>
+                                    </tr>
+                                @endif
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>

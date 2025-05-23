@@ -36,10 +36,14 @@ Route::middleware([KiemTraDangNhap::class . ':giangvien'])->group(function () {
     Route::get('/thong-tin-de-tai/huy-sinh-vien', function () {
         return redirect()->back()->with('error', 'Sai đường dẫn');
     });
+    Route::post('/thong-tin-de-tai/xac-nhan-huong-dan', [ThongTinDeTaiController::class, 'xacNhanHuongDan'])->name('thong_tin_de_tai.xac_nhan_huong_dan');
+    Route::get('/thong-tin-de-tai/xac-nhan-huong-dan', function () {
+        return redirect()->back()->with('error', 'Sai đường dẫn');
+    });
 
-    Route::get('/thong-tin-de-tai/danh-sach-all', [ThongTinDeTaiController::class, 'danhSachAll'])->name('thong_tin_de_tai.danh_sach_all');
+    Route::get('/thong-tin-de-tai/danh-sach-huong-dan', [ThongTinDeTaiController::class, 'danhSachHuongDan'])->name('thong_tin_de_tai.danh_sach_huong_dan');
     Route::get('/thong-tin-de-tai/page-ajax', [ThongTinDeTaiController::class, 'pageAjax'])->name('thong_tin_de_tai.page_ajax');
-    Route::get('/thong-tin-de-tai/chi-tiet-all/{ma_de_tai}', [ThongTinDeTaiController::class, 'chiTietAll'])->name('thong_tin_de_tai.chi_tiet_all');
+    Route::get('/thong-tin-de-tai/chi-tiet-huong-dan/{ma_de_tai}', [ThongTinDeTaiController::class, 'chiTietHuongDan'])->name('thong_tin_de_tai.chi_tiet_huong_dan');
 
     Route::get('/cham-diem-huong-dan/danh-sach', [ChamDiemHuongDanController::class, 'danhSach'])->name('cham_diem_huong_dan.danh_sach');
     Route::get('/cham-diem-huong-dan/chi-tiet/{ma_de_tai}', [ChamDiemHuongDanController::class, 'chiTiet'])->name('cham_diem_huong_dan.chi_tiet');

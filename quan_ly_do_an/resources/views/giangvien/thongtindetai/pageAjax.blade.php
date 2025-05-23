@@ -81,7 +81,7 @@
                             {{ $deTai->nam_hoc }}
                         </td>
                         <td class="text-center">
-                            <a href="{{ route('thong_tin_de_tai.chi_tiet_all', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
+                            <a href="{{ route('thong_tin_de_tai.chi_tiet_huong_dan', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
                                 class="btn btn-secondary btn-sm">Xem</a>
                         </td>
                     </tr>
