@@ -155,7 +155,7 @@
                         </li>
                         <li class="sidebar-item {{ request()->is('phan-cong-huong-dan*') ? 'active' : '' }}">
                             <a class="sidebar-link" href="{{ route('phan_cong_huong_dan.danh_sach') }}">
-                                <i class="align-middle bi bi-ui-checks-grid"></i> <span class="align-middle">Phân công
+                                <i class="align-middle bi bi-list-task"></i> <span class="align-middle">Đanh sách
                                     hướng dẫn</span>
                             </a>
                         </li>

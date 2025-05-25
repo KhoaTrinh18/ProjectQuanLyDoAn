@@ -40,6 +40,10 @@ Route::middleware([KiemTraDangNhap::class . ':giangvien'])->group(function () {
     Route::get('/thong-tin-de-tai/xac-nhan-huong-dan', function () {
         return redirect()->back()->with('error', 'Sai đường dẫn');
     });
+     Route::post('/thong-tin-de-tai/huy-xac-nhan', [ThongTinDeTaiController::class, 'huyXacNhan'])->name('thong_tin_de_tai.huy_xac_nhan');
+    Route::get('/thong-tin-de-tai/huy-xac-nhan', function () {
+        return redirect()->back()->with('error', 'Sai đường dẫn');
+    });
 
     Route::get('/thong-tin-de-tai/danh-sach-huong-dan', [ThongTinDeTaiController::class, 'danhSachHuongDan'])->name('thong_tin_de_tai.danh_sach_huong_dan');
     Route::get('/thong-tin-de-tai/page-ajax', [ThongTinDeTaiController::class, 'pageAjax'])->name('thong_tin_de_tai.page_ajax');

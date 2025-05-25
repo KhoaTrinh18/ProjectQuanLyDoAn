@@ -14,18 +14,34 @@
 
                         @if ($deTaiSV->sinhViens->count() == 1)
                             @php $sinhVien = $deTaiSV->sinhViens->first(); @endphp
-                            <p><strong>Sinh viên ra đề tài:</strong> {{ $sinhVien->ho_ten }} ({{ $sinhVien->mssv }}) - Email: {{ $sinhVien->email }} - Số điện thoại: {{ $sinhVien->so_dien_thoai }}
+                            <p><strong>Sinh viên ra đề tài:</strong> {{ $sinhVien->ho_ten }} ({{ $sinhVien->mssv }}) -
+                                Email: {{ $sinhVien->email }} - Số điện thoại: {{ $sinhVien->so_dien_thoai }}
                             @else
                             <p><strong>Sinh viên ra đề tài:</strong></p>
                             <ul>
                                 @foreach ($deTaiSV->sinhViens as $sinhVien)
-                                    <li>{{ $sinhVien->ho_ten }} ({{ $sinhVien->mssv }}) - Email: {{ $sinhVien->email }} - Số điện thoại: {{ $sinhVien->so_dien_thoai }}
+                                    <li>{{ $sinhVien->ho_ten }} ({{ $sinhVien->mssv }}) - Email: {{ $sinhVien->email }} - Số
+                                        điện thoại: {{ $sinhVien->so_dien_thoai }}
                                 @endforeach
                             </ul>
                         @endif
 
                         <p><strong>Ngày đề xuất:</strong>
                             {{ \Carbon\Carbon::parse($deTaiSV->ngayDeXuat->ngay_de_xuat)->format('d-m-Y') }}</p>
+                        @if ($deTaiSV->giangVienDuKiens->count() == 1)
+                            @php $giangVien = $deTaiSV->giangVienDuKiens->first(); @endphp
+                            <p><strong>Giảng viên hướng dẫn (dự kiến):</strong>
+                                {{ $giangVien->ho_ten }} - Email:
+                                {{ $giangVien->email }} - Số điện thoại: {{ $giangVien->so_dien_thoai }}</p>
+                        @else
+                            <p><strong>Giảng viên hướng dẫn (dự kiến):</strong></p>
+                            <ul>
+                                @foreach ($deTaiSV->giangVienDuKiens as $giangVien)
+                                    <li>{{ $giangVien->ho_ten }} - Email: {{ $giangVien->email }} - SĐT:
+                                        {{ $giangVien->so_dien_thoai }}</li>
+                                @endforeach
+                            </ul>
+                        @endif
                         <p><strong>Lĩnh vực:</strong> {{ $deTaiSV->linhVuc->ten_linh_vuc }}</p>
                         <p><strong>Mô tả:</strong> {!! $deTaiSV->mo_ta !!}</p>
 

@@ -94,7 +94,7 @@
                 @endforeach
                 @if ($deTaiSVs->isEmpty())
                     <tr>
-                        <td colspan="7" class="text-center">Không có thiết lập</td>
+                        <td colspan="7" class="text-center">Không có đề tài</td>
                     </tr>
                 @endif
             </tbody>

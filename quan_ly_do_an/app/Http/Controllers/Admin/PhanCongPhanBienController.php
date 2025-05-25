@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Carbon\Carbon;
 use App\Models\{
     BangDiemGVPBChoSVDX,
     BangDiemGVPBChoSVDK,
@@ -18,7 +17,6 @@ use App\Models\{
     BoMon,
     DeTaiGiangVien,
     DeTaiSinhVien,
-    GiangVien,
     ThietLap
 };
 
@@ -29,20 +27,14 @@ class PhanCongPhanBienController extends Controller
         $limit = $request->query('limit', 10);
         $thietLap = ThietLap::where('trang_thai', 1)->first();
 
-        $maDeTaiDXs = BangPhanCongSVDX::distinct()->where(['da_huy' => 0, 'nam_hoc' => $thietLap->nam_hoc])->pluck('ma_de_tai');
-        $deTaiSVs = DeTaiSinhVien::whereIn('ma_de_tai', $maDeTaiDXs)->where(function ($query) {
-            $query->whereNull('duoc_bao_ve')
-                ->orWhere('duoc_bao_ve', 1);
-        })->orderBy('ma_de_tai', 'desc')->get();
+        $maDeTaiDXs = BangPhanCongSVDX::distinct()->where(['nam_hoc' => $thietLap->nam_hoc])->pluck('ma_de_tai');
+        $deTaiSVs = DeTaiSinhVien::whereIn('ma_de_tai', $maDeTaiDXs)->orderBy('ma_de_tai', 'desc')->get();
 
-        $maDeTaiDKs = BangPhanCongSVDK::distinct()->where(['da_huy' => 0, 'nam_hoc' => $thietLap->nam_hoc])->pluck('ma_de_tai');
-        $deTaiGVs = DeTaiGiangVien::whereIn('ma_de_tai', $maDeTaiDKs)->where(function ($query) {
-            $query->whereNull('duoc_bao_ve')
-                ->orWhere('duoc_bao_ve', 1);
-        })->orderBy('ma_de_tai', 'desc')->get();
+        $maDeTaiDKs = BangPhanCongSVDK::distinct()->where(['nam_hoc' => $thietLap->nam_hoc])->pluck('ma_de_tai');
+        $deTaiGVs = DeTaiGiangVien::whereIn('ma_de_tai', $maDeTaiDKs)->orderBy('ma_de_tai', 'desc')->get();
 
         $merged = $deTaiSVs->merge($deTaiGVs)->unique('ma_de_tai')->sortByDesc(function ($item) {
-            return $item->giangVienPhanBiens->isEmpty();
+            return $item->giangVienPhanBiens->isEmpty() && $item->duoc_bao_ve == 1;
         })->values();
 
         $page = LengthAwarePaginator::resolveCurrentPage();
@@ -65,7 +57,7 @@ class PhanCongPhanBienController extends Controller
 
         $maDeTaiDXs = BangPhanCongSVDX::distinct()->where('nam_hoc', $thietLap->nam_hoc)->pluck('ma_de_tai');
         $deTaiSVs = DeTaiSinhVien::query()
-            ->whereIn('ma_de_tai', $maDeTaiDXs);
+            ->whereIn('ma_de_tai', $maDeTaiDXs)->orderBy('ma_de_tai', 'desc');
             
         if ($request->filled('ten_de_tai')) {
             $deTaiSVs->where('ten_de_tai', 'like', '%' . $request->ten_de_tai . '%');
@@ -101,7 +93,7 @@ class PhanCongPhanBienController extends Controller
 
         $maDeTaiDKs = BangPhanCongSVDK::distinct()->where('nam_hoc', $thietLap->nam_hoc)->pluck('ma_de_tai');
         $deTaiGVs = DeTaiGiangVien::query()
-            ->whereIn('ma_de_tai', $maDeTaiDKs);
+            ->whereIn('ma_de_tai', $maDeTaiDKs)->orderBy('ma_de_tai', 'desc');
 
         if ($request->filled('ten_de_tai')) {
             $deTaiGVs->where('ten_de_tai', 'like', '%' . $request->ten_de_tai . '%');
@@ -136,7 +128,7 @@ class PhanCongPhanBienController extends Controller
         $deTaiGVs = $deTaiGVs->get();
 
         $merged = $deTaiSVs->merge($deTaiGVs)->unique('ma_de_tai')->sortByDesc(function ($item) {
-            return $item->giangVienPhanBiens->isEmpty();
+            return $item->giangVienPhanBiens->isEmpty() && $item->duoc_bao_ve == 1;
         })->values();
 
         $page = LengthAwarePaginator::resolveCurrentPage();

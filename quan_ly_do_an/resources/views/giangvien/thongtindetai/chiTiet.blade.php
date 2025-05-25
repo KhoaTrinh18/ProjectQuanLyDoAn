@@ -39,9 +39,11 @@
                                     {{ $deTai->sinhVienDangKys->first()->email }} - Số điện thoại:
                                     {{ $deTai->sinhVienDangKys->first()->so_dien_thoai }}
                                 </p>
-                                <button class="btn btn-danger btn-sm ms-2" type="button" data-bs-toggle="modal"
-                                    data-bs-target="#confirmModal">Hủy đăng
-                                    ký</button>
+                                @if ($deTai->da_xac_nhan_huong_dan == 0)
+                                    <button class="btn btn-danger btn-sm ms-2" type="button" data-bs-toggle="modal"
+                                        data-bs-target="#confirmModal">Hủy đăng
+                                        ký</button>
+                                @endif
                                 <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel"
                                     aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered">
@@ -80,11 +82,14 @@
                                                 Email: {{ $sinhVien->email }} - Số điện thoại:
                                                 {{ $sinhVien->so_dien_thoai }}
                                             </p>
-                                            <button class="btn btn-danger btn-sm ms-2 huy-dang-ky-btn"
-                                                data-ma-sv="{{ $sinhVien->ma_sv }}" data-ho-ten="{{ $sinhVien->ho_ten }}"
-                                                data-bs-toggle="modal" data-bs-target="#confirmModal">
-                                                Hủy đăng ký
-                                            </button>
+                                            @if ($deTai->da_xac_nhan_huong_dan == 0)
+                                                <button class="btn btn-danger btn-sm ms-2 huy-dang-ky-btn"
+                                                    data-ma-sv="{{ $sinhVien->ma_sv }}"
+                                                    data-ho-ten="{{ $sinhVien->ho_ten }}" data-bs-toggle="modal"
+                                                    data-bs-target="#confirmModal">
+                                                    Hủy đăng ký
+                                                </button>
+                                            @endif
                                         </div>
                                     </li>
                                 @endforeach
@@ -122,9 +127,14 @@
                             <a href="{{ route('thong_tin_de_tai.danh_sach_duyet') }}" class="btn btn-secondary btn-lg">Quay
                                 lại</a>
                             <input type="hidden" name="ma_de_tai" value="{{ $deTai->ma_de_tai }}">
-                            <button type="button" class="btn btn-lg btn-primary" data-bs-toggle="modal"
-                                data-bs-target="#confirmModal1">Xác nhận hướng
-                                dẫn</button>
+                            @if ($deTai->da_xac_nhan_huong_dan == 0)
+                                <button type="button" class="btn btn-lg btn-primary" data-bs-toggle="modal"
+                                    data-bs-target="#confirmModal1">Xác nhận hướng
+                                    dẫn</button>
+                            @else
+                                <button type="button" class="btn btn-lg btn-danger" data-bs-toggle="modal"
+                                    data-bs-target="#deleteModal">Hủy xác nhận</button>
+                            @endif
 
                             <div class="modal fade" id="confirmModal1" tabindex="-1" aria-labelledby="confirmModal1Label"
                                 aria-hidden="true">
@@ -148,6 +158,34 @@
                                             <form id="form_xac_nhan">
                                                 <input type="hidden" name="ma_de_tai" value="{{ $deTai->ma_de_tai }}">
                                                 <button type="submit" class="btn btn-primary" id="xacNhan">Xác
+                                                    nhận</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel"
+                                aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content rounded-4 shadow-sm border-0">
+                                        <div class="modal-header bg-light border-bottom-0">
+                                            <h5 class="modal-title fw-semibold text-primary" id="deleteModalLabel">
+                                                Hủy xác
+                                                nhận hướng dẫn</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Đóng"></button>
+                                        </div>
+                                        <div class="modal-body fs-5 text-secondary"> Bạn có chắc muốn hủy xác nhận hướng
+                                            dẫn
+                                            những sinh viên này ?
+                                        </div>
+                                        <div class="modal-footer bg-light border-top-0">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Hủy</button>
+                                            <form id="form_huy">
+                                                <input type="hidden" name="ma_de_tai" value="{{ $deTai->ma_de_tai }}">
+                                                <button type="submit" class="btn btn-primary" id="huy">Xác
                                                     nhận</button>
                                             </form>
                                         </div>
@@ -214,6 +252,49 @@
                                 })
                             }
                         }
+                    },
+                    error: function(xhr) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Thất bại!',
+                            text: 'Xác nhận hướng dẫn thất bại! Vui lòng thử lại',
+                            confirmButtonText: 'OK',
+                            timer: 1000,
+                            showConfirmButton: false
+                        })
+                    }
+                });
+            });
+
+            $("#huy").click(function(event) {
+                event.preventDefault();
+
+                let form = $("#form_xac_nhan").get(0);
+                let formData = new FormData(form);
+
+                $.ajax({
+                    url: "{{ route('thong_tin_de_tai.huy_xac_nhan') }}",
+                    type: "POST",
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    headers: {
+                        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+                    },
+                    success: function(result) {
+                        if (result.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Thành công!',
+                                text: 'Hủy xác nhận hướng dẫn thành công!',
+                                confirmButtonText: 'OK',
+                                timer: 1000,
+                                showConfirmButton: false
+                            }).then(() => {
+                                window.location.href =
+                                    "{{ route('thong_tin_de_tai.danh_sach_duyet') }}";
+                            });
+                        }   
                     },
                     error: function(xhr) {
                         Swal.fire({

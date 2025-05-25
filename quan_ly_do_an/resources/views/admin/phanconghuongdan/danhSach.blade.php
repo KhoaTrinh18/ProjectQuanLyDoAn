@@ -39,20 +39,12 @@
                                     <input type="text" name="sinh_vien" class="form-control ms-2 shadow-none"
                                         placeholder="Tên sinh viên" style="width: 240px">
                                 </div>
-                                <div class="d-flex align-items-center justify-content-between mt-2">
-                                    <label for="trang_thai">Trạng thái:</label>
-                                    <select class="form-select ms-2 shadow-none" name="trang_thai" style="width: 240px">
-                                        <option value="" selected hidden disabled>Chọn trạng thái</option>
-                                        <option value="">Tất cả</option>
-                                        <option value="0">Chưa phân công</option>
-                                        <option value="1">Đã phân công</option>
-                                    </select>
+                                <div class="d-flex justify-content-end mt-2">
+                                    <button id="clear" class="btn btn-secondary me-2">Tạo lại</button>
+                                    <button id="timKiem" class="btn btn-primary" type="submit">Tìm kiếm</button>
                                 </div>
                             </div>
-                            <div class="ms-3">
-                                <button id="clear" class="btn btn-secondary">Tạo lại</button>
-                                <button id="timKiem" class="btn btn-primary" type="submit">Tìm kiếm</button>
-                            </div>
+
                         </form>
                         @include('admin.phanconghuongdan.pageAjax', ['deTais' => $deTais])
                     </div>

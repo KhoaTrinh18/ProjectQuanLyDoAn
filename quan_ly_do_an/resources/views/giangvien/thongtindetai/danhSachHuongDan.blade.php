@@ -31,10 +31,10 @@
                                         </td>
                                         <td>{{ $deTai->linhVuc->ten_linh_vuc }}</td>
                                         <td>
-                                            @if ($deTai->sinhVienDangKys->count() == 0)
+                                            @if ($deTai->sinhViens->count() == 0)
                                                 <i>Chưa có</i>
                                             @else
-                                                @foreach ($deTai->sinhVienDangKys as $sinhVien)
+                                                @foreach ($deTai->sinhViens as $sinhVien)
                                                     {{ $sinhVien->ho_ten }}</br>
                                                 @endforeach
                                             @endif

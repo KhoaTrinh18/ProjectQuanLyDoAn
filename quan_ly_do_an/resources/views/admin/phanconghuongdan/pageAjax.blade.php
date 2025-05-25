@@ -47,7 +47,6 @@
                     <th scope="col" class="text-white">Sinh viên thực hiện</th>
                     <th scope="col" class="text-white">Giảng viên hướng dẫn</th>
                     <th scope="col" class="text-white">Hành động</th>
-                    <th scope="col" class="text-white">Trạng thái</th>
                     <th scope="col" class="text-white"></th>
                 </tr>
             </thead>
@@ -80,25 +79,9 @@
                                 Đăng ký
                             @endif
                         </td>
-                        <td>
-                            @if ($deTai->giangViens->count() != 0)
-                                <span class="text-success">Đã phân công</span>
-                            @else
-                                <span class="text-warning">Chưa phân công</span>
-                            @endif
-                        </td>
                         <td class="text-center">
-                            @if ($deTai->giangViens->count() != 0)
-                                <a href="{{ route('phan_cong_huong_dan.chi_tiet', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
-                                    class="btn btn-secondary btn-sm">Xem</a>
-                                @if ($sinhVien->loai_sv == 'de_xuat')
-                                    <a href="{{ route('phan_cong_huong_dan.sua', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
-                                        class="btn btn-primary btn-sm">Sửa</a>
-                                @endif
-                            @else
-                                <a href="{{ route('phan_cong_huong_dan.phan_cong', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
-                                    class="btn btn-primary btn-sm">Phân công hướng dẫn</a>
-                            @endif
+                            <a href="{{ route('phan_cong_huong_dan.chi_tiet', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
+                                class="btn btn-secondary btn-sm">Xem</a>
                         </td>
                     </tr>
                 @endforeach

@@ -21,12 +21,14 @@
                                 <div class="ms-2 w-100 d-flex align-items-center gap-3">
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" name="ChamDiem[0][bao_ve]"
-                                            id="ChamDiem_bao_ve_1" value="1" {{ $deTai->duoc_bao_ve == 1 ? 'checked' : '' }}>
+                                            id="ChamDiem_bao_ve_1" value="1"
+                                            {{ $deTai->duoc_bao_ve == 1 ? 'checked' : '' }}>
                                         <label class="form-check-label" for="ChamDiem_bao_ve_1">Được bảo vệ</label>
                                     </div>
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" name="ChamDiem[0][bao_ve]"
-                                            id="ChamDiem_bao_ve_0" value="0" {{ $deTai->duoc_bao_ve == 0 ? 'checked' : '' }}>
+                                            id="ChamDiem_bao_ve_0" value="0"
+                                            {{ $deTai->duoc_bao_ve == 0 ? 'checked' : '' }}>
                                         <label class="form-check-label" for="ChamDiem_bao_ve_0">Không được bảo vệ</label>
                                     </div>
                                 </div>
@@ -44,35 +46,41 @@
                                     @endphp
                                     <input type="hidden" name="ChamDiem[{{ $i }}][ma_sv]"
                                         value="{{ $sinhVien->ma_sv }}">
-                                    <p style="font-size: 16px"><strong>Sinh viên {{ $i + 1 }}:</strong>
-                                        {{ $sinhVien->ho_ten }} - {{ $sinhVien->mssv }}</p>
-                                    <div class="d-flex mb-3">
-                                        <label for="ChamDiem[{{ $i }}][diem]"
-                                            class="p-2 d-flex align-items-center justify-content-center text-white rounded bg-secondary"
-                                            style="width: 250px">
-                                            Điểm
-                                        </label>
-                                        <div class="ms-2 w-100">
-                                            <input type="text"
-                                                class="form-control form-control-lg shadow-none text-center"
-                                                name="ChamDiem[{{ $i }}][diem]" style="width: 90px"
-                                                maxlength="4" value="{{ $phanCong->diem_gvhd }}">
-                                            <span
-                                                class="error-message text-danger d-none mt-2 error-ChamDiem{{ $i }}diem"></span>
+                                    @if ($sinhVien->trang_thai == 3)
+                                        <p style="font-size: 16px"><strong>Sinh viên {{ $i + 1 }}:</strong>
+                                            {{ $sinhVien->ho_ten }} - {{ $sinhVien->mssv }} (<span class="text-danger">Bỏ
+                                                giữa chừng</span>)</p>
+                                    @else
+                                        <p style="font-size: 16px"><strong>Sinh viên {{ $i + 1 }}:</strong>
+                                            {{ $sinhVien->ho_ten }} - {{ $sinhVien->mssv }}</p>
+                                        <div class="d-flex mb-3">
+                                            <label for="ChamDiem[{{ $i }}][diem]"
+                                                class="p-2 d-flex align-items-center justify-content-center text-white rounded bg-secondary"
+                                                style="width: 250px">
+                                                Điểm
+                                            </label>
+                                            <div class="ms-2 w-100">
+                                                <input type="text"
+                                                    class="form-control form-control-lg shadow-none text-center"
+                                                    name="ChamDiem[{{ $i }}][diem]" style="width: 90px"
+                                                    maxlength="4" value="{{ $phanCong->diem_gvhd }}">
+                                                <span
+                                                    class="error-message text-danger d-none mt-2 error-ChamDiem{{ $i }}diem"></span>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="d-flex mb-3">
-                                        <label for="ChamDiem[{{ $i }}][nhan_xet]"
-                                            class="p-2 d-flex align-items-center justify-content-center text-white rounded bg-secondary"
-                                            style="width: 250px">
-                                            Nhận xét
-                                        </label>
-                                        <div class="ms-2 w-100">
-                                            <textarea class="form-control form-control-lg shadow-none nhan_xet" name="ChamDiem[{{ $i }}][nhan_xet]">{{ $phanCong->nhan_xet }}</textarea>
-                                            <span
-                                                class="error-message text-danger d-none mt-2 error-ChamDiem{{ $i }}nhan_xet"></span>
+                                        <div class="d-flex mb-3">
+                                            <label for="ChamDiem[{{ $i }}][nhan_xet]"
+                                                class="p-2 d-flex align-items-center justify-content-center text-white rounded bg-secondary"
+                                                style="width: 250px">
+                                                Nhận xét
+                                            </label>
+                                            <div class="ms-2 w-100">
+                                                <textarea class="form-control form-control-lg shadow-none nhan_xet" name="ChamDiem[{{ $i }}][nhan_xet]">{{ $phanCong->nhan_xet }}</textarea>
+                                                <span
+                                                    class="error-message text-danger d-none mt-2 error-ChamDiem{{ $i }}nhan_xet"></span>
+                                            </div>
                                         </div>
-                                    </div>
+                                    @endif
                                 @endforeach
                             </div>
                             <div class="text-center">
@@ -178,9 +186,9 @@
             function toggleDiemNhanXet() {
                 var baoVe = $('input[name="ChamDiem[0][bao_ve]"]:checked').val();
                 if (baoVe === "0") {
-                    $('#diem_nhan_xet').slideUp(); 
+                    $('#diem_nhan_xet').slideUp();
                 } else {
-                    $('#diem_nhan_xet').slideDown(); 
+                    $('#diem_nhan_xet').slideDown();
                 }
             }
 

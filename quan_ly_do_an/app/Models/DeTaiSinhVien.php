@@ -19,7 +19,7 @@ class DeTaiSinhVien extends Model
     }
 
     public function sinhViens(){
-        return $this->belongsToMany(SinhVien::class, 'sinh_vien_de_tai_sv', 'ma_de_tai', 'ma_sv')->where('sinh_vien.trang_thai', '!=', '3')->distinct();
+        return $this->belongsToMany(SinhVien::class, 'sinh_vien_de_tai_sv', 'ma_de_tai', 'ma_sv')->distinct();
     }
 
     public function sinhVienPhanBiens(){
@@ -40,6 +40,11 @@ class DeTaiSinhVien extends Model
 
     public function giangVienPhanBiens(){
         return $this->belongsToMany(GiangVien::class, 'bang_diem_gvpb_cho_svdx', 'ma_de_tai', 'ma_gvpb')->distinct()->withPivot(['diem_gvpb', 'nhan_xet', 'ma_sv']);
+    }
+
+    public function giangVienDuKiens()
+    {
+        return $this->belongsToMany(GiangVien::class, 'sinh_vien_de_tai_sv', 'ma_de_tai', 'ma_gvhd')->distinct();
     }
 
     public function HoiDongs()

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use App\Models\{
     BangPhanCongSVDK,
+    BoMon,
     SinhVien,
     DeTaiGiangVien,
     DeTaiSinhVien,
@@ -124,7 +125,9 @@ class ThongTinDeTaiController extends Controller
 
         $mssvList = $deTai->sinhViens->where('ma_sv', '!=', $sinhVien->ma_sv)->pluck('mssv');
 
-        return view('sinhvien.thongtindetai.sua', compact('deTai', 'linhVucs', 'daDangKy', 'ngayHetHan', 'mssvList'));
+        $chuyenNganhs = BoMon::with('giangViens')->where('da_huy', 0)->orderBy('ma_bo_mon', 'desc')->get();
+
+        return view('sinhvien.thongtindetai.sua', compact('deTai', 'linhVucs', 'daDangKy', 'ngayHetHan', 'mssvList', 'chuyenNganhs'));
     }
 
     public function xacNhanSua(Request $request)
@@ -157,6 +160,9 @@ class ThongTinDeTaiController extends Controller
             'mssv.*' => [
                 'sometimes',
                 'nullable',
+            ],
+            'giang_vien.*' => [
+                'sometimes'
             ]
         ], [
             'ten_de_tai.required' => 'Tên đề tài không được để trống.',
@@ -189,6 +195,17 @@ class ThongTinDeTaiController extends Controller
                 if ($sinhVien->dang_ky && !in_array($mssv, $mssvDeTai)) {
                     $validator->errors()->add("mssv.$index", "MSSV đã đăng ký hoặc đề xuất đề tài.");
                 }
+            }
+        });
+
+        $giangVienList = [];
+        $validator->after(function ($validator) use ($request, &$giangVienList) {
+            $giangVienList = array_filter($request->input('DeTai', [])['giang_vien'], function ($value) {
+                return trim(strip_tags($value)) !== "";
+            });
+
+            if (empty($giangVienList)) {
+                $validator->errors()->add('giang_vien', 'Bạn phải chọn ít nhất một giảng viên.');
             }
         });
 
@@ -231,12 +248,15 @@ class ThongTinDeTaiController extends Controller
 
             $sinhVienDTSVs = [];
             foreach ($sinhViens as $sinhVien) {
-                $sinhVienDTSVs[] = [
-                    'ma_sv' => $sinhVien->ma_sv,
-                    'ma_de_tai' => $data['ma_de_tai'],
-                    'ngay_de_xuat' => $ngayDeXuat,
-                    'trang_thai' => 1
-                ];
+                foreach ($data['giang_vien'] as $giangVien) {
+                    $sinhVienDTSVs[] = [
+                        'ma_sv' => $sinhVien->ma_sv,
+                        'ma_de_tai' => $data['ma_de_tai'],
+                        'ma_gvhd' => $giangVien,
+                        'ngay_de_xuat' => $ngayDeXuat,
+                        'trang_thai' => 1
+                    ];
+                }
             }
             SinhVienDeTaiSV::insert($sinhVienDTSVs);
 

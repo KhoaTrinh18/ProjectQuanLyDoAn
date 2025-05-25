@@ -9,7 +9,9 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use App\Models\{
+    BoMon,
     DeTaiSinhVien,
+    GiangVien,
     LinhVuc,
     SinhVien,
     SinhVienDeTaiSV,
@@ -30,7 +32,9 @@ class DeXuatDeTaiController extends Controller
         $thietLap = ThietLap::where('trang_thai', 1)->first();
         $ngayHetHan = Carbon::create($thietLap->ngay_ket_thuc_dang_ky)->setTime(23, 59, 59)->toIso8601String();
 
-        return view('sinhvien.dexuatdetai.deXuat', compact('linhVucs', 'daDangKy', 'ngayHetHan'));
+        $chuyenNganhs = BoMon::with('giangViens')->where('da_huy', 0)->orderBy('ma_bo_mon', 'desc')->get();
+
+        return view('sinhvien.dexuatdetai.deXuat', compact('linhVucs', 'daDangKy', 'ngayHetHan', 'chuyenNganhs'));
     }
 
     public function xacNhanDeXuat(Request $request)
@@ -63,6 +67,9 @@ class DeXuatDeTaiController extends Controller
             'mssv.*' => [
                 'sometimes',
                 'nullable',
+            ],
+            'giang_vien.*' => [
+                'sometimes'
             ]
         ], [
             'ten_de_tai.required' => 'Tên đề tài không được để trống.',
@@ -95,13 +102,24 @@ class DeXuatDeTaiController extends Controller
             }
         });
 
+        $giangVienList = [];
+        $validator->after(function ($validator) use ($request, &$giangVienList) {
+            $giangVienList = array_filter($request->input('DeTai', [])['giang_vien'], function ($value) {
+                return trim(strip_tags($value)) !== "";
+            });
+
+            if (empty($giangVienList)) {
+                $validator->errors()->add('giang_vien', 'Bạn phải chọn ít nhất một giảng viên.');
+            }
+        });
+        
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
                 'errors' => $validator->errors()->toArray(),
             ]);
         }
-        
+
         try {
             $thietLap = ThietLap::where('trang_thai', 1)->first();
 
@@ -121,19 +139,22 @@ class DeXuatDeTaiController extends Controller
             SinhVien::whereIn('mssv', $mssvList)->update([
                 'dang_ky' => 1,
                 'loai_sv' => 'de_xuat',
-            ]); 
+            ]);
 
             $sinhVienDTSVs = [];
-            foreach($sinhViens as $sinhVien) {
-                $sinhVienDTSVs[] = [
-                    'ma_sv' => $sinhVien->ma_sv,
-                    'ma_de_tai' => $deTaiSV->ma_de_tai,
-                    'ngay_de_xuat' => now()->toDateString(),
-                    'trang_thai' => 1
-                ];
+            foreach ($sinhViens as $sinhVien) {
+                foreach ($data['giang_vien'] as $giangVien) {
+                    $sinhVienDTSVs[] = [
+                        'ma_sv' => $sinhVien->ma_sv,
+                        'ma_de_tai' => $deTaiSV->ma_de_tai,
+                        'ma_gvhd' => $giangVien,
+                        'ngay_de_xuat' => now()->toDateString(),
+                        'trang_thai' => 1
+                    ];
+                }
             }
             SinhVienDeTaiSV::insert($sinhVienDTSVs);
-            
+
             return response()->json([
                 'success' => true,
                 'errors' => [],

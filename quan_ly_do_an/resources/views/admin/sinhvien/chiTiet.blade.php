@@ -46,7 +46,7 @@
                                     <p class="mb-0"><strong>Giảng viên hướng dẫn: </strong>{{ $gv->ho_ten }}</p>
                                     <ul>
                                         <li><strong>Điểm:
-                                            </strong><i>{{ $gv->pivot->diem_gvhd ? number_format($gv->pivot->diem_gvhd, 2) : 'Chưa có' }}</i>
+                                            </strong><i>{{ $gv->pivot->diem_gvhd !== null ? number_format($gv->pivot->diem_gvhd, 1) : 'Chưa có' }}</i>
                                         </li>
                                         <li><strong>Nhận xét: </strong>{!! $gv->pivot->nhan_xet ?? '<em>Chưa có</em>' !!}</li>
                                     </ul>
@@ -57,7 +57,7 @@
                                             <li class="mb-2">
                                                 {{ $gv->ho_ten }}<br>
                                                 <strong>Điểm:
-                                                </strong><i>{{ $gv->pivot->diem_gvhd ? number_format($gv->pivot->diem_gvhd, 2) : 'Chưa có' }}</i><br>
+                                                </strong><i>{{ $gv->pivot->diem_gvhd !== null ? number_format($gv->pivot->diem_gvhd, 1) : 'Chưa có' }}</i><br>
                                                 <strong>Nhận xét: </strong>{!! $gv->pivot->nhan_xet ?? '<em>Chưa có</em>' !!}
                                             </li>
                                         @endforeach
@@ -73,7 +73,7 @@
                                 <p class="mb-0"><strong>Giảng viên phản biện: </strong>{{ $gv->ho_ten }}</p>
                                 <ul>
                                     <li><strong>Điểm:
-                                        </strong><i>{{ $gv->pivot->diem_gvpb ? number_format($gv->pivot->diem_gvpb, 2) : 'Chưa có' }}</i>
+                                        </strong><i>{{ $gv->pivot->diem_gvpb !== null ? number_format($gv->pivot->diem_gvpb, 1) : 'Chưa có' }}</i>
                                     </li>
                                     <li><strong>Nhận xét: </strong>{!! $gv->pivot->nhan_xet ?? '<em>Chưa có</em>' !!}</li>
                                 </ul>
@@ -109,7 +109,7 @@
                                 <p class="mb-0"><strong>Chủ tịch: </strong>{{ $chuTich->ho_ten }}</p>
                                 <ul class="mb-3">
                                     <li><strong>Điểm:
-                                        </strong><i>{{ $deTaiHoiDong->where('ma_gvthd', $chuTich->ma_gv)->first()->diem_gvthd ? number_format($deTaiHoiDong->where('ma_gvthd', $chuTich->ma_gv)->first()->diem_gvthd, 2) : 'Chưa có' }}</i>
+                                        </strong><i>{{ $deTaiHoiDong->where('ma_gvthd', $chuTich->ma_gv)->first()->diem_gvthd !== null ? number_format($deTaiHoiDong->where('ma_gvthd', $chuTich->ma_gv)->first()->diem_gvthd, 1) : 'Chưa có' }}</i>
                                     </li>
                                     <li><strong>Nhận xét: </strong>{!! $deTaiHoiDong->where('ma_gvthd', $chuTich->ma_gv)->first()->nhan_xet ?? '<em>Chưa có</em>' !!}</li>
                                 </ul>
@@ -117,7 +117,7 @@
                                 <p class="mb-0"><strong>Thư ký: </strong>{{ $thuKy->ho_ten }}</p>
                                 <ul class="mb-3">
                                     <li><strong>Điểm:
-                                        </strong><i>{{ $deTaiHoiDong->where('ma_gvthd', $thuKy->ma_gv)->first()->diem_gvthd ? number_format($deTaiHoiDong->where('ma_gvthd', $thuKy->ma_gv)->first()->diem_gvthd, 2) : 'Chưa có' }}</i>
+                                        </strong><i>{{ $deTaiHoiDong->where('ma_gvthd', $thuKy->ma_gv)->first()->diem_gvthd !== null ? number_format($deTaiHoiDong->where('ma_gvthd', $thuKy->ma_gv)->first()->diem_gvthd, 1) : 'Chưa có' }}</i>
                                     </li>
                                     <li><strong>Nhận xét: </strong>{!! $deTaiHoiDong->where('ma_gvthd', $thuKy->ma_gv)->first()->nhan_xet ?? '<em>Chưa có</em>' !!}</li>
                                 </ul>
@@ -127,7 +127,7 @@
                                     <p class="mb-0"><strong>Ủy viên: </strong>{{ $uyVien->ho_ten }}</p>
                                     <ul>
                                         <li><strong>Điểm:
-                                            </strong><i>{{ $deTaiHoiDong->where('ma_gvthd', $uyVien->ma_gv)->first()->diem_gvthd ? number_format($deTaiHoiDong->where('ma_gvthd', $uyVien->ma_gv)->first()->diem_gvthd, 2) : 'Chưa có' }}</i>
+                                            </strong><i>{{ $deTaiHoiDong->where('ma_gvthd', $uyVien->ma_gv)->first()->diem_gvthd !== null ? number_format($deTaiHoiDong->where('ma_gvthd', $uyVien->ma_gv)->first()->diem_gvthd, 1) : 'Chưa có' }}</i>
                                         </li>
                                         <li><strong>Nhận xét: </strong>{!! $deTaiHoiDong->where('ma_gvthd', $uyVien->ma_gv)->first()->nhan_xet ?? '<em>Chưa có</em>' !!}</li>
                                     </ul>
@@ -138,7 +138,7 @@
                                             <li class="mb-2">
                                                 {{ $uyVien->ho_ten }}<br>
                                                 <strong>Điểm:
-                                                </strong><i>{{ $deTaiHoiDong->where('ma_gvthd', $uyVien->ma_gv)->first()->diem_gvthd ? number_format($deTaiHoiDong->where('ma_gvthd', $uyVien->ma_gv)->first()->diem_gvthd, 2) : 'Chưa có' }}</i><br>
+                                                </strong><i>{{ $deTaiHoiDong->where('ma_gvthd', $uyVien->ma_gv)->first()->diem_gvthd !== null ? number_format($deTaiHoiDong->where('ma_gvthd', $uyVien->ma_gv)->first()->diem_gvthd, 1) : 'Chưa có' }}</i><br>
                                                 <strong>Nhận xét: </strong>{!! $deTaiHoiDong->where('ma_gvthd', $uyVien->ma_gv)->first()->nhan_xet ?? '<em>Chưa có</em>' !!}
                                             </li>
                                         @endforeach

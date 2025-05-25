@@ -47,7 +47,7 @@
                     <th scope="col" class="text-white">Sinh viên thực hiện</th>
                     <th scope="col" class="text-white">Giảng viên hướng dẫn</th>
                     <th scope="col" class="text-white">Hội đồng</th>
-                    <th scope="col" class="text-white">Trạng thái</th>
+                    <th scope="col" class="text-white">Xác nhận bảo vệ</th>
                     <th scope="col" class="text-white"></th>
                 </tr>
             </thead>
@@ -76,23 +76,30 @@
                             @endif
                         </td>
                         <td>
-                            @if ($deTai->hoiDongs->count() != 0)
-                                <span class="text-success">Đã phân công</span>
+                            @if ($deTai->duoc_bao_ve == 1)
+                                <span class="text-success">Được bảo vệ</span>
+                            @elseif ($deTai->duoc_bao_ve == 0)
+                                <span class="text-danger">Không được bảo vệ</span>
                             @else
-                                <span class="text-warning">Chưa phân công</span>
+                                <span><i>Chưa có</i></span>
                             @endif
                         </td>
                         <td class="text-center">
-                            @if ($deTai->hoiDongs->count() != 0)
+                            @if ($deTai->duoc_bao_ve == 1)
+                                @if ($deTai->hoiDongs->count() != 0)
+                                    <a href="{{ route('phan_cong_hoi_dong.chi_tiet', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
+                                        class="btn btn-secondary btn-sm">Xem</a>
+                                    <a href="{{ route('phan_cong_hoi_dong.huy', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
+                                        class="btn btn-danger btn-sm">Hủy</a>
+                                    <a href="{{ route('phan_cong_hoi_dong.sua', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
+                                        class="btn btn-primary btn-sm">Sửa</a>
+                                @else
+                                    <a href="{{ route('phan_cong_hoi_dong.phan_cong', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
+                                        class="btn btn-success btn-sm">Phân công hội dồng</a>
+                                @endif
+                            @else
                                 <a href="{{ route('phan_cong_hoi_dong.chi_tiet', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
                                     class="btn btn-secondary btn-sm">Xem</a>
-                                <a href="{{ route('phan_cong_hoi_dong.huy', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
-                                    class="btn btn-danger btn-sm">Hủy</a>
-                                <a href="{{ route('phan_cong_hoi_dong.sua', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
-                                    class="btn btn-primary btn-sm">Sửa</a>
-                            @else
-                                <a href="{{ route('phan_cong_hoi_dong.phan_cong', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
-                                    class="btn btn-primary btn-sm">Phân công hội dồng</a>
                             @endif
                         </td>
                     </tr>

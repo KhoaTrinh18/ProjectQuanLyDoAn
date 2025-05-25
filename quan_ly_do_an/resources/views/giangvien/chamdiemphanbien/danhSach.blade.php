@@ -15,10 +15,9 @@
                                 <tr>
                                     <th scope="col" class="text-white">#</th>
                                     <th scope="col" class="text-white" style="width: 25%;">Tên đề tài</th>
-                                    <th scope="col" class="text-white">Sinh viên thực hiện (Điểm)</th>
                                     <th scope="col" class="text-white">Giảng viên hướng dẫn</th>
+                                    <th scope="col" class="text-white">Sinh viên thực hiện (Điểm)</th>
                                     <th scope="col" class="text-white">Xác nhận bảo vệ</th>
-                                    <th scope="col" class="text-white">Trạng thái</th>
                                     <th scope="col" class="text-white"></th>
                                 </tr>
                             </thead>
@@ -30,6 +29,9 @@
                                         <td
                                             style="width: 25%; word-wrap: break-word; overflow-wrap: break-word; white-space: normal; word-break: break-word;">
                                             {{ $deTai->ten_de_tai }}
+                                        </td>
+                                        <td>
+                                            {!! $deTai->giangViens->pluck('ho_ten')->implode('<br>') !!}
                                         </td>
                                         <td>
                                             @foreach ($deTai->sinhViens as $sinhVien)
@@ -53,11 +55,13 @@
                                                         $daChamDiem = 0;
                                                     }
                                                 @endphp
-                                                {{ $sinhVien->ho_ten }} ({!! $phanCongPhanBien->diem_gvpb !== null ? number_format($phanCongPhanBien->diem_gvpb, 2) : '<em>Chưa có</em>' !!})<br>
+                                                @if ($sinhVien->trang_thai == 3)
+                                                    {{ $sinhVien->ho_ten }} (<span class="text-danger">Nghỉ giữa
+                                                        chừng</span>)<br>
+                                                @else
+                                                    {{ $sinhVien->ho_ten }} ({!! $phanCongPhanBien->diem_gvhd !== null ? number_format($phanCongPhanBien->diem_gvhd, 1) : '<em>Chưa có</em>' !!})<br>
+                                                @endif
                                             @endforeach
-                                        </td>
-                                        <td>
-                                            {!! $deTai->giangViens->pluck('ho_ten')->implode('<br>') !!}
                                         </td>
                                         <td>
                                             @if ($deTai->duoc_bao_ve == 1)
@@ -69,21 +73,14 @@
                                             @endif
                                         </td>
                                         <td class="text-center">
-                                            @if ($daChamDiem)
-                                                <span class="text-success">Đã chấm điểm</span>
-                                            @else
-                                                <span class="text-warning">Chưa chấm điểm</span>
-                                            @endif
-                                        </td>
-                                        <td class="text-center">
                                             <a href="{{ route('cham_diem_phan_bien.chi_tiet', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
                                                 class="btn btn-secondary btn-sm">Xem</a>
                                             @if ($daChamDiem)
                                                 <a href="{{ route('cham_diem_phan_bien.sua_diem', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
                                                     class="btn btn-primary btn-sm">Sửa điểm</a>
-                                            @else
+                                            @elseif ($deTai->sinhViens->where('trang_thai', 3)->count() != $deTai->sinhViens->count())
                                                 <a href="{{ route('cham_diem_phan_bien.cham_diem', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
-                                                    class="btn btn-primary btn-sm">Chấm điểm</a>
+                                                    class="btn btn-success btn-sm">Chấm điểm</a>
                                             @endif
                                         </td>
                                     </tr>

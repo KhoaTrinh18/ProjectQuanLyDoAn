@@ -34,16 +34,16 @@
                         @elseif ($deTai->so_luong_sv_dang_ky == 1)
                             <form class="d-flex align-items-center" id="form_huy_sv">
                                 <p class="m-0"><strong>Sinh viên thực hiện:
-                                    </strong>{{ $deTai->sinhVienDangKys->first()->ho_ten }}
-                                    ({{ $deTai->sinhVienDangKys->first()->mssv }}) - Email:
-                                    {{ $deTai->sinhVienDangKys->first()->email }} - Số điện thoại:
-                                    {{ $deTai->sinhVienDangKys->first()->so_dien_thoai }}
+                                    </strong>{{ $deTai->sinhViens->first()->ho_ten }}
+                                    ({{ $deTai->sinhViens->first()->mssv }}) - Email:
+                                    {{ $deTai->sinhViens->first()->email }} - Số điện thoại:
+                                    {{ $deTai->sinhViens->first()->so_dien_thoai }}
                                 </p>
                             </form>
                         @else
                             <p><strong>Sinh viên thực hiện:</strong></p>
                             <ul>
-                                @foreach ($deTai->sinhVienDangKys as $sinhVien)
+                                @foreach ($deTai->sinhViens as $sinhVien)
                                     <li class="mt-2">
                                         <div class="d-flex align-items-center">
                                             <p class="student-name m-0">{{ $sinhVien->ho_ten }} ({{ $sinhVien->mssv }}) -

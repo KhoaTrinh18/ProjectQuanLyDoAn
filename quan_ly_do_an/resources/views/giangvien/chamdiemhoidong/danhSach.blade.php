@@ -99,7 +99,7 @@
                                                     class="btn btn-primary btn-sm">Sửa điểm</a>
                                             @else
                                                 <a href="{{ route('cham_diem_hoi_dong.cham_diem', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
-                                                    class="btn btn-primary btn-sm">Chấm điểm</a>
+                                                    class="btn btn-success btn-sm">Chấm điểm</a>
                                             @endif
 
                                         </td>

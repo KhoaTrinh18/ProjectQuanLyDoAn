@@ -9,7 +9,9 @@ use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use App\Models\{
     BangPhanCongSVDK,
+    BangPhanCongSVDX,
     DeTaiGiangVien,
+    DeTaiSinhVien,
     GiangVien,
     SinhVien,
     GiangVienDeTaiGV,
@@ -97,20 +99,44 @@ class ThongTinDeTaiController extends Controller
         ]);
     }
 
+     public function huyXacNhan(Request $request)
+    {
+        if (!$request->isMethod('post')) {
+            return redirect()->back()->with('error', 'Bạn không thể truy cập trực tiếp trang này!');
+        }
+
+        $ma_de_tai = $request->input('ma_de_tai');
+
+        $deTai = DeTaiGiangVien::where('ma_de_tai', $ma_de_tai)->first();
+        $deTai->da_xac_nhan_huong_dan = 0;
+        $deTai->save();
+
+        return response()->json([
+            'success' => true,
+        ]);
+    }
+
     public function danhSachHuongDan(Request $request)
     {
-        $limit = $request->query('limit', 10);
-
         $maTaiKhoan = session()->get('ma_tai_khoan');
         $giangVien = GiangVien::where('ma_tk', $maTaiKhoan)->first();
+        $thietLap = ThietLap::where('trang_thai', 1)->first();
 
-        $maDeTais = GiangVienDeTaiGV::where('ma_gv', $giangVien->ma_gv)->pluck('ma_de_tai');
-        $deTais = DeTaiGiangVien::whereIn('ma_de_tai', $maDeTais)
-            ->where(['da_huy' => 0, 'trang_thai' => 2])
-            ->where('da_xac_nhan_huong_dan', 1)
+        $phanCongSVDK = BangPhanCongSVDK::where(['ma_gvhd' => $giangVien->ma_gv, 'da_huy' => 0])->get();
+        $maDeTais = $phanCongSVDK->pluck('ma_de_tai');
+        $deTaiGVs = DeTaiGiangVien::whereIn('ma_de_tai', $maDeTais)
+            ->where(['da_huy' => 0, 'trang_thai' => 2, 'nam_hoc' => $thietLap->nam_hoc, 'da_xac_nhan_huong_dan' => 1])
             ->orderBy('ma_de_tai', 'desc')
-            ->paginate($limit);
+            ->get();
 
+        $phanCongSVDX = BangPhanCongSVDX::where(['ma_gvhd' => $giangVien->ma_gv, 'da_huy' => 0])->get();
+        $maDeTais = $phanCongSVDX->pluck('ma_de_tai');
+        $deTaiSVs = DeTaiSinhVien::whereIn('ma_de_tai', $maDeTais)
+            ->where(['da_huy' => 0, 'trang_thai' => 2, 'nam_hoc' => $thietLap->nam_hoc])
+            ->orderBy('ma_de_tai', 'desc')
+            ->get();
+
+        $deTais = $deTaiSVs->merge($deTaiGVs)->unique('ma_de_tai')->values();
         return view('giangvien.thongtindetai.danhSachHuongDan', compact('deTais'));
     }
 

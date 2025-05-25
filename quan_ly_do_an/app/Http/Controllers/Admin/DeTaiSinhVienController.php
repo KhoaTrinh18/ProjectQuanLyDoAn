@@ -128,20 +128,35 @@ class DeTaiSinhVienController extends Controller
 
         $data = $request->input('DeTai', []);
 
+
         $deTaiSV = DeTaiSinhVien::where('ma_de_tai', $data['ma_de_tai'])->first();
-        $deTaiSV->trang_thai = 2;
-        $deTaiSV->save();
+        foreach ($deTaiSV->giangVienDuKiens as $giangVien) {
+            Log::info($giangVien->sinhVienDangKys->count());
+        }
 
-        SinhVienDeTaiSV::where('ma_de_tai', $data['ma_de_tai'])->update([
-            'trang_thai' => 2
-        ]);
+        // $deTaiSV->trang_thai = 2;
+        // $deTaiSV->save();
 
-        $ngayDeXuat = $deTaiSV->ngayDeXuat->ngay_de_xuat;
+        // SinhVienDeTaiSV::where('ma_de_tai', $data['ma_de_tai'])->update([
+        //     'trang_thai' => 2
+        // ]);
+
+        $thietLap = ThietLap::where('trang_thai', 1)->first();
         foreach ($deTaiSV->sinhViens as $sinhVien) {
             if ($sinhVien && $sinhVien->email) {
                 $emailList[] = $sinhVien->email;
             }
+            foreach ($deTaiSV->giangVienDuKiens as $giangVien) {
+                $phanCong = new BangPhanCongSVDX();
+                $phanCong->ma_sv = $sinhVien->ma_sv;
+                $phanCong->ma_gvhd = $giangVien->ma_gv;
+                $phanCong->ma_de_tai = $data['ma_de_tai'];
+                $phanCong->nam_hoc = $thietLap->nam_hoc;
+                $phanCong->save();
+            }
         }
+
+        $ngayDeXuat = $deTaiSV->ngayDeXuat->ngay_de_xuat;
 
         if (!empty($emailList)) {
             SendEmailJob::dispatch($emailList, $deTaiSV, $ngayDeXuat, '', 'duyet');

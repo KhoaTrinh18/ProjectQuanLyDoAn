@@ -14,10 +14,10 @@
                             <thead style="background: #222e3c;">
                                 <tr>
                                     <th scope="col" class="text-white">#</th>
-                                    <th scope="col" class="text-white" style="width: 35%;">Tên đề tài</th>
+                                    <th scope="col" class="text-white" style="width: 30%;">Tên đề tài</th>
+                                    <th scope="col" class="text-white">Lĩnh vực</th>
                                     <th scope="col" class="text-white">Sinh viên thực hiện (Điểm)</th>
                                     <th scope="col" class="text-white">Xác nhận bảo vệ</th>
-                                    <th scope="col" class="text-white">Trạng thái</th>
                                     <th scope="col" class="text-white"></th>
                                 </tr>
                             </thead>
@@ -27,8 +27,11 @@
                                         <td scope="row">
                                             {{ $key + 1 }}</td>
                                         <td
-                                            style="width: 35%; word-wrap: break-word; overflow-wrap: break-word; white-space: normal; word-break: break-word;">
+                                            style="width: 30%; word-wrap: break-word; overflow-wrap: break-word; white-space: normal; word-break: break-word;">
                                             {{ $deTai->ten_de_tai }}
+                                        </td>
+                                        <td>
+                                            {{ $deTai->linhVuc->ten_linh_vuc }}
                                         </td>
                                         <td>
                                             @foreach ($deTai->sinhViens as $sinhVien)
@@ -52,7 +55,12 @@
                                                         $daChamDiem = 0;
                                                     }
                                                 @endphp
-                                                {{ $sinhVien->ho_ten }} ({!! $phanCong->diem_gvhd !== null ? number_format($phanCong->diem_gvhd, 2) : '<em>Chưa có</em>' !!})<br>
+                                                @if ($sinhVien->trang_thai == 3)
+                                                    {{ $sinhVien->ho_ten }} (<span class="text-danger">Nghỉ giữa
+                                                        chừng</span>)<br>
+                                                @else
+                                                    {{ $sinhVien->ho_ten }} ({!! $phanCong->diem_gvhd !== null ? number_format($phanCong->diem_gvhd, 1) : '<em>Chưa có</em>' !!})<br>
+                                                @endif
                                             @endforeach
                                         </td>
                                         <td>
@@ -64,24 +72,16 @@
                                                 <i>Chưa có</i>
                                             @endif
                                         </td>
-                                        <td>
-                                            @if ($daChamDiem)
-                                                <span class="text-success">Đã chấm điểm</span>
-                                            @else
-                                                <span class="text-warning">Chưa chấm điểm</span>
-                                            @endif
-                                        </td>
                                         <td class="text-center">
                                             <a href="{{ route('cham_diem_huong_dan.chi_tiet', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
                                                 class="btn btn-secondary btn-sm">Xem</a>
                                             @if ($daChamDiem)
                                                 <a href="{{ route('cham_diem_huong_dan.sua_diem', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
                                                     class="btn btn-primary btn-sm">Sửa điểm</a>
-                                            @else
+                                            @elseif ($deTai->sinhViens->where('trang_thai', 3)->count() != $deTai->sinhViens->count())
                                                 <a href="{{ route('cham_diem_huong_dan.cham_diem', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
-                                                    class="btn btn-primary btn-sm">Chấm điểm</a>
+                                                    class="btn btn-success btn-sm">Chấm điểm</a>
                                             @endif
-
                                         </td>
                                     </tr>
                                 @endforeach

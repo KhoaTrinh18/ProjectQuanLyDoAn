@@ -19,26 +19,28 @@
                             <p><strong>Tên đề tài: </strong><i>Chưa có</i></p>
                         @else
                             <p><strong>Tên đề tài: </strong>{{ $deTai->ten_de_tai }}</p>
-                            @if ($deTai->giangVienHuongDans->isEmpty())
+
+                            @php $giangVienHDs = $deTai->giangVienHuongDans()->wherePivot('ma_sv', $sinhVien->ma_sv)->get(); @endphp
+                            @if ($giangVienHDs->isEmpty())
                                 <p><strong>Giảng viên hướng dẫn: </strong><i>Chưa có</i></p>
                             @else
-                                @if ($deTai->giangVienHuongDans->count() === 1)
-                                    @php $gv = $deTai->giangVienHuongDans->first(); @endphp
+                                @if ($giangVienHDs->count() === 1)
+                                    @php $gv = $giangVienHDs->first(); @endphp
                                     <p class="mb-0"><strong>Giảng viên hướng dẫn: </strong>{{ $gv->ho_ten }}</p>
                                     <ul>
                                         <li><strong>Điểm:
-                                            </strong><i>{{ $gv->pivot->diem_gvhd ? number_format($gv->pivot->diem_gvhd, 2) : 'Chưa có' }}</i>
+                                            </strong><i>{{ $gv->pivot->diem_gvhd !== null ? number_format($gv->pivot->diem_gvhd, 1) : 'Chưa có' }}</i>
                                         </li>
                                         <li><strong>Nhận xét: </strong>{!! $gv->pivot->nhan_xet ?? '<em>Chưa có</em>' !!}</li>
                                     </ul>
                                 @else
                                     <p class="mb-0"><strong>Giảng viên hướng dẫn:</strong></p>
                                     <ul>
-                                        @foreach ($deTai->giangVienHuongDans as $gv)
+                                        @foreach ($giangVienHDs as $gv)
                                             <li class="mb-2">
                                                 {{ $gv->ho_ten }}<br>
                                                 <strong>Điểm:
-                                                </strong><i>{{ $gv->pivot->diem_gvhd ? number_format($gv->pivot->diem_gvhd, 2) : 'Chưa có' }}</i><br>
+                                                </strong><i>{{ $gv->pivot->diem_gvhd !== null ? number_format($gv->pivot->diem_gvhd, 1) : 'Chưa có' }}</i><br>
                                                 <strong>Nhận xét: </strong>{!! $gv->pivot->nhan_xet ?? '<em>Chưa có</em>' !!}
                                             </li>
                                         @endforeach
@@ -46,39 +48,42 @@
                                 @endif
                             @endif
 
-                            @if ($deTai->giangVienPhanBiens->isEmpty())
+                            @php $giangVienPB = $deTai->giangVienPhanBiens()->wherePivot('ma_sv', $sinhVien->ma_sv)->first(); @endphp
+                            @if (empty($giangVienPB))
                                 <p><strong>Giảng viên phản biện: </strong><i>Chưa có</i></p>
                             @else
-                                @php $gv = $deTai->giangVienPhanBiens->first(); @endphp
+                                @php $gv = $giangVienPB; @endphp
                                 <p class="mb-0"><strong>Giảng viên phản biện: </strong>{{ $gv->ho_ten }}</p>
                                 <ul>
                                     <li><strong>Điểm:
-                                        </strong><i>{{ $gv->pivot->diem_gvpb ? number_format($gv->pivot->diem_gvpb, 2) : 'Chưa có' }}</i>
+                                        </strong><i>{{ $gv->pivot->diem_gvpb !== null ? number_format($gv->pivot->diem_gvpb, 1) : 'Chưa có' }}</i>
                                     </li>
                                     <li><strong>Nhận xét: </strong>{!! $gv->pivot->nhan_xet ?? '<em>Chưa có</em>' !!}</li>
                                 </ul>
                             @endif
 
-                            @if ($deTai->hoiDongs->isEmpty())
+                            @php
+                                $deTaiHoiDong = [];
+
+                                if (isset($deTai->so_luong_sv_dang_ky)) {
+                                    $deTaiHoiDong = DB::table('bang_diem_gvthd_cho_svdk')
+                                        ->where(['ma_de_tai' => $deTai->ma_de_tai, 'ma_sv' => $sinhVien->ma_sv])
+                                        ->get();
+                                } else {
+                                    $deTaiHoiDong = DB::table('bang_diem_gvthd_cho_svdx')
+                                        ->where(['ma_de_tai' => $deTai->ma_de_tai, 'ma_sv' => $sinhVien->ma_sv])
+                                        ->get();
+                                }
+                            @endphp
+
+                            @if ($deTai->hoiDongs->isEmpty() || $deTaiHoiDong->isEmpty())
                                 <p><strong>Hội đồng: </strong><i>Chưa có</i></p>
                             @else
                                 @php
-                                    $hoiDong = $deTai->hoiDongs->first();
+                                    $hoiDong = $deTai->hoiDongs()->first();
                                     $chuTich = $hoiDong->giangViens()->wherePivot('chuc_vu', 'Chủ tịch')->first();
                                     $thuKy = $hoiDong->giangViens()->wherePivot('chuc_vu', 'Thư ký')->first();
                                     $uyViens = $hoiDong->giangViens()->wherePivot('chuc_vu', 'Ủy viên')->get();
-
-                                    $deTaiHoiDong = [];
-
-                                    if (isset($deTai->so_luong_sv_dang_ky)) {
-                                        $deTaiHoiDong = DB::table('bang_diem_gvthd_cho_svdk')
-                                            ->where('ma_de_tai', $deTai->ma_de_tai)
-                                            ->get();
-                                    } else {
-                                        $deTaiHoiDong = DB::table('bang_diem_gvthd_cho_svdx')
-                                            ->where('ma_de_tai', $deTai->ma_de_tai)
-                                            ->get();
-                                    }
                                 @endphp
                                 <p><strong>Hội đồng:</strong> {{ $hoiDong->ten_hoi_dong }}</p>
                                 <p><strong>Ngày tổ chức:</strong>
@@ -87,7 +92,7 @@
                                 <p class="mb-0"><strong>Chủ tịch: </strong>{{ $chuTich->ho_ten }}</p>
                                 <ul class="mb-3">
                                     <li><strong>Điểm:
-                                        </strong><i>{{ $deTaiHoiDong->where('ma_gvthd', $chuTich->ma_gv)->first()->diem_gvthd ? number_format($deTaiHoiDong->where('ma_gvthd', $chuTich->ma_gv)->first()->diem_gvthd, 2) : 'Chưa có' }}</i>
+                                        </strong><i>{{ $deTaiHoiDong->where('ma_gvthd', $chuTich->ma_gv)->first()->diem_gvthd !== null ? number_format($deTaiHoiDong->where('ma_gvthd', $chuTich->ma_gv)->first()->diem_gvthd, 1) : 'Chưa có' }}</i>
                                     </li>
                                     <li><strong>Nhận xét: </strong>{!! $deTaiHoiDong->where('ma_gvthd', $chuTich->ma_gv)->first()->nhan_xet ?? '<em>Chưa có</em>' !!}</li>
                                 </ul>
@@ -95,7 +100,7 @@
                                 <p class="mb-0"><strong>Thư ký: </strong>{{ $thuKy->ho_ten }}</p>
                                 <ul class="mb-3">
                                     <li><strong>Điểm:
-                                        </strong><i>{{ $deTaiHoiDong->where('ma_gvthd', $thuKy->ma_gv)->first()->diem_gvthd ? number_format($deTaiHoiDong->where('ma_gvthd', $thuKy->ma_gv)->first()->diem_gvthd, 2) : 'Chưa có' }}</i>
+                                        </strong><i>{{ $deTaiHoiDong->where('ma_gvthd', $thuKy->ma_gv)->first()->diem_gvthd !== null ? number_format($deTaiHoiDong->where('ma_gvthd', $thuKy->ma_gv)->first()->diem_gvthd, 1) : 'Chưa có' }}</i>
                                     </li>
                                     <li><strong>Nhận xét: </strong>{!! $deTaiHoiDong->where('ma_gvthd', $thuKy->ma_gv)->first()->nhan_xet ?? '<em>Chưa có</em>' !!}</li>
                                 </ul>
@@ -105,7 +110,7 @@
                                     <p class="mb-0"><strong>Ủy viên: </strong>{{ $uyVien->ho_ten }}</p>
                                     <ul>
                                         <li><strong>Điểm:
-                                            </strong><i>{{ $deTaiHoiDong->where('ma_gvthd', $uyVien->ma_gv)->first()->diem_gvthd ? number_format($deTaiHoiDong->where('ma_gvthd', $uyVien->ma_gv)->first()->diem_gvthd, 2) : 'Chưa có' }}</i>
+                                            </strong><i>{{ $deTaiHoiDong->where('ma_gvthd', $uyVien->ma_gv)->first()->diem_gvthd !== null ? number_format($deTaiHoiDong->where('ma_gvthd', $uyVien->ma_gv)->first()->diem_gvthd, 1) : 'Chưa có' }}</i>
                                         </li>
                                         <li><strong>Nhận xét: </strong>{!! $deTaiHoiDong->where('ma_gvthd', $uyVien->ma_gv)->first()->nhan_xet ?? '<em>Chưa có</em>' !!}</li>
                                     </ul>
@@ -116,7 +121,7 @@
                                             <li class="mb-2">
                                                 {{ $uyVien->ho_ten }}<br>
                                                 <strong>Điểm:
-                                                </strong><i>{{ $deTaiHoiDong->where('ma_gvthd', $uyVien->ma_gv)->first()->diem_gvthd ? number_format($deTaiHoiDong->where('ma_gvthd', $uyVien->ma_gv)->first()->diem_gvthd, 2) : 'Chưa có' }}</i><br>
+                                                </strong><i>{{ $deTaiHoiDong->where('ma_gvthd', $uyVien->ma_gv)->first()->diem_gvthd !== null ? number_format($deTaiHoiDong->where('ma_gvthd', $uyVien->ma_gv)->first()->diem_gvthd, 1) : 'Chưa có' }}</i><br>
                                                 <strong>Nhận xét: </strong>{!! $deTaiHoiDong->where('ma_gvthd', $uyVien->ma_gv)->first()->nhan_xet ?? '<em>Chưa có</em>' !!}
                                             </li>
                                         @endforeach
@@ -143,7 +148,9 @@
                                                 aria-label="Đóng"></button>
                                         </div>
                                         <div class="modal-body text-center fs-5 text-secondary">
-                                            Khi hủy sinh viên này sẽ hủy toàn bộ thông tin liên quan đến sinh viên và cập nhật trạng thái sinh viên thành <strong>nghỉ giữa chừng</strong>. Bạn có chắc chắn muốn hủy sinh viên này không?
+                                            Khi hủy sinh viên này sẽ hủy toàn bộ thông tin liên quan đến sinh viên và cập
+                                            nhật trạng thái sinh viên thành <strong>nghỉ giữa chừng</strong>. Bạn có chắc
+                                            chắn muốn hủy sinh viên này không?
                                         </div>
                                         <div class="modal-footer bg-light border-top-0">
                                             <button type="button" class="btn btn-secondary"

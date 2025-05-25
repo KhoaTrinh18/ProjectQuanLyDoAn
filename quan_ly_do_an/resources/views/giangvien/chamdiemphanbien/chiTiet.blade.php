@@ -11,32 +11,17 @@
                     </div>
                     <div class="card-body" style="font-size: 16px">
                         <h3 class="text-center mb-4" style="font-weight: bold">{{ $deTai->ten_de_tai }}</h3>
-                        <p><strong>Trạng thái:</strong>
-                            @php
-                                if (isset($deTai->so_luong_sv_dang_ky)) {
-                                    $phanCongPhanBien = $phanCongPhanBienSVDK
-                                        ->where('ma_de_tai', $deTai->ma_de_tai)
-                                        ->first();
-                                } else {
-                                    $phanCongPhanBien = $phanCongPhanBienSVDX
-                                        ->where('ma_de_tai', $deTai->ma_de_tai)
-                                        ->first();
-                                }
 
-                                $daChamDiem = 0;
-                                if (isset($phanCongPhanBien->diem_gvpb)) {
-                                    $daChamDiem = 1;
-                                } else {
-                                    $daChamDiem = 0;
-                                }
-                            @endphp
-                            @if ($daChamDiem)
-                                <span class="text-success">Đã chấm điểm</span>
+                        <p><strong>Xác nhận bảo vệ: </strong>
+                            @if ($deTai->duoc_bao_ve == 1)
+                                <span class="text-success">Được bảo vệ</span>
+                            @elseif (isset($deTai->duoc_bao_ve))
+                                <span class="text-danger">Không được bảo vệ</span>
                             @else
-                                <span class="text-warning">Chưa chấm điểm</span>
+                                <i>Chưa có</i>
                             @endif
                         </p>
-
+                        
                         @if ($deTai->sinhViens->count() == 1)
                             @php
                                 $sinhVien = $deTai->sinhViens->first();
