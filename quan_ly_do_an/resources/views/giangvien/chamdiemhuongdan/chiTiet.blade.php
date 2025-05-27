@@ -37,9 +37,16 @@
                                         ->first();
                                 }
                             @endphp
-                            <p><strong>Sinh viên thực hiện:</strong> {{ $sinhVien->ho_ten }} ({{ $sinhVien->mssv }}) - Điểm:
-                                {!! $phanCongSV->diem_gvhd !== null ? number_format($phanCongSV->diem_gvhd, 2) : '<em>Chưa có</em>' !!}
+                            @if ($sinhVien->trang_thai == 3)
+                                <p>Sinh viên thực hiện: {{ $sinhVien->ho_ten }} ({{ $sinhVien->mssv }}) (<span
+                                        class="text-danger">Nghỉ giữa
+                                        chừng</span>)<br></p>
                             @else
+                                <p><strong>Sinh viên thực hiện:</strong> {{ $sinhVien->ho_ten }} ({{ $sinhVien->mssv }}) -
+                                    Điểm:
+                                    {!! $phanCongSV->diem_gvhd !== null ? number_format($phanCongSV->diem_gvhd, 1) : '<em>Chưa có</em>' !!}</p>
+                            @endif
+                        @else
                             <p><strong>Sinh viên thực hiện:</strong></p>
                             <ul>
                                 @foreach ($deTai->sinhViens as $sinhVien)
@@ -56,8 +63,14 @@
                                                 ->first();
                                         }
                                     @endphp
-                                    <li>{{ $sinhVien->ho_ten }} ({{ $sinhVien->mssv }}) - Điểm:
-                                        {!! $phanCongSV->diem_gvhd !== null ? number_format($phanCongSV->diem_gvhd, 2) : '<em>Chưa có</em>' !!}
+                                    @if ($sinhVien->trang_thai == 3)
+                                        <li>{{ $sinhVien->ho_ten }} ({{ $sinhVien->mssv }}) (<span
+                                                class="text-danger">Nghỉ giữa
+                                                chừng</span>)<br></li>
+                                    @else
+                                        <li>{{ $sinhVien->ho_ten }} ({{ $sinhVien->mssv }}) - Điểm:
+                                            {!! $phanCongSV->diem_gvhd !== null ? number_format($phanCongSV->diem_gvhd, 1) : '<em>Chưa có</em>' !!}
+                                    @endif
                                 @endforeach
                             </ul>
                         @endif

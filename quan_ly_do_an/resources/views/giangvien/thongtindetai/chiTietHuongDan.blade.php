@@ -28,10 +28,10 @@
                         <p><strong>Lĩnh vực:</strong> {{ $deTai->linhVuc->ten_linh_vuc }}</p>
                         <p><strong>Mô tả:</strong> {!! $deTai->mo_ta !!}</p>
 
-                        @if ($deTai->so_luong_sv_dang_ky < 1)
-                            <p><strong>Sinh viên đã đăng ký:
+                        @if ($deTai->sinhViens->count() < 1)
+                            <p><strong>Sinh viên thực hiện:
                                 </strong><i>Chưa có</i></p>
-                        @elseif ($deTai->so_luong_sv_dang_ky == 1)
+                        @elseif ($deTai->sinhViens->count() == 1)
                             <form class="d-flex align-items-center" id="form_huy_sv">
                                 <p class="m-0"><strong>Sinh viên thực hiện:
                                     </strong>{{ $deTai->sinhViens->first()->ho_ten }}

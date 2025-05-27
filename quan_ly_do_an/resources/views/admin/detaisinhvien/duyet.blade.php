@@ -201,6 +201,17 @@
                                 window.location.href =
                                     "{{ route('de_tai_sinh_vien.danh_sach') }}";
                             });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Thất bại!',
+                                text: 'Duyệt thất bại! Giảng viên này đã đủ số lượng sinh viên hướng dẫn',
+                                confirmButtonText: 'OK',
+                                timer: 2000,
+                                showConfirmButton: false
+                            }).then(() => {
+                                window.location.reload();
+                            });
                         }
                     },
                     error: function(xhr) {
@@ -307,12 +318,24 @@
                                 window.location.href =
                                     "{{ route('de_tai_sinh_vien.danh_sach') }}";
                             });
-
                         } else {
-                            $.each(result.errors, function(field, messages) {
-                                $('.error-' + field).text(messages[0]).removeClass(
-                                    "d-none").addClass("d-block");
-                            });
+                            if (result.errors == null) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Thất bại!',
+                                    text: 'Duyệt thất bại! Giảng viên này đã đủ số lượng sinh viên hướng dẫn',
+                                    confirmButtonText: 'OK',
+                                    timer: 2000,
+                                    showConfirmButton: false
+                                }).then(() => {
+                                    window.location.reload();
+                                });
+                            } else {
+                                $.each(result.errors, function(field, messages) {
+                                    $('.error-' + field).text(messages[0]).removeClass(
+                                        "d-none").addClass("d-block");
+                                });
+                            }
                         }
                     },
                     error: function(xhr) {

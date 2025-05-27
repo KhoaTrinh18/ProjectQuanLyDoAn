@@ -33,7 +33,9 @@ class PhanCongPhanBienController extends Controller
         $maDeTaiDKs = BangPhanCongSVDK::distinct()->where(['nam_hoc' => $thietLap->nam_hoc])->pluck('ma_de_tai');
         $deTaiGVs = DeTaiGiangVien::whereIn('ma_de_tai', $maDeTaiDKs)->orderBy('ma_de_tai', 'desc')->get();
 
-        $merged = $deTaiSVs->merge($deTaiGVs)->unique('ma_de_tai')->sortByDesc(function ($item) {
+        $merged = $deTaiSVs->merge($deTaiGVs)->unique('ma_de_tai')->sortBy(function ($item) {
+            return is_null($item->duoc_bao_ve) ? 0 : ($item->duoc_bao_ve == 0 ? 1 : 2);
+        })->sortByDesc(function ($item) {
             return $item->giangVienPhanBiens->isEmpty() && $item->duoc_bao_ve == 1;
         })->values();
 
@@ -58,7 +60,7 @@ class PhanCongPhanBienController extends Controller
         $maDeTaiDXs = BangPhanCongSVDX::distinct()->where('nam_hoc', $thietLap->nam_hoc)->pluck('ma_de_tai');
         $deTaiSVs = DeTaiSinhVien::query()
             ->whereIn('ma_de_tai', $maDeTaiDXs)->orderBy('ma_de_tai', 'desc');
-            
+
         if ($request->filled('ten_de_tai')) {
             $deTaiSVs->where('ten_de_tai', 'like', '%' . $request->ten_de_tai . '%');
         }
@@ -127,7 +129,9 @@ class PhanCongPhanBienController extends Controller
 
         $deTaiGVs = $deTaiGVs->get();
 
-        $merged = $deTaiSVs->merge($deTaiGVs)->unique('ma_de_tai')->sortByDesc(function ($item) {
+        $merged = $deTaiSVs->merge($deTaiGVs)->unique('ma_de_tai')->sortBy(function ($item) {
+            return is_null($item->duoc_bao_ve) ? 0 : ($item->duoc_bao_ve == 0 ? 1 : 2);
+        })->sortByDesc(function ($item) {
             return $item->giangVienPhanBiens->isEmpty() && $item->duoc_bao_ve == 1;
         })->values();
 

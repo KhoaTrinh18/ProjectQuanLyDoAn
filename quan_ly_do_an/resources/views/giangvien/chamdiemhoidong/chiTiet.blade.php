@@ -11,32 +11,6 @@
                     </div>
                     <div class="card-body" style="font-size: 16px">
                         <h3 class="text-center mb-4" style="font-weight: bold">{{ $deTai->ten_de_tai }}</h3>
-                        <p><strong>Trạng thái:</strong>
-                            @php
-                                if (isset($deTai->so_luong_sv_dang_ky)) {
-                                    $phanCongHoiDong = $phanCongHoiDongSVDK
-                                        ->where('ma_de_tai', $deTai->ma_de_tai)
-                                        ->first();
-                                } else {
-                                    $phanCongHoiDong = $phanCongHoiDongSVDX
-                                        ->where('ma_de_tai', $deTai->ma_de_tai)
-                                        ->first();
-                                }
-
-                                $daChamDiem = 0;
-                                if (isset($phanCongHoiDong->diem_gvthd)) {
-                                    $daChamDiem = 1;
-                                } else {
-                                    $daChamDiem = 0;
-                                }
-                            @endphp
-                            @if ($daChamDiem)
-                                <span class="text-success">Đã chấm điểm</span>
-                            @else
-                                <span class="text-warning">Chưa chấm điểm</span>
-                            @endif
-                        </p>
-
                         @if ($deTai->sinhViens->count() == 1)
                             @php
                                 $sinhVien = $deTai->sinhViens->first();
@@ -52,9 +26,16 @@
                                         ->first();
                                 }
                             @endphp
-                            <p><strong>Sinh viên thực hiện:</strong> {{ $sinhVien->ho_ten }} ({{ $sinhVien->mssv }}) - Điểm:
-                                {!! $phanCongSV->diem_gvthd !== null ? number_format($phanCongSV->diem_gvthd, 2) : '<em>Chưa có</em>' !!}
+                            @if ($sinhVien->trang_thai == 3)
+                                <p>Sinh viên thực hiện: {{ $sinhVien->ho_ten }} ({{ $sinhVien->mssv }}) (<span
+                                        class="text-danger">Nghỉ giữa
+                                        chừng</span>)<br></p>
                             @else
+                                <p><strong>Sinh viên thực hiện:</strong> {{ $sinhVien->ho_ten }} ({{ $sinhVien->mssv }}) -
+                                    Điểm:
+                                    {!! $phanCongSV->diem_gvthd !== null ? number_format($phanCongSV->diem_gvthd, 1) : '<em>Chưa có</em>' !!}</p>
+                            @endif
+                        @else
                             <p><strong>Sinh viên thực hiện:</strong></p>
                             <ul>
                                 @foreach ($deTai->sinhViens as $sinhVien)
@@ -71,8 +52,14 @@
                                                 ->first();
                                         }
                                     @endphp
-                                    <li>{{ $sinhVien->ho_ten }} ({{ $sinhVien->mssv }}) - Điểm:
-                                        {!! $phanCongSV->diem_gvthd !== null ? number_format($phanCongSV->diem_gvthd, 2) : '<em>Chưa có</em>' !!}</li>
+                                    @if ($sinhVien->trang_thai == 3)
+                                        <p>{{ $sinhVien->ho_ten }} ({{ $sinhVien->mssv }}) (<span
+                                                class="text-danger">Nghỉ giữa
+                                                chừng</span>)<br></p>
+                                    @else
+                                        <li>{{ $sinhVien->ho_ten }} ({{ $sinhVien->mssv }}) - Điểm:
+                                            {!! $phanCongSV->diem_gvthd !== null ? number_format($phanCongSV->diem_gvthd, 1) : '<em>Chưa có</em>' !!}</li>
+                                    @endif
                                 @endforeach
                             </ul>
                         @endif

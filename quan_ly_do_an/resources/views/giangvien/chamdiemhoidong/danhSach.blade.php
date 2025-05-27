@@ -14,12 +14,11 @@
                             <thead style="background: #222e3c;">
                                 <tr>
                                     <th scope="col" class="text-white">#</th>
-                                    <th scope="col" class="text-white" style="width: 20%;">Tên đề tài</th>
-                                    <th scope="col" class="text-white">Sinh viên thực hiện (Điểm)</th>
+                                    <th scope="col" class="text-white" style="width: 25%;">Tên đề tài</th>
                                     <th scope="col" class="text-white">Giảng viên hướng dẫn</th>
                                     <th scope="col" class="text-white">Hội đồng</th>
                                     <th scope="col" class="text-white">Chức vụ</th>
-                                    <th scope="col" class="text-white">Trạng thái</th>
+                                    <th scope="col" class="text-white">Sinh viên thực hiện (Điểm)</th>
                                     <th scope="col" class="text-white"></th>
                                 </tr>
                             </thead>
@@ -47,8 +46,18 @@
                                         <td scope="row">
                                             {{ $key + 1 }}</td>
                                         <td
-                                            style="width: 20%; word-wrap: break-word; overflow-wrap: break-word; white-space: normal; word-break: break-word;">
+                                            style="width: 25%; word-wrap: break-word; overflow-wrap: break-word; white-space: normal; word-break: break-word;">
                                             {{ $deTai->ten_de_tai }}
+                                        </td>
+
+                                        <td>
+                                            {!! $deTai->giangViens->pluck('ho_ten')->implode('<br>') !!}
+                                        </td>
+                                        <td>
+                                            {{ $deTai->hoiDongs->first()->ten_hoi_dong }}
+                                        </td>
+                                        <td>
+                                            {{ $HoiDong_GiangVien->where('ma_hoi_dong', $deTai->hoiDongs->first()->ma_hoi_dong)->first()->chuc_vu }}
                                         </td>
                                         <td>
                                             @foreach ($deTai->sinhViens as $sinhVien)
@@ -72,24 +81,13 @@
                                                         $daChamDiem = 0;
                                                     }
                                                 @endphp
-                                                {{ $sinhVien->ho_ten }} ({!! $phanCongHoiDong->diem_gvthd !== null ? number_format($phanCongHoiDong->diem_gvthd, 2) : '<em>Chưa có</em>' !!})<br>
+                                                @if ($sinhVien->trang_thai == 3)
+                                                    {{ $sinhVien->ho_ten }} (<span class="text-danger">Nghỉ giữa
+                                                        chừng</span>)<br>
+                                                @else
+                                                    {{ $sinhVien->ho_ten }} ({!! $phanCongHoiDong->diem_gvthd !== null ? number_format($phanCongHoiDong->diem_gvthd, 1) : '<em>Chưa có</em>' !!})<br>
+                                                @endif
                                             @endforeach
-                                        </td>
-                                        <td>
-                                            {!! $deTai->giangViens->pluck('ho_ten')->implode('<br>') !!}
-                                        </td>
-                                        <td>
-                                            {{ $deTai->hoiDongs->first()->ten_hoi_dong }}
-                                        </td>
-                                        <td>
-                                            {{ $HoiDong_GiangVien->where('ma_hoi_dong', $deTai->hoiDongs->first()->ma_hoi_dong)->first()->chuc_vu }}
-                                        </td>
-                                        <td class="text-center">
-                                            @if ($daChamDiem)
-                                                <span class="text-success">Đã chấm điểm</span>
-                                            @else
-                                                <span class="text-warning">Chưa chấm điểm</span>
-                                            @endif
                                         </td>
                                         <td class="text-center">
                                             <a href="{{ route('cham_diem_hoi_dong.chi_tiet', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
@@ -107,7 +105,7 @@
                                 @endforeach
                                 @if ($deTais->isEmpty())
                                     <tr>
-                                        <td colspan="8" class="text-center">Không có đề tài</td>
+                                        <td colspan="7" class="text-center">Không có đề tài</td>
                                     </tr>
                                 @endif
                             </tbody>

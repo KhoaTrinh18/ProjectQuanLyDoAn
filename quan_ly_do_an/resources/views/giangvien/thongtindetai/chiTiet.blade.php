@@ -34,10 +34,10 @@
                         @elseif ($deTai->so_luong_sv_dang_ky == 1)
                             <form class="d-flex align-items-center" id="form_huy_sv">
                                 <p class="m-0"><strong>Sinh viên đã đăng ký:
-                                    </strong>{{ $deTai->sinhVienDangKys->first()->ho_ten }}
-                                    ({{ $deTai->sinhVienDangKys->first()->mssv }}) - Email:
-                                    {{ $deTai->sinhVienDangKys->first()->email }} - Số điện thoại:
-                                    {{ $deTai->sinhVienDangKys->first()->so_dien_thoai }}
+                                    </strong>{{ $deTai->sinhViens->first()->ho_ten }}
+                                    ({{ $deTai->sinhViens->first()->mssv }}) - Email:
+                                    {{ $deTai->sinhViens->first()->email }} - Số điện thoại:
+                                    {{ $deTai->sinhViens->first()->so_dien_thoai }}
                                 </p>
                                 @if ($deTai->da_xac_nhan_huong_dan == 0)
                                     <button class="btn btn-danger btn-sm ms-2" type="button" data-bs-toggle="modal"
@@ -57,13 +57,13 @@
                                             </div>
                                             <div class="modal-body fs-5 text-secondary"> Bạn có chắc muốn hủy đăng ký của
                                                 sinh viên
-                                                <strong>{{ $deTai->sinhVienDangKys->first()->ho_ten }}</strong>
+                                                <strong>{{ $deTai->sinhViens->first()->ho_ten }}</strong>
                                             </div>
                                             <div class="modal-footer  bg-light border-top-0">
                                                 <button type="button" class="btn btn-secondary"
                                                     data-bs-dismiss="modal">Hủy</button>
                                                 <input type="hidden" name="ma_sv"
-                                                    value="{{ $deTai->sinhVienDangKys->first()->ma_sv }}">
+                                                    value="{{ $deTai->sinhViens->first()->ma_sv }}">
                                                 <input type="hidden" name="ma_de_tai" value="{{ $deTai->ma_de_tai }}">
                                                 <button type="submit" class="btn btn-primary" id="dangKy">Xác
                                                     nhận</button>
@@ -75,7 +75,7 @@
                         @else
                             <p><strong>Sinh viên đã đăng ký:</strong></p>
                             <ul>
-                                @foreach ($deTai->sinhVienDangKys as $sinhVien)
+                                @foreach ($deTai->sinhViens as $sinhVien)
                                     <li class="mt-2">
                                         <div class="d-flex align-items-center">
                                             <p class="student-name m-0">{{ $sinhVien->ho_ten }} ({{ $sinhVien->mssv }}) -
@@ -241,6 +241,15 @@
                                     timer: 2000,
                                     showConfirmButton: false
                                 })
+                            } else if (result.text == 'du_huong_dan') {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Thất bại!',
+                                    text: 'Xác nhận hướng dẫn thất bại! Đã đủ số lượng sinh viên cần hướng dẫn',
+                                    confirmButtonText: 'OK',
+                                    timer: 2000,
+                                    showConfirmButton: false
+                                })
                             } else {
                                 Swal.fire({
                                     icon: 'error',
@@ -294,7 +303,7 @@
                                 window.location.href =
                                     "{{ route('thong_tin_de_tai.danh_sach_duyet') }}";
                             });
-                        }   
+                        }
                     },
                     error: function(xhr) {
                         Swal.fire({
@@ -385,7 +394,7 @@
                         showConfirmButton: true
                     }).then(() => {
                         window.location.href =
-                            "{{ route('thong_tin_de_tai.danh_sach_duyet') }}";
+                            "{{ route('thong_tin_de_tai.danh_sach_huong_dan') }}";
                     });
                     clearInterval(interval);
                 }

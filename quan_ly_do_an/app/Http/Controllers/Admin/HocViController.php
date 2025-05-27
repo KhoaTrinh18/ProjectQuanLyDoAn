@@ -39,7 +39,7 @@ class HocViController extends Controller
                 'max:255',
                 'regex:/^[\p{L}\s]+$/u'
             ],
-            'sl_de_tai_huong_dan' => [
+            'sl_sinh_vien_huong_dan' => [
                 'required',
                 'integer'
             ]
@@ -49,8 +49,8 @@ class HocViController extends Controller
             'ten_hoc_vi.max' => 'Tên học vị không được vượt quá 255 ký tự.',
             'ten_hoc_vi.regex' => 'Tên học vị chỉ được chứa chữ cái và khoảng trắng, không chứa số hoặc ký tự đặc biệt.',
 
-            'sl_de_tai_huong_dan.require' => 'Số lượng đề tài hướng dẫn không được để trống.',
-            'sl_de_tai_huong_dan.integer' => 'Số lượng đề tài hướng dẫn phải là số.',
+            'sl_sinh_vien_huong_dan.require' => 'Số lượng đề tài hướng dẫn không được để trống.',
+            'sl_sinh_vien_huong_dan.integer' => 'Số lượng đề tài hướng dẫn phải là số.',
         ]);
 
         if ($validator->fails()) {
@@ -63,7 +63,7 @@ class HocViController extends Controller
         try {
             $hocVi = new HocVi();
             $hocVi->ten_hoc_vi = $data['ten_hoc_vi'];
-            $hocVi->sl_de_tai_huong_dan = $data['sl_de_tai_huong_dan'];
+            $hocVi->sl_sinh_vien_huong_dan = $data['sl_sinh_vien_huong_dan'];
             $hocVi->save();
 
             return response()->json([
@@ -100,7 +100,7 @@ class HocViController extends Controller
                 'max:255',
                 'regex:/^[\p{L}\s]+$/u'
             ],
-            'sl_de_tai_huong_dan' => [
+            'sl_sinh_vien_huong_dan' => [
                 'required',
                 'integer'
             ]
@@ -110,8 +110,8 @@ class HocViController extends Controller
             'ten_hoc_vi.max' => 'Tên học vị không được vượt quá 255 ký tự.',
             'ten_hoc_vi.regex' => 'Tên học vị chỉ được chứa chữ cái và khoảng trắng, không chứa số hoặc ký tự đặc biệt.',
 
-            'sl_de_tai_huong_dan.require' => 'Số lượng đề tài hướng dẫn không được để trống.',
-            'sl_de_tai_huong_dan.integer' => 'Số lượng đề tài hướng dẫn phải là số.',
+            'sl_sinh_vien_huong_dan.require' => 'Số lượng đề tài hướng dẫn không được để trống.',
+            'sl_sinh_vien_huong_dan.integer' => 'Số lượng đề tài hướng dẫn phải là số.',
         ]);
 
         if ($validator->fails()) {
@@ -124,7 +124,7 @@ class HocViController extends Controller
         try {
             HocVI::where('ma_hoc_vi', $data['ma_hoc_vi'])->update([
                 'ten_hoc_vi' => $data['ten_hoc_vi'],
-                'sl_de_tai_huong_dan' => $data['sl_de_tai_huong_dan'],
+                'sl_sinh_vien_huong_dan' => $data['sl_sinh_vien_huong_dan'],
             ]);
 
             return response()->json([

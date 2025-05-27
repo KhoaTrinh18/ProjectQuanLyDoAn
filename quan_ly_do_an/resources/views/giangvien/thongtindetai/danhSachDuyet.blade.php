@@ -14,7 +14,7 @@
                             <thead style="background: #222e3c;">
                                 <tr>
                                     <th scope="col" class="text-white">#</th>
-                                    <th scope="col" class="text-white" style="width: 40%;">Tên đề tài</th>
+                                    <th scope="col" class="text-white" style="width: 35%;">Tên đề tài</th>
                                     <th scope="col" class="text-white">Lĩnh vực</th>
                                     <th scope="col" class="text-white">Số lượng sinh viên đăng ký</th>
                                     <th scope="col" class="text-white">Trạng thái</th>
@@ -27,7 +27,7 @@
                                         <td scope="row">
                                             {{ $key + 1 }}</td>
                                         <td
-                                            style="width: 40%; word-wrap: break-word; overflow-wrap: break-word; white-space: normal; word-break: break-word;">
+                                            style="width: 35%; word-wrap: break-word; overflow-wrap: break-word; white-space: normal; word-break: break-word;">
                                             {{ $deTai->ten_de_tai }}
                                         </td>
                                         <td>{{ $deTai->linhVuc->ten_linh_vuc }}</td>
@@ -44,7 +44,7 @@
                                         <td class="text-center">
                                             @if ($deTai->da_xac_nhan_huong_dan == 0)
                                                 <a href="{{ route('thong_tin_de_tai.chi_tiet_duyet', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
-                                                    class="btn btn-primary btn-sm">Xác nhận hướng dẫn</a>
+                                                    class="btn btn-success btn-sm">Xác nhận hướng dẫn</a>
                                             @else
                                                 <a href="{{ route('thong_tin_de_tai.chi_tiet_duyet', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
                                                     class="btn btn-secondary btn-sm">Xem</a>
@@ -66,4 +66,28 @@
             </div>
         </div>
     </div>
+@endsection
+@section('scripts')
+    <script>
+        $(document).ready(function() {
+            const deadline = new Date("{{ $ngayHetHan }}");
+
+            const interval = setInterval(() => {
+                const now = new Date();
+                if (now >= deadline) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Hết thời gian!',
+                        text: 'Bạn đã hết thời gian xác nhận hướng dẫn.',
+                        confirmButtonText: 'OK',
+                        showConfirmButton: true
+                    }).then(() => {
+                        window.location.href =
+                            "{{ route('thong_tin_de_tai.danh_sach_huong_dan') }}";
+                    });
+                    clearInterval(interval);
+                }
+            }, 10);
+        })
+    </script>
 @endsection

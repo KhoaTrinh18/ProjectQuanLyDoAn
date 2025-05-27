@@ -78,7 +78,7 @@
                         <td>
                             @if ($deTai->duoc_bao_ve == 1)
                                 <span class="text-success">Được bảo vệ</span>
-                            @elseif ($deTai->duoc_bao_ve == 0)
+                            @elseif (isset($deTai->duoc_bao_ve))
                                 <span class="text-danger">Không được bảo vệ</span>
                             @else
                                 <span><i>Chưa có</i></span>
@@ -95,7 +95,7 @@
                                         class="btn btn-primary btn-sm">Sửa</a>
                                 @else
                                     <a href="{{ route('phan_cong_phan_bien.phan_cong', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
-                                        class="btn btn-successs btn-sm">Phân công phản biện</a>
+                                        class="btn btn-success btn-sm">Phân công phản biện</a>
                                 @endif
                             @else
                                 <a href="{{ route('phan_cong_phan_bien.chi_tiet', ['ma_de_tai' => $deTai->ma_de_tai]) }}"

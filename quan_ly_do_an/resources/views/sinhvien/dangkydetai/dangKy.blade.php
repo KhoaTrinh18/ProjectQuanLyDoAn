@@ -33,14 +33,14 @@
                             <p><strong>Sinh viên đã đăng ký:
                                 </strong><i>Chưa có</i></p>
                         @elseif ($deTai->so_luong_sv_dang_ky == 1)
-                            @php $sinhVien = $deTai->sinhVienDangKys->first(); @endphp
+                            @php $sinhVien = $deTai->sinhViens->first(); @endphp
                             <p><strong>Sinh viên đã đăng ký:
                                 </strong>{{ $sinhVien->ho_ten }} ({{ $sinhVien->mssv }})
                             </p>
                         @else
                             <p><strong>Sinh viên đã đăng ký:</strong></p>
                             <ul>
-                                @foreach ($deTai->sinhVienDangKys as $sinhVien)
+                                @foreach ($deTai->sinhViens as $sinhVien)
                                     <li>{{ $sinhVien->ho_ten }} ({{ $sinhVien->mssv }})</li>
                                 @endforeach
                             </ul>

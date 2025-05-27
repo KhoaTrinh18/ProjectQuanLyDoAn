@@ -25,12 +25,16 @@
         <div>{{ $giangVien->so_dien_thoai }}</div>
     </div>
     <div class="mb-2 d-flex">
+        <div class="fw-bold me-2" style="width: 130px;">Bộ môn:</div>
+        <div>{{ $giangVien->boMon->ten_bo_mon }}</div>
+    </div>
+    <div class="mb-2 d-flex">
         <div class="fw-bold me-2" style="width: 130px;">Học vị:</div>
         <div>{{ $giangVien->hocVi->ten_hoc_vi }}</div>
     </div>
     <div class="mb-2 d-flex">
-        <div class="fw-bold me-2" style="width: 130px;">Bộ môn:</div>
-        <div>{{ $giangVien->boMon->ten_bo_mon }}</div>
+        <div class="fw-bold me-2" style="width: 130px;">Số lượng sinh viên:</div>
+        <div>{{ $giangVien->hocVi->sl_sinh_vien_huong_dan }}</div>
     </div>
 </div>
 

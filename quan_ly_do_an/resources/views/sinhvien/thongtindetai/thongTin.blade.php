@@ -32,15 +32,6 @@
                             @endif
 
                             @if ($checkNgayHetHan == 1)
-                                <p><strong>Xác nhận bảo vệ:</strong>
-                                    @if ($deTai->duoc_bao_ve == 1)
-                                        <span class="text-success">Được bảo vệ</span>
-                                    @elseif (isset($deTai->duoc_bao_ve))
-                                        <span class="text-danger">Không được bảo vệ</span>
-                                    @else
-                                        <i>Chưa có</i>
-                                    @endif
-                                </p>
                                 <p><strong>Trạng thái: </strong>
                                     @if ($sinhVien->trang_thai == 0)
                                         <span class="text-danger">Không hoàn thành</span>
@@ -50,6 +41,15 @@
                                         <span class="text-success">Đã hoàn thành</span>
                                     @else
                                         <span class="text-danger">Nghỉ giữa chừng</span>
+                                    @endif
+                                </p>
+                                <p><strong>Xác nhận bảo vệ:</strong>
+                                    @if ($deTai->duoc_bao_ve == 1)
+                                        <span class="text-success">Được bảo vệ</span>
+                                    @elseif (isset($deTai->duoc_bao_ve))
+                                        <span class="text-danger">Không được bảo vệ</span>
+                                    @else
+                                        <i>Chưa có</i>
                                     @endif
                                 </p>
                                 @if ($deTai->giangVienHuongDans->isEmpty())

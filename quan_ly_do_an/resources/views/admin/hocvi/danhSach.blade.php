@@ -18,7 +18,7 @@
                                 <tr>
                                     <th scope="col" class="text-white">#</th>
                                     <th scope="col" class="text-white">Tên học vị</th>
-                                    <th scope="col" class="text-white">Số lượng đề tài hướng dẫn</th>
+                                    <th scope="col" class="text-white">Số lượng sinh viên hướng dẫn</th>
                                     <th scope="col" class="text-white"></th>
                                 </tr>
                             </thead>
@@ -27,7 +27,7 @@
                                     <tr>
                                         <td scope="row"> {{ $key + 1 }} </td>
                                         <td> {{ $hocVi->ten_hoc_vi }} </td>
-                                        <td> {{ $hocVi->sl_de_tai_huong_dan }} </td>
+                                        <td> {{ $hocVi->sl_sinh_vien_huong_dan }} </td>
                                         <td class="text-center">
                                             <button class="btn btn-danger btn-sm" data-bs-toggle="modal"
                                                 data-bs-target="#modal-huy-{{ $hocVi->ma_hoc_vi }}">

@@ -25,15 +25,15 @@
                                 </div>
                             </div>
                             <div class="d-flex mb-3">
-                                <label for="HocVi[sl_de_tai_huong_dan]"
+                                <label for="HocVi[sl_sinh_vien_huong_dan]"
                                     class="p-2 d-flex align-items-center justify-content-center text-white rounded bg-secondary"
                                     style="width: 250px">
                                     Số lượng đề tài hướng dẫn
                                 </label>
                                 <div class="ms-2 w-100">
-                                    <input type="text" class="form-control form-control-lg shadow-none text-center" name="HocVi[sl_de_tai_huong_dan]"
+                                    <input type="text" class="form-control form-control-lg shadow-none text-center" name="HocVi[sl_sinh_vien_huong_dan]"
                                         style="width: 60px" maxlength="2">
-                                    <span class="error-message text-danger d-none mt-2 error-sl_de_tai_huong_dan"></span>
+                                    <span class="error-message text-danger d-none mt-2 error-sl_sinh_vien_huong_dan"></span>
                                 </div>
                             </div>
                             <div class="text-center">

@@ -59,7 +59,7 @@
                                                     {{ $sinhVien->ho_ten }} (<span class="text-danger">Nghỉ giữa
                                                         chừng</span>)<br>
                                                 @else
-                                                    {{ $sinhVien->ho_ten }} ({!! $phanCongPhanBien->diem_gvhd !== null ? number_format($phanCongPhanBien->diem_gvhd, 1) : '<em>Chưa có</em>' !!})<br>
+                                                    {{ $sinhVien->ho_ten }} ({!! $phanCongPhanBien->diem_gvpb !== null ? number_format($phanCongPhanBien->diem_gvpb, 1) : '<em>Chưa có</em>' !!})<br>
                                                 @endif
                                             @endforeach
                                         </td>

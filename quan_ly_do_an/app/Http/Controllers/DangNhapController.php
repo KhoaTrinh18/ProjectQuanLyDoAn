@@ -31,8 +31,8 @@ class DangNhapController extends Controller
         $taiKhoanSV = TaiKhoanSV::where(['ten_tk' => $tenTaiKhoan, 'nam_hoc' => $thietLap->nam_hoc])->first();
         $taiKhoanGV = TaiKhoanGV::where('ten_tk', $tenTaiKhoan)->first();
 
-        if($taiKhoanSV) {
-            if (!$taiKhoanSV || $taiKhoanSV->mat_khau !== $matKhau){
+        if ($taiKhoanSV) {
+            if (!$taiKhoanSV || $taiKhoanSV->mat_khau !== $matKhau) {
                 return response()->json([
                     'success' => false,
                     'error' => 'Tên tài khoản hoặc mật khẩu không đúng!',
@@ -40,7 +40,7 @@ class DangNhapController extends Controller
             }
             Session::put('ma_tai_khoan', $taiKhoanSV->ma_tk);
         } else {
-            if (!$taiKhoanGV || $taiKhoanGV->mat_khau !== $matKhau){
+            if (!$taiKhoanGV || $taiKhoanGV->mat_khau !== $matKhau) {
                 return response()->json([
                     'success' => false,
                     'error' => 'Tên tài khoản hoặc mật khẩu không đúng!',
@@ -50,21 +50,31 @@ class DangNhapController extends Controller
         }
 
         $route = '/';
+        $homNay = now()->format('Y-m-d');
+
         if ($taiKhoanSV) {
             $sinhVien = SinhVien::where('ma_tk', $taiKhoanSV->ma_tk)->first();
             Session::put('ten_sinh_vien', $sinhVien->ho_ten);
             Session::put('role', 'sinhvien');
-            $route = route('dang_ky_de_tai.danh_sach');
+            if ($homNay > $thietLap->ngay_ket_thuc_dang_ky) {
+                $route = route('thong_tin_de_tai.thong_tin');
+            } else {
+                $route = route('dang_ky_de_tai.danh_sach');
+            }
         } else if ($taiKhoanGV->loai_tk == 'giang_vien') {
             $giangVien = GiangVien::where('ma_tk', $taiKhoanGV->ma_tk)->first();
-            if($giangVien->hocVi->ten_hoc_vi == "Thạc sĩ") {
+            if ($giangVien->hocVi->ten_hoc_vi == "Thạc sĩ") {
                 $hocVi = "ThS. ";
             } else {
                 $hocVi = "TS. ";
             }
-            Session::put('ten_giang_vien', $hocVi.$giangVien->ho_ten);
+            Session::put('ten_giang_vien', $hocVi . $giangVien->ho_ten);
             Session::put('role', 'giangvien');
-            $route = route('thong_tin_de_tai.danh_sach_duyet');
+            if ($homNay > $thietLap->ngay_ket_thuc_dang_ky) {
+                $route = route('thong_tin_de_tai.danh_sach_huong_dan');
+            } else {
+                $route = route('thong_tin_de_tai.danh_sach_duyet');
+            }
         } else if ($taiKhoanGV->loai_tk == 'admin') {
             Session::put('ten_admin', 'admin');
             Session::put('role', 'admin');
@@ -83,13 +93,13 @@ class DangNhapController extends Controller
             return redirect()->back()->with('error', 'Bạn không thể truy cập trực tiếp trang này!');
         }
 
-        $request->session()->flush(); 
-        $request->session()->invalidate(); 
+        $request->session()->flush();
+        $request->session()->invalidate();
         $request->session()->regenerateToken();
-    
+
         return response()->json([
             'success' => true,
-            'route' => route('dang_nhap') 
+            'route' => route('dang_nhap')
         ]);
     }
 }

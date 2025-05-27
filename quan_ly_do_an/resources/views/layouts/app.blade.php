@@ -74,16 +74,6 @@
                 @elseif (session('ten_giang_vien') != null)
                     <ul class="sidebar-nav">
                         <li class="sidebar-header">
-                            Thông tin
-                        </li>
-
-                        <li
-                            class="sidebar-item {{ request()->is('thong-tin-de-tai/danh-sach-huong-dan*') || request()->is('thong-tin-de-tai/chi-tiet-huong-dan*') ? 'active' : '' }}">
-                            <a class="sidebar-link" href="{{ route('thong_tin_de_tai.danh_sach_huong_dan') }}">
-                                <i class="align-middle bi bi-list-task"></i> <span class="align-middle">Danh sách hướng dẫn</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-header">
                             Thực hiện
                         </li>
                         <li class="sidebar-item {{ request()->is('dua-ra-de-tai*') ? 'active' : '' }}">
@@ -95,9 +85,20 @@
                         <li
                             class="sidebar-item {{ request()->is('thong-tin-de-tai/danh-sach-duyet') || request()->is('thong-tin-de-tai/chi-tiet-duyet*') ? 'active' : '' }}">
                             <a class="sidebar-link" href="{{ route('thong_tin_de_tai.danh_sach_duyet') }}">
-                                <i class="align-middle bi bi-clipboard-check"></i> <span class="align-middle">Xác nhận hướng dẫn</span>
+                                <i class="align-middle bi bi-clipboard-check"></i> <span class="align-middle">Xác nhận
+                                    hướng dẫn</span>
                             </a>
+                        </li>
+                        <li class="sidebar-header">
+                            Thông tin
+                        </li>
 
+                        <li
+                            class="sidebar-item {{ request()->is('thong-tin-de-tai/danh-sach-huong-dan*') || request()->is('thong-tin-de-tai/chi-tiet-huong-dan*') ? 'active' : '' }}">
+                            <a class="sidebar-link" href="{{ route('thong_tin_de_tai.danh_sach_huong_dan') }}">
+                                <i class="align-middle bi bi-list-task"></i> <span class="align-middle">Danh sách hướng
+                                    dẫn</span>
+                            </a>
                         </li>
                         <li class="sidebar-header">
                             Chấm điểm
@@ -155,7 +156,7 @@
                         </li>
                         <li class="sidebar-item {{ request()->is('phan-cong-huong-dan*') ? 'active' : '' }}">
                             <a class="sidebar-link" href="{{ route('phan_cong_huong_dan.danh_sach') }}">
-                                <i class="align-middle bi bi-list-task"></i> <span class="align-middle">Đanh sách
+                                <i class="align-middle bi bi-list-task"></i> <span class="align-middle">Danh sách
                                     hướng dẫn</span>
                             </a>
                         </li>

@@ -131,15 +131,18 @@ class DeTaiSinhVienController extends Controller
 
         $deTaiSV = DeTaiSinhVien::where('ma_de_tai', $data['ma_de_tai'])->first();
         foreach ($deTaiSV->giangVienDuKiens as $giangVien) {
-            Log::info($giangVien->sinhVienDangKys->count());
+            $slSinhVien = $deTaiSV->sinhViens->count() + $giangVien->sinhVienDangKys->count() + $giangVien->sinhVienDeXuats->count();
+            if ($giangVien->hocVi->sl_sinh_vien_huong_dan < $slSinhVien) {
+                return response()->json(['success' => false]);
+            }
         }
 
-        // $deTaiSV->trang_thai = 2;
-        // $deTaiSV->save();
+        $deTaiSV->trang_thai = 2;
+        $deTaiSV->save();
 
-        // SinhVienDeTaiSV::where('ma_de_tai', $data['ma_de_tai'])->update([
-        //     'trang_thai' => 2
-        // ]);
+        SinhVienDeTaiSV::where('ma_de_tai', $data['ma_de_tai'])->update([
+            'trang_thai' => 2
+        ]);
 
         $thietLap = ThietLap::where('trang_thai', 1)->first();
         foreach ($deTaiSV->sinhViens as $sinhVien) {
@@ -247,6 +250,13 @@ class DeTaiSinhVienController extends Controller
         }
 
         $deTaiSV = DeTaiSinhVien::where('ma_de_tai', $data['ma_de_tai'])->first();
+        foreach ($deTaiSV->giangVienDuKiens as $giangVien) {
+            $slSinhVien = $deTaiSV->sinhViens->count() + $giangVien->sinhVienDangKys->count() + $giangVien->sinhVienDeXuats->count();
+            if ($giangVien->hocVi->sl_sinh_vien_huong_dan < $slSinhVien) {
+                return response()->json(['success' => false]);
+            }
+        }
+
         $deTaiSV->trang_thai = 3;
         $deTaiSV->save();
 
