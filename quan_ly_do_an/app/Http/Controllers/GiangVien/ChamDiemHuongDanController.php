@@ -118,6 +118,7 @@ class ChamDiemHuongDanController extends Controller
             }
             $maSinhViens = $deTai->sinhViens->pluck('ma_sv');
             SinhVien::whereIn('ma_sv', $maSinhViens)->where('trang_thai', 1)->update([
+                'diem' => 0,
                 'trang_thai' => 0
             ]);
 
@@ -256,6 +257,7 @@ class ChamDiemHuongDanController extends Controller
             }
             $maSinhViens = $deTai->sinhViens->pluck('ma_sv');
             SinhVien::whereIn('ma_sv', $maSinhViens)->where('trang_thai', 1)->update([
+                'diem' => 0,
                 'trang_thai' => 0
             ]);
 

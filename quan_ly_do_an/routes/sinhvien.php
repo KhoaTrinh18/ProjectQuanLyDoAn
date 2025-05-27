@@ -35,12 +35,21 @@ Route::middleware([KiemTraDangNhap::class . ':sinhvien'])->group(function () {
             return redirect()->back()->with('error', 'Sai đường dẫn');
         });
         Route::get('/thong-tin-de-tai/sua/{ma_de_tai}', [ThongTinDeTaiController::class, 'sua'])->name('thong_tin_de_tai.sua');
-        Route::post('/thong-tin-de-tai/xacNhanSua', [ThongTinDeTaiController::class, 'xacNhanSua'])->name('thong_tin_de_tai.xac_nhan_sua');
-        Route::get('/thong-tin-de-tai/xacNhanSua', function () {
+        Route::post('/thong-tin-de-tai/xac-nhan-sua', [ThongTinDeTaiController::class, 'xacNhanSua'])->name('thong_tin_de_tai.xac_nhan_sua');
+        Route::get('/thong-tin-de-tai/xac-nhan-sua', function () {
             return redirect()->back()->with('error', 'Sai đường dẫn');
         });
         Route::get('/thong-tin-de-tai/danh-sach-khong-duyet', [ThongTinDeTaiController::class, 'danhSachKhongDuyet'])->name('thong_tin_de_tai.danh_sach_khong_duyet');
         Route::get('/thong-tin-de-tai/chi-tiet-khong-duyet/{ma_de_tai}', [ThongTinDeTaiController::class, 'chiTietKhongDuyet'])->name('thong_tin_de_tai.chi_tiet_khong_duyet');
+        Route::get('/thong-tin-de-tai/nop-bao-cao', [ThongTinDeTaiController::class, 'nopBaoCao'])->name('thong_tin_de_tai.nop_bao_cao');
+        Route::post('/thong-tin-de-tai/xac-nhan-nop', [ThongTinDeTaiController::class, 'xacNhanNop'])->name('thong_tin_de_tai.xac_nhan_nop');
+        Route::get('/thong-tin-de-tai/xac-nhan-nop', function () {
+            return redirect()->back()->with('error', 'Sai đường dẫn');
+        });
+        Route::post('/thong-tin-de-tai/tai-bao-cao', [ThongTinDeTaiController::class, 'taiBaoCao'])->name('thong_tin_de_tai.tai_bao_cao');
+        Route::get('/thong-tin-de-tai/tai-bao-cao', function () {
+            return redirect()->back()->with('error', 'Sai đường dẫn');
+        });
     });
 
     Route::post('/doi-mat-khau', [DoiMatKhauController::class, 'doiMatKhau'])->name('doi_mat_khau');

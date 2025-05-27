@@ -5,6 +5,8 @@ namespace App\Jobs;
 use App\Mail\TuChoiDeTaiMail;
 use App\Mail\DuyetSuaDeTaiMail;
 use App\Mail\DuyetDeTaiMail;
+use App\Mail\TuChoiHuongDanMail;
+use App\Mail\XacNhanHuongDanMail;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
@@ -16,7 +18,7 @@ class SendEmailJob implements ShouldQueue
 
     public $emailList;
     public $deTai;
-    public $ngayDuaRa;
+    public $ngay;
     public $noiDung;
     public $loai;
 
@@ -27,7 +29,7 @@ class SendEmailJob implements ShouldQueue
     {
         $this->emailList = $emailList;
         $this->deTai = $deTai;
-        $this->ngayDuaRa = $ngayDuaRa;
+        $this->ngay = $ngayDuaRa;
         $this->noiDung = $noiDung;
         $this->loai = $loai;
     }
@@ -38,10 +40,14 @@ class SendEmailJob implements ShouldQueue
     public function handle()
     {
         if ($this->loai == 'khong_duyet')
-            Mail::to($this->emailList)->send(new TuChoiDeTaiMail($this->deTai, $this->ngayDuaRa, $this->noiDung));
+            Mail::to($this->emailList)->send(new TuChoiDeTaiMail($this->deTai, $this->ngay, $this->noiDung));
         elseif ($this->loai == 'duyet_sua')
-            Mail::to($this->emailList)->send(new DuyetSuaDeTaiMail($this->deTai, $this->ngayDuaRa, $this->noiDung));
+            Mail::to($this->emailList)->send(new DuyetSuaDeTaiMail($this->deTai, $this->ngay, $this->noiDung));
+        elseif ($this->loai == 'xac_nhan_huong_dan')
+            Mail::to($this->emailList)->send(new XacNhanHuongDanMail($this->deTai, $this->ngay));
+        elseif ($this->loai == 'tu_choi_huong_dan')
+            Mail::to($this->emailList)->send(new TuChoiHuongDanMail($this->deTai, $this->ngay));
         else
-            Mail::to($this->emailList)->send(new DuyetDeTaiMail($this->deTai, $this->ngayDuaRa));
+            Mail::to($this->emailList)->send(new DuyetDeTaiMail($this->deTai, $this->ngay));
     }
 }

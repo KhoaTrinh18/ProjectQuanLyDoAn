@@ -31,7 +31,7 @@ class DangKyDeTaiController extends Controller
         $thietLap = ThietLap::where('trang_thai', 1)->first();
 
         $linhVucs = LinhVuc::orderBy('ma_linh_vuc', 'desc')->where('da_huy', 0)->get();
-        $deTais = DeTaiGiangVien::where(['da_huy' => 0, 'trang_thai' => 2, 'nam_hoc' => $thietLap->nam_hoc])->orderBy('ma_de_tai', 'desc')->paginate($limit);
+        $deTais = DeTaiGiangVien::where(['da_huy' => 0, 'trang_thai' => 2, 'nam_hoc' => $thietLap->nam_hoc, 'da_xac_nhan_huong_dan' => 0])->orderBy('ma_de_tai', 'desc')->paginate($limit);
         $chuyenNganhs = BoMon::where('da_huy', 0)->orderBy('ma_bo_mon', 'desc')->get();
 
         $ngayHetHan = Carbon::create($thietLap->ngay_ket_thuc_dang_ky)->setTime(23, 59, 59)->toIso8601String();

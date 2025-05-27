@@ -75,12 +75,14 @@
                                         <td class="text-center">
                                             <a href="{{ route('cham_diem_phan_bien.chi_tiet', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
                                                 class="btn btn-secondary btn-sm">Xem</a>
-                                            @if ($daChamDiem)
-                                                <a href="{{ route('cham_diem_phan_bien.sua_diem', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
-                                                    class="btn btn-primary btn-sm">Sửa điểm</a>
-                                            @elseif ($deTai->sinhViens->where('trang_thai', 3)->count() != $deTai->sinhViens->count())
-                                                <a href="{{ route('cham_diem_phan_bien.cham_diem', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
-                                                    class="btn btn-success btn-sm">Chấm điểm</a>
+                                            @if ($deTai->sinhViens->where('trang_thai', 3)->count() != $deTai->sinhViens->count())
+                                                @if ($daChamDiem)
+                                                    <a href="{{ route('cham_diem_phan_bien.sua_diem', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
+                                                        class="btn btn-primary btn-sm">Sửa điểm</a>
+                                                @else
+                                                    <a href="{{ route('cham_diem_phan_bien.cham_diem', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
+                                                        class="btn btn-success btn-sm">Chấm điểm</a>
+                                                @endif
                                             @endif
                                         </td>
                                     </tr>

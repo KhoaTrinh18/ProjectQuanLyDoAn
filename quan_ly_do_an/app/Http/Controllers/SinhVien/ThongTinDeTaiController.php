@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use Carbon\Carbon;
 use App\Models\{
     BangPhanCongSVDK,
@@ -18,6 +19,7 @@ use App\Models\{
     TaiKhoanSV,
     ThietLap
 };
+use Illuminate\Support\Facades\Storage;
 
 class ThongTinDeTaiController extends Controller
 {
@@ -287,5 +289,94 @@ class ThongTinDeTaiController extends Controller
     {
         $deTai = DeTaiSinhVien::where('ma_de_tai', $ma_de_tai)->firstOrFail();
         return view('sinhvien.thongtindetai.chiTietKhongDuyet', compact('deTai'));
+    }
+
+    public function nopBaoCao()
+    {
+        $thietLap = ThietLap::where('trang_thai', 1)->first();
+
+        $maTaiKhoan = session()->get('ma_tai_khoan');
+        $sinhVien = SinhVien::where('ma_tk', $maTaiKhoan)->where('nam_hoc', $thietLap->nam_hoc)->first();
+        $tenFileCu = $sinhVien && $sinhVien->bao_cao ? $sinhVien->bao_cao : null;
+
+        $ngayHetHan = Carbon::create($thietLap->ngay_ket_thuc_thuc_hien)->setTime(23, 59, 59)->toIso8601String();
+
+        return view('sinhvien.thongtindetai.nopBaoCao', compact('tenFileCu', 'ngayHetHan'));
+    }
+
+    public function xacNhanNop(Request $request)
+    {
+        if (!$request->isMethod('post')) {
+            return redirect()->back()->with('error', 'Bạn không thể truy cập trực tiếp trang này!');
+        }
+
+        $thietLap = ThietLap::where('trang_thai', 1)->first();
+
+        $validator = Validator::make($request->all(), [
+            'file' => [
+                'required',
+                'file',
+                'mimes:pdf,doc,docx'
+            ]
+        ], [
+            'file.required' => 'File báo cáo không được để trống.',
+            'file.mimes' => 'File phải có định dạng PDF hoặc Word (doc, docx).',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()->toArray()
+            ]);
+        }
+
+        try {
+            $maTaiKhoan = session()->get('ma_tai_khoan');
+            $sinhVien = SinhVien::where('ma_tk', $maTaiKhoan)->where('nam_hoc', $thietLap->nam_hoc)->first();
+
+            if ($sinhVien && $sinhVien->bao_cao) {
+                if (Storage::disk('public')->exists($sinhVien->bao_cao)) {
+                    Storage::disk('public')->delete($sinhVien->bao_cao);
+                }
+            }
+
+            $extension = $request->file('file')->getClientOriginalExtension();
+            $ten = Str::slug($sinhVien->ho_ten, '');
+            $tenFileMoi = "baocao_" . $ten . "_" . $sinhVien->mssv . "." . $extension;
+            $path = $request->file('file')->storeAs('baocao', $tenFileMoi, 'public');
+
+            $sinhVien->bao_cao = $path;
+            $sinhVien->save();
+
+            return response()->json([
+                'success' => true,
+                'errors' => []
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'errors' => ['Lỗi khi nộp báo cáo: ' . $e->getMessage()],
+            ]);
+        }
+    }
+
+    public function taiBaoCao()
+    {
+        $maTaiKhoan = session()->get('ma_tai_khoan');
+        $thietLap = ThietLap::where('trang_thai', 1)->first();
+
+        $sinhVien = SinhVien::where('ma_tk', $maTaiKhoan)->where('nam_hoc', $thietLap->nam_hoc)->first();
+
+        if (!$sinhVien || !$sinhVien->bao_cao) {
+            return redirect()->back()->with('error', 'Không tìm thấy file báo cáo.');
+        }
+
+        $path = storage_path('app/public/' . $sinhVien->bao_cao);
+
+        if (!file_exists($path)) {
+            return redirect()->back()->with('error', 'File báo cáo không tồn tại.');
+        }
+
+        return response()->download($path, basename($path));
     }
 }

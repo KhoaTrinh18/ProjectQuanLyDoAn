@@ -350,6 +350,7 @@ class SinhVienController extends Controller
         }
 
         SinhVien::where('ma_sv', $ma_sv)->update([
+            'diem' => 0,
             'trang_thai' => 3
         ]);
 
@@ -485,10 +486,11 @@ class SinhVienController extends Controller
         $sinhViens = SinhVien::where('nam_hoc', $thietLap->nam_hoc)->get();
 
         foreach ($sinhViens as $sinhVien) {
-            $diemSV = [];
+            $diemGVHD = [];
+            $diemHDDG = [];
             $diemTong = 0;
 
-            if ($sinhVien->loai_sv == null || $sinhVien->trang_thai == 3) continue;
+            if ($sinhVien->loai_sv == null || $sinhVien->trang_thai == 3 || $sinhVien->trang_thai == 0) continue;
 
             if ($sinhVien->loai_sv == 'de_xuat') {
                 $sinhVienDTSV = SinhVienDeTaiSV::where('ma_sv', $sinhVien->ma_sv)->where('trang_thai', '!=', 0)->first();
@@ -497,6 +499,7 @@ class SinhVienController extends Controller
                 $phanCongSVDK = BangPhanCongSVDK::where('ma_sv', $sinhVien->ma_sv)->first();
                 $deTai = DeTaiGiangVien::where(['ma_de_tai' => $phanCongSVDK->ma_de_tai, 'da_huy' => 0])->first();
             }
+            Log::info($sinhVien->ma_sv);
 
             $gvhd = $deTai->giangVienHuongDans()->wherePivot('ma_sv', $sinhVien->ma_sv)->first();
             $gvpb = $deTai->giangVienPhanBiens()->wherePivot('ma_sv', $sinhVien->ma_sv)->first();
@@ -505,10 +508,12 @@ class SinhVienController extends Controller
             if (!$gvhd || !$gvpb || !$hoiDong) continue;
 
             foreach ($deTai->giangVienHuongDans()->wherePivot('ma_sv', $sinhVien->ma_sv)->get() as $gv) {
-                $diemSV[] = $gv->pivot->diem_gvhd;
+                $diemGVHD[] = $gv->pivot->diem_gvhd;
             }
-            $diemSV[] = $gvpb->pivot->diem_gvpb;
+            $diemTongGVHD = array_sum($diemGVHD) / count($diemGVHD);
 
+            $diemTongGVPB = $gvpb->pivot->diem_gvpb;
+            
             $chuTich = $hoiDong->giangViens()->wherePivot('chuc_vu', 'Chủ tịch')->first();
             $thuKy = $hoiDong->giangViens()->wherePivot('chuc_vu', 'Thư ký')->first();
             $uyViens = $hoiDong->giangViens()->wherePivot('chuc_vu', 'Ủy viên')->get();
@@ -521,25 +526,27 @@ class SinhVienController extends Controller
                 $deTaiHoiDong = BangDiemGVTHDChoSVDX::where(['ma_de_tai' => $deTai->ma_de_tai, 'ma_sv' => $sinhVien->ma_sv])->get();
             }
 
-            $diemSV[] = $deTaiHoiDong->where('ma_gvthd', $chuTich->ma_gv)->first()->diem_gvthd;
-            $diemSV[] = $deTaiHoiDong->where('ma_gvthd', $thuKy->ma_gv)->first()->diem_gvthd;
+            $diemHDDG[] = $deTaiHoiDong->where('ma_gvthd', $chuTich->ma_gv)->first()->diem_gvthd;
+            $diemHDDG[] = $deTaiHoiDong->where('ma_gvthd', $thuKy->ma_gv)->first()->diem_gvthd;
             foreach ($uyViens as $uyVien) {
-                $diemSV[] = $deTaiHoiDong->where('ma_gvthd', $uyVien->ma_gv)->first()->diem_gvthd;
+                $diemHDDG[] = $deTaiHoiDong->where('ma_gvthd', $uyVien->ma_gv)->first()->diem_gvthd;
             }
 
-            if (in_array(null, $diemSV, true)) continue;
+            $diemTongHDDG = array_sum($diemHDDG) / count($diemHDDG);
 
-            $diemTong = array_sum($diemSV) / count($diemSV);
+            if (in_array(null, $diemGVHD, true) || in_array(null, $diemHDDG, true) || empty($diemTongGVPB)) continue;
 
-            if ($diemTong >= 5.5) {
+            $diemTong = ($diemTongGVHD + $diemTongGVPB * 2 + $diemTongHDDG * 3) / 6;
+
+            if ($diemTong >= 5.0) {
                 SinhVien::where('ma_sv', $sinhVien->ma_sv)->update([
                     'trang_thai' => 2,
-                    'diem' => number_format($diemTong, 2)
+                    'diem' => number_format($diemTong, 1)
                 ]);
             } else {
                 SinhVien::where('ma_sv', $sinhVien->ma_sv)->update([
                     'trang_thai' => 0,
-                    'diem' => number_format($diemTong, 2)
+                    'diem' => number_format($diemTong, 1)
                 ]);
             }
         }

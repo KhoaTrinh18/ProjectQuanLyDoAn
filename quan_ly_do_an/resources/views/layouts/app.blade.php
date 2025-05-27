@@ -70,6 +70,12 @@
                                     sách không duyệt</span>
                             </a>
                         </li>
+                        <li
+                            class="sidebar-item {{ request()->is('thong-tin-de-tai/nop-bao-cao') ? 'active' : ''}}">
+                            <a class="sidebar-link" href="{{ route('thong_tin_de_tai.nop_bao_cao') }}">
+                                <i class="align-middle bi bi-file-earmark-arrow-up"></i> <span class="align-middle">Nộp báo cáo</span>
+                            </a>
+                        </li>
                     </ul>
                 @elseif (session('ten_giang_vien') != null)
                     <ul class="sidebar-nav">

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\GiangVien;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Jobs\SendEmailJob;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
@@ -59,12 +60,18 @@ class ThongTinDeTaiController extends Controller
         $deTai->so_luong_sv_dang_ky -= 1;
         $deTai->save();
 
+        $sinhVien = SinhVien::where('ma_sv', $ma_sv)->first();
+        $ngayDangKy = BangPhanCongSVDK::where(['ma_de_tai' => $deTai->ma_de_tai, 'ma_sv' => $sinhVien->ma_sv])->first()->ngay_dang_ky;
+
         BangPhanCongSVDK::where(['ma_de_tai' => $ma_de_tai, 'ma_sv' => $ma_sv])->delete();
 
-        $sinhVien = SinhVien::where('ma_sv', $ma_sv)->first();
         $sinhVien->dang_ky = 0;
         $sinhVien->loai_sv = null;
         $sinhVien->save();
+
+        if ($sinhVien->email) {
+            SendEmailJob::dispatch($sinhVien->email, $deTai, $ngayDangKy, '', 'tu_choi_huong_dan');
+        }
 
         return response()->json([
             'success' => true,
@@ -105,6 +112,13 @@ class ThongTinDeTaiController extends Controller
         $deTai->da_xac_nhan_huong_dan = 1;
         $deTai->save();
 
+        foreach ($deTai->sinhViens as $sinhVien) {
+            if ($sinhVien && $sinhVien->email) {
+                $ngayDangKy = BangPhanCongSVDK::where(['ma_de_tai' => $deTai->ma_de_tai, 'ma_sv' => $sinhVien->ma_sv])->first()->ngay_dang_ky;
+                SendEmailJob::dispatch($sinhVien->email, $deTai, $ngayDangKy, '', 'xac_nhan_huong_dan');
+            }
+        }
+
         return response()->json([
             'success' => true,
         ]);
@@ -121,8 +135,6 @@ class ThongTinDeTaiController extends Controller
         $deTai = DeTaiGiangVien::where('ma_de_tai', $ma_de_tai)->first();
         $deTai->da_xac_nhan_huong_dan = 0;
         $deTai->save();
-
-        $maSinhViens = $deTai->sinhViens->pluck('ma_sv');
 
         return response()->json([
             'success' => true,

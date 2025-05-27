@@ -8,6 +8,7 @@ use App\Http\Controllers\GiangVien\{
     ThongTinDeTaiController,
     ChamDiemHuongDanController,
     ChamDiemPhanBienController,
+    TaiBaoCaoController,
 };
 use App\Http\Middleware\KiemTraDangNhap;
 
@@ -40,7 +41,7 @@ Route::middleware([KiemTraDangNhap::class . ':giangvien'])->group(function () {
     Route::get('/thong-tin-de-tai/xac-nhan-huong-dan', function () {
         return redirect()->back()->with('error', 'Sai đường dẫn');
     });
-     Route::post('/thong-tin-de-tai/huy-xac-nhan', [ThongTinDeTaiController::class, 'huyXacNhan'])->name('thong_tin_de_tai.huy_xac_nhan');
+    Route::post('/thong-tin-de-tai/huy-xac-nhan', [ThongTinDeTaiController::class, 'huyXacNhan'])->name('thong_tin_de_tai.huy_xac_nhan');
     Route::get('/thong-tin-de-tai/huy-xac-nhan', function () {
         return redirect()->back()->with('error', 'Sai đường dẫn');
     });
@@ -96,4 +97,6 @@ Route::middleware([KiemTraDangNhap::class . ':giangvien'])->group(function () {
     Route::get('/thong-tin-giang-vien', function () {
         return view('giangvien.thongTinGiangVien');
     })->name('thong_tin_giang_vien');
+
+    Route::get('/tai-bao-cao/{ma_sinh_vien}', [TaiBaoCaoController::class, 'taiBaoCao'])->name('tai_bao_cao');
 });

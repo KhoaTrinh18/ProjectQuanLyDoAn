@@ -200,7 +200,7 @@
                                 @else
                                     <p><strong>Trạng thái: </strong>
                                         @if ($deTai->da_xac_nhan_huong_dan == 0)
-                                            <span class="text-danger">Chờ xác nhận</span>
+                                            <span class="text-warning">Chờ xác nhận</span>
                                         @else
                                             <span class="text-success">Đã xác nhận</span>
                                         @endif

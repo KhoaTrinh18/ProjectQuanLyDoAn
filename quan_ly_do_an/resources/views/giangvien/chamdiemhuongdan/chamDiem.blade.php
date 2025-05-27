@@ -48,6 +48,21 @@
                                             <label for="ChamDiem[{{ $i }}][diem]"
                                                 class="p-2 d-flex align-items-center justify-content-center text-white rounded bg-secondary"
                                                 style="width: 250px">
+                                                Báo cáo
+                                            </label>
+                                            <div class="ms-2 w-100 d-flex align-items-center">
+                                                @if (!empty($sinhVien->bao_cao))
+                                                    <a href="{{ route('tai_bao_cao', ['ma_sinh_vien' => $sinhVien->ma_sv]) }}"
+                                                        download="{{ basename($sinhVien->bao_cao) }}" title="Tải file báo cáo">{{ basename($sinhVien->bao_cao) }}</a>
+                                                @else
+                                                    <i>Chưa có file báo cáo</i>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        <div class="d-flex mb-3">
+                                            <label for="ChamDiem[{{ $i }}][diem]"
+                                                class="p-2 d-flex align-items-center justify-content-center text-white rounded bg-secondary"
+                                                style="width: 250px">
                                                 Điểm
                                             </label>
                                             <div class="ms-2 w-100">
