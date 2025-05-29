@@ -217,7 +217,7 @@ class DeTaiSinhVienController extends Controller
         }
 
         if (!empty($emailList)) {
-            SendEmailJob::dispatch($emailList, $deTaiSV, $ngayDeXuat, $lyDoTuChoi);
+            SendEmailJob::dispatch($emailList, $deTaiSV, $ngayDeXuat, $lyDoTuChoi, 'khong_duyet');
         }
 
         return response()->json(['success' => true]);

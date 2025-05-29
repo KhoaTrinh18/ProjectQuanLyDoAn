@@ -8,8 +8,11 @@
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h2 style="font-weight: bold">Danh sách đề tài</h2>
+                        <a href="{{ route('phan_cong_huong_dan.tai_danh_sach_huong_dan') }}" class="btn btn-info btn-lg">Tải danh sách hướng dẫn</a>
+
                     </div>
                     <div class="card-body">
+
                         <form class="d-flex mb-3" id="form_tim_kiem">
                             <div class="d-flex flex-column" style="width: 400px">
                                 <div class="d-flex align-items-center justify-content-between">

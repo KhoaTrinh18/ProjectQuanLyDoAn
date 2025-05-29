@@ -14,7 +14,7 @@
                             <div class="d-flex mb-3">
                                 <label for="HocVi[ten_hoc_vi]"
                                     class="p-2 d-flex align-items-center justify-content-center text-white rounded bg-secondary"
-                                    style="width: 250px">
+                                    style="width: 260px">
                                     Tên học vị
                                 </label>
                                 <div class="ms-2 w-100">
@@ -27,8 +27,8 @@
                             <div class="d-flex mb-3">
                                 <label for="HocVi[sl_sinh_vien_huong_dan]"
                                     class="p-2 d-flex align-items-center justify-content-center text-white rounded bg-secondary"
-                                    style="width: 250px">
-                                    Số lượng đề tài hướng dẫn
+                                    style="width: 260px">
+                                    Số lượng sinh viên hướng dẫn
                                 </label>
                                 <div class="ms-2 w-100">
                                     <input type="text" class="form-control form-control-lg shadow-none text-center" name="HocVi[sl_sinh_vien_huong_dan]"

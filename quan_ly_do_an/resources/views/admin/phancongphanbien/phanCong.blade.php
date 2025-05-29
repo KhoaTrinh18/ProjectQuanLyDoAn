@@ -7,7 +7,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <h2 style="font-weight: bold">Phân công giảng viên hướng dẫn</h2>
+                        <h2 style="font-weight: bold">Phân công giảng viên phản biện</h2>
                     </div>
                     <div class="card-body" style="font-size: 16px">
                         <h3 class="text-center mb-4" style="font-weight: bold">{{ $deTai->ten_de_tai }}</h3>

@@ -16,8 +16,10 @@ use App\Models\{
     DeTaiGiangVien,
     DeTaiSinhVien,
     GiangVien,
+    SinhVien,
     ThietLap
 };
+use Illuminate\Support\Facades\Response;
 
 class PhanCongHuongDanController extends Controller
 {
@@ -141,5 +143,48 @@ class PhanCongHuongDanController extends Controller
         }
 
         return view('admin.phanconghuongdan.chiTiet', compact('deTai'));
+    }
+
+    public function taiDanhSachHuongDan()
+    {
+        $thietLap = ThietLap::where('trang_thai', 1)->first();
+        $sinhViens = SinhVien::where('nam_hoc', $thietLap->nam_hoc)
+            ->orderBy('ma_sv', 'desc')
+            ->get();
+
+        $filename = 'danh_sach_sinh_vien_huong_dan.csv';
+
+        return Response::streamDownload(function () use ($sinhViens) {
+            $handle = fopen('php://output', 'w');
+
+            fwrite($handle, chr(0xEF) . chr(0xBB) . chr(0xBF));
+
+            fputcsv($handle, ['MSSV', 'Họ tên', 'Lớp', 'Email', 'Số điện thoại', 'Đề tài', 'Giảng viên hướng dẫn']);
+
+            foreach ($sinhViens as $sinhVien) {
+                $deTai = $sinhVien->deTaiDeXuat->pluck('ten_de_tai')->first()
+                    ?: $sinhVien->deTaiDangKy->pluck('ten_de_tai')->first()
+                    ?: 'Chưa có';
+
+                $giangViens = $sinhVien->deTaiDeXuat->first()?->giangViens?->pluck('ho_ten')->implode(', ')
+                    ?: $sinhVien->deTaiDangKy->first()?->giangViens?->pluck('ho_ten')->implode(', ')
+                    ?: 'Chưa có';
+
+                fputcsv($handle, [
+                    $sinhVien->mssv,
+                    $sinhVien->ho_ten,
+                    $sinhVien->lop,
+                    $sinhVien->email,
+                    "'" . $sinhVien->so_dien_thoai,
+                    $deTai,
+                    $giangViens
+                ]);
+            }
+
+            fclose($handle);
+        }, $filename, [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => "attachment; filename={$filename}",
+        ]);
     }
 }

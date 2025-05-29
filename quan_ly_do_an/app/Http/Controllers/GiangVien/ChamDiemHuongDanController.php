@@ -32,7 +32,7 @@ class ChamDiemHuongDanController extends Controller
         $phanCongSVDK = BangPhanCongSVDK::where(['ma_gvhd' => $giangVien->ma_gv])->get();
         $maDeTais = $phanCongSVDK->pluck('ma_de_tai');
         $deTaiGVs = DeTaiGiangVien::whereIn('ma_de_tai', $maDeTais)
-            ->where(['da_huy' => 0, 'trang_thai' => 2, 'nam_hoc' => $thietLap->nam_hoc])
+            ->where(['da_huy' => 0, 'trang_thai' => 2, 'nam_hoc' => $thietLap->nam_hoc, 'da_xac_nhan_huong_dan' => 1])
             ->orderBy('ma_de_tai', 'desc')
             ->get();
 

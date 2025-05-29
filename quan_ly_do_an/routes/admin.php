@@ -83,6 +83,7 @@ Route::middleware([KiemTraDangNhap::class . ':admin'])->group(function () {
     Route::get('/phan-cong-huong-dan/danh-sach', [PhanCongHuongDanController::class, 'danhSach'])->name('phan_cong_huong_dan.danh_sach');
     Route::get('/phan-cong-huong-dan/page-ajax', [PhanCongHuongDanController::class, 'pageAjax'])->name('phan_cong_huong_dan.page_ajax');
     Route::get('/phan-cong-huong-dan/chi-tiet/{ma_de_tai}', [PhanCongHuongDanController::class, 'chiTiet'])->name('phan_cong_huong_dan.chi_tiet');
+    Route::get('/phan-cong-huong-dan/tai-danh-sach-huong-dan', [PhanCongHuongDanController::class, 'taiDanhSachHuongDan'])->name('phan_cong_huong_dan.tai_danh_sach_huong_dan');
 
     Route::get('/phan-cong-phan-bien/danh-sach', [PhanCongPhanBienController::class, 'danhSach'])->name('phan_cong_phan_bien.danh_sach');
     Route::get('/phan-cong-phan-bien/page-ajax', [PhanCongPhanBienController::class, 'pageAjax'])->name('phan_cong_phan_bien.page_ajax');

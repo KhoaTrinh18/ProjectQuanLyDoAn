@@ -418,7 +418,7 @@ class SinhVienController extends Controller
 
             fwrite($handle, chr(0xEF) . chr(0xBB) . chr(0xBF));
 
-            fputcsv($handle, ['MSSV', 'Họ tên', 'Lớp', 'Email', 'Số điện thoại', 'Đề tài', 'Giảng viên hướng dẫn']);
+            fputcsv($handle, ['MSSV', 'Họ tên', 'Lớp', 'Email', 'Số điện thoại', 'Đề tài', 'Giảng viên hướng dẫn', 'Điểm', 'Trạng thái']);
 
             foreach ($sinhViens as $sinhVien) {
                 $deTai = $sinhVien->deTaiDeXuat->pluck('ten_de_tai')->first()
@@ -428,6 +428,14 @@ class SinhVienController extends Controller
                 $giangViens = $sinhVien->deTaiDeXuat->first()?->giangViens?->pluck('ho_ten')->implode(', ')
                     ?: $sinhVien->deTaiDangKy->first()?->giangViens?->pluck('ho_ten')->implode(', ')
                     ?: 'Chưa có';
+                
+                if($sinhVien->trang_thai == 0) {
+                    $trangThai = "Không hoàn thành";
+                } else if ($sinhVien->trang_thai == 1){
+                    $trangThai = "Hoàn thành";
+                } else {
+                    $trangThai = "Nghỉ giữa chừng";
+                }
 
                 fputcsv($handle, [
                     $sinhVien->mssv,
@@ -436,7 +444,9 @@ class SinhVienController extends Controller
                     $sinhVien->email,
                     "'" . $sinhVien->so_dien_thoai,
                     $deTai,
-                    $giangViens
+                    $giangViens,
+                    $sinhVien->diem,
+                    $trangThai
                 ]);
             }
 

@@ -12,19 +12,6 @@
                     <div class="card-body" style="font-size: 16px">
                         <h3 class="text-center mb-4" style="font-weight: bold">{{ $deTai->ten_de_tai }}</h3>
 
-                        @if ($deTai->giangViens->count() == 1)
-                            @php $giangVien = $deTai->giangViens->first(); @endphp
-                            <p><strong>Giảng viên ra đề tài:</strong> {{ $giangVien->ho_ten }} - Email:
-                                {{ $giangVien->email }} - Số điện thoại: {{ $giangVien->so_dien_thoai }}</p>
-                        @else
-                            <ul>
-                                @foreach ($deTai->giangViens as $giangVien)
-                                    <li>{{ $giangVien->ho_ten }} - Email: {{ $giangVien->email }} - SĐT:
-                                        {{ $giangVien->so_dien_thoai }}</li>
-                                @endforeach
-                            </ul>
-                        @endif
-
                         <p><strong>Lĩnh vực:</strong> {{ $deTai->linhVuc->ten_linh_vuc }}</p>
                         <p><strong>Mô tả:</strong> {!! $deTai->mo_ta !!}</p>
 
@@ -57,7 +44,8 @@
                         @endif
 
                         <div class="text-center mt-3">
-                            <a href="{{ route('thong_tin_de_tai.danh_sach_huong_dan') }}" class="btn btn-secondary btn-lg">Quay
+                            <a href="{{ route('thong_tin_de_tai.danh_sach_huong_dan') }}"
+                                class="btn btn-secondary btn-lg">Quay
                                 lại</a>
                         </div>
                     </div>

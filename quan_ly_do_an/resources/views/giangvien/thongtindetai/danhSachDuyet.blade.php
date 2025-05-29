@@ -47,8 +47,6 @@
                                                     class="btn btn-success btn-sm">Xác nhận hướng dẫn</a>
                                             @else
                                                 <a href="{{ route('thong_tin_de_tai.chi_tiet_duyet', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
-                                                    class="btn btn-secondary btn-sm">Xem</a>
-                                                <a href="{{ route('thong_tin_de_tai.chi_tiet_duyet', ['ma_de_tai' => $deTai->ma_de_tai]) }}"
                                                     class="btn btn-danger btn-sm">Hủy xác nhận</a>
                                             @endif
                                         </td>

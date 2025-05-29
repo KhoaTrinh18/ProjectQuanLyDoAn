@@ -16,7 +16,6 @@
                                     <th scope="col" class="text-white">#</th>
                                     <th scope="col" class="text-white" style="width: 40%;">Tên đề tài</th>
                                     <th scope="col" class="text-white">Lĩnh vực</th>
-                                    <th scope="col" class="text-white">Sinh viên</th>
                                     <th scope="col" class="text-white">Ngày đề xuất</th>
                                     <th scope="col" class="text-white">Trạng thái</th>
                                     <th scope="col" class="text-white"></th>
@@ -32,7 +31,6 @@
                                             {{ $deTai->ten_de_tai }}
                                         </td>
                                         <td>{{ $deTai->linhVuc->ten_linh_vuc }}</td>
-                                        <td>{!! $deTai->sinhViens->pluck('ho_ten')->implode('<br>') !!}</td>
                                         <td>{{ \Carbon\Carbon::parse($deTai->ngayDeXuat->ngay_de_xuat)->format('d-m-Y') }}</td>
                                         <td><span class="text-danger">Không duyệt</span></td>
                                         <td class="text-center">
