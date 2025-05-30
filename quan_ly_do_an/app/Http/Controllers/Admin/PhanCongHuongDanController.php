@@ -29,10 +29,10 @@ class PhanCongHuongDanController extends Controller
         $thietLap = ThietLap::where('trang_thai', 1)->first();
 
         $maDeTais = BangPhanCongSVDX::distinct()->where(['nam_hoc' => $thietLap->nam_hoc])->pluck('ma_de_tai');
-        $deTaiSVs = DeTaiSinhVien::whereIn('ma_de_tai', $maDeTais)->orderBy('ma_de_tai', 'desc')->get();
+        $deTaiSVs = DeTaiSinhVien::whereIn('ma_de_tai', $maDeTais)->where('da_xac_nhan_huong_dan', 1)->orderBy('ma_de_tai', 'desc')->get();
 
         $maDeTais = BangPhanCongSVDK::distinct()->where(['nam_hoc' => $thietLap->nam_hoc])->pluck('ma_de_tai');
-        $deTaiGVs = DeTaiGiangVien::whereIn('ma_de_tai', $maDeTais)->orderBy('ma_de_tai', 'desc')->get();
+        $deTaiGVs = DeTaiGiangVien::whereIn('ma_de_tai', $maDeTais)->where('da_xac_nhan_huong_dan', 1)->orderBy('ma_de_tai', 'desc')->get();
 
         $merged = $deTaiSVs->merge($deTaiGVs)->unique('ma_de_tai');
 

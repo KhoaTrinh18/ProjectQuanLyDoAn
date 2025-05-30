@@ -78,7 +78,7 @@
                         <td>
                             @if ($deTai->duoc_bao_ve == 1)
                                 <span class="text-success">Được bảo vệ</span>
-                            @elseif ($deTai->duoc_bao_ve == 0)
+                            @elseif (isset($deTai->duoc_bao_ve))
                                 <span class="text-danger">Không được bảo vệ</span>
                             @else
                                 <span><i>Chưa có</i></span>

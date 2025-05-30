@@ -431,10 +431,12 @@ class SinhVienController extends Controller
                 
                 if($sinhVien->trang_thai == 0) {
                     $trangThai = "Không hoàn thành";
-                } else if ($sinhVien->trang_thai == 1){
-                    $trangThai = "Hoàn thành";
-                } else {
+                } else if ($sinhVien->trang_thai == 2){
+                    $trangThai = "Đẫ hoàn thành";
+                } else if ($sinhVien->trang_thai == 3){
                     $trangThai = "Nghỉ giữa chừng";
+                } else {
+                    $trangThai = "Đang thực hiện";
                 }
 
                 fputcsv($handle, [
