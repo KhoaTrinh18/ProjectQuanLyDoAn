@@ -27,7 +27,7 @@ class ThongKeController extends Controller
     {
         $thietLap = ThietLap::where('trang_thai', 1)->first();
         $dtTrangThai = DeTaiGiangVien::select('trang_thai', DB::raw('count(*) as so_luong'))
-            ->where('nam_hoc', $thietLap->nam_hoc)
+            ->where(['nam_hoc' => $thietLap->nam_hoc, 'da_huy' => 0])
             ->groupBy('trang_thai')
             ->get();
 

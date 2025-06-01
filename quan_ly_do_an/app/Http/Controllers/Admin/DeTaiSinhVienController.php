@@ -72,7 +72,7 @@ class DeTaiSinhVienController extends Controller
         }
 
         $limit = $request->input('limit', 10);
-        $deTaiSVs = $query->where(['da_huy' => 0])->orderBy('ma_de_tai', 'desc')->paginate($limit);
+        $deTaiSVs = $query->where(['da_huy' => 0])->orderByRaw("FIELD(trang_thai, 1, 3, 2, 0)")->orderBy('ma_de_tai', 'desc')->paginate($limit);
 
         return response()->json([
             'success' => true,

@@ -74,7 +74,7 @@ class DeTaiGiangVienController extends Controller
 
         $limit = $request->input('limit', 10);
         $thietLap = ThietLap::where('trang_thai', 1)->first();
-        $deTaiGVs = $query->where(['da_huy' => 0, 'nam_hoc' => $thietLap->nam_hoc])->orderBy('ma_de_tai', 'desc')->paginate($limit);
+        $deTaiGVs = $query->where(['da_huy' => 0, 'nam_hoc' => $thietLap->nam_hoc])->orderByRaw("FIELD(trang_thai, 1, 3, 2, 0)")->orderBy('ma_de_tai', 'desc')->paginate($limit);
 
         return response()->json([
             'success' => true,
