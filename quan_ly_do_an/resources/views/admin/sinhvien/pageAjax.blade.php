@@ -99,7 +99,7 @@
                             </td>
                         @endif
                         </td>
-                        <td> {!! $sinhVien->diem ?? '<em>Chưa có</em>' !!} </td>
+                        <td> {!! $sinhVien->diem !== null ? number_format($sinhVien->diem, 1) : '<em>Chưa có</em>' !!} </td>
                         <td>
                             @if ($sinhVien->trang_thai == 0)
                                 <span class="text-danger">Không hoàn thành</span>

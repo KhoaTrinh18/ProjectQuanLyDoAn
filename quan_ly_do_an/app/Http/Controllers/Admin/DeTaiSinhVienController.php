@@ -136,7 +136,7 @@ class DeTaiSinhVienController extends Controller
                 return response()->json(['success' => false]);
             }
         }
-
+        $deTaiSV->da_xac_nhan_huong_dan = 1;
         $deTaiSV->trang_thai = 2;
         $deTaiSV->save();
 

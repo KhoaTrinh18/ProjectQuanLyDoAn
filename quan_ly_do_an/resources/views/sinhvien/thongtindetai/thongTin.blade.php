@@ -170,7 +170,7 @@
                                     @endif
                                 @endif
                                 <p style="font-size: 20px"><strong>Điểm tổng:</strong>
-                                    <i>{{ $sinhVien->diem ?? 'Chưa có' }}</i>
+                                    <i>{{ $sinhVien->diem !== null ? number_format($sinhVien->diem, 1) : 'Chưa có' }}</i>
                                 </p>
                             @else
                                 @if ($loaiDeTai == 'de_tai_sv')

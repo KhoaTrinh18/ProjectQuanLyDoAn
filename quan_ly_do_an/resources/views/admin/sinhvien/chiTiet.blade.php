@@ -147,7 +147,7 @@
                             @endif
                         @endif
                         <p style="font-size: 20px"><strong>Điểm tổng:</strong>
-                            <i>{{ $sinhVien->diem ?? 'Chưa có' }}</i>
+                            <i>{{ $sinhVien->diem !== null ? number_format($sinhVien->diem, 1) : 'Chưa có' }}</i>
                         </p>
 
                         <div class="text-center">
