@@ -30,10 +30,10 @@ class PhanCongHoiDongController extends Controller
         $limit = $request->query('limit', 10);
         $thietLap = ThietLap::where('trang_thai', 1)->first();
 
-        $maDeTaiDXs = BangPhanCongSVDX::distinct()->where(['nam_hoc' => $thietLap->nam_hoc])->pluck('ma_de_tai');
+        $maDeTaiDXs = BangDiemGVPBChoSVDX::distinct()->where(['nam_hoc' => $thietLap->nam_hoc])->pluck('ma_de_tai');
         $deTaiSVs = DeTaiSinhVien::whereIn('ma_de_tai', $maDeTaiDXs)->where('da_xac_nhan_huong_dan', 1)->orderBy('ma_de_tai', 'desc')->get();
 
-        $maDeTaiDKs = BangPhanCongSVDK::distinct()->where(['nam_hoc' => $thietLap->nam_hoc])->pluck('ma_de_tai');
+        $maDeTaiDKs = BangDiemGVPBChoSVDK::distinct()->where(['nam_hoc' => $thietLap->nam_hoc])->pluck('ma_de_tai');
         $deTaiGVs = DeTaiGiangVien::whereIn('ma_de_tai', $maDeTaiDKs)->where('da_xac_nhan_huong_dan', 1)->orderBy('ma_de_tai', 'desc')->get();
 
         $merged = $deTaiSVs->merge($deTaiGVs)->unique('ma_de_tai')->sortBy(function ($item) {
