@@ -47,7 +47,6 @@
                     <th scope="col" class="text-white">Sinh viên thực hiện</th>
                     <th scope="col" class="text-white">Giảng viên hướng dẫn</th>
                     <th scope="col" class="text-white">Hội đồng</th>
-                    <th scope="col" class="text-white">Xác nhận bảo vệ</th>
                     <th scope="col" class="text-white"></th>
                 </tr>
             </thead>
@@ -75,15 +74,6 @@
                                 <i>Chưa có</i>
                             @endif
                         </td>
-                        <td>
-                            @if ($deTai->duoc_bao_ve == 1)
-                                <span class="text-success">Được bảo vệ</span>
-                            @elseif (isset($deTai->duoc_bao_ve))
-                                <span class="text-danger">Không được bảo vệ</span>
-                            @else
-                                <span><i>Chưa có</i></span>
-                            @endif
-                        </td>
                         <td class="text-center">
                             @if ($deTai->duoc_bao_ve == 1)
                                 @if ($deTai->hoiDongs->count() != 0)
@@ -106,7 +96,7 @@
                 @endforeach
                 @if ($deTais->isEmpty())
                     <tr>
-                        <td colspan="7" class="text-center">Không có thiết lập</td>
+                        <td colspan="6" class="text-center">Không có thiết lập</td>
                     </tr>
                 @endif
             </tbody>
