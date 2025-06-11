@@ -418,7 +418,7 @@ class SinhVienController extends Controller
 
             fwrite($handle, chr(0xEF) . chr(0xBB) . chr(0xBF));
 
-            fputcsv($handle, ['MSSV', 'Họ tên', 'Lớp', 'Email', 'Số điện thoại', 'Đề tài', 'Giảng viên hướng dẫn', 'Điểm', 'Trạng thái']);
+            fputcsv($handle, ['MSSV', 'Họ tên', 'Lớp', 'Email', 'Số điện thoại', 'Đề tài', 'Giảng viên hướng dẫn', 'Giảng viên phản biện', 'Hội đồng', 'Điểm', 'Trạng thái']);
 
             foreach ($sinhViens as $sinhVien) {
                 $deTai = $sinhVien->deTaiDeXuat->pluck('ten_de_tai')->first()
@@ -428,12 +428,20 @@ class SinhVienController extends Controller
                 $giangViens = $sinhVien->deTaiDeXuat->first()?->giangViens?->pluck('ho_ten')->implode(', ')
                     ?: $sinhVien->deTaiDangKy->first()?->giangViens?->pluck('ho_ten')->implode(', ')
                     ?: 'Chưa có';
-                
-                if($sinhVien->trang_thai == 0) {
+
+                $giangVienPhanBien = $sinhVien->deTaiDeXuat->first()?->giangVienPhanBiens?->pluck('ho_ten')->implode(', ')
+                    ?: $sinhVien->deTaiDangKy->first()?->giangVienPhanBiens?->pluck('ho_ten')->implode(', ')
+                    ?: 'Chưa có';
+
+                $hoiDong = $sinhVien->deTaiDeXuat->first()?->HoiDongs?->pluck('ten_hoi_dong')->implode(', ')
+                    ?: $sinhVien->deTaiDangKy->first()?->HoiDongs?->pluck('ten_hoi_dong')->implode(', ')
+                    ?: 'Chưa có';
+
+                if ($sinhVien->trang_thai == 0) {
                     $trangThai = "Không hoàn thành";
-                } else if ($sinhVien->trang_thai == 2){
+                } else if ($sinhVien->trang_thai == 2) {
                     $trangThai = "Đẫ hoàn thành";
-                } else if ($sinhVien->trang_thai == 3){
+                } else if ($sinhVien->trang_thai == 3) {
                     $trangThai = "Nghỉ giữa chừng";
                 } else {
                     $trangThai = "Đang thực hiện";
@@ -447,6 +455,8 @@ class SinhVienController extends Controller
                     "'" . $sinhVien->so_dien_thoai,
                     $deTai,
                     $giangViens,
+                    $giangVienPhanBien,
+                    $hoiDong,
                     $sinhVien->diem,
                     $trangThai
                 ]);
@@ -515,7 +525,7 @@ class SinhVienController extends Controller
 
             $gvhd = $deTai->giangVienHuongDans()->wherePivot('ma_sv', $sinhVien->ma_sv)->first();
             $gvpb = $deTai->giangVienPhanBiens()->wherePivot('ma_sv', $sinhVien->ma_sv)->first();
-            $hoiDong = $deTai->HoiDongs->first(); 
+            $hoiDong = $deTai->HoiDongs->first();
 
             if (!$gvhd || !$gvpb || !$hoiDong) continue;
 
@@ -525,7 +535,7 @@ class SinhVienController extends Controller
             $diemTongGVHD = array_sum($diemGVHD) / count($diemGVHD);
 
             $diemTongGVPB = $gvpb->pivot->diem_gvpb;
-            
+
             $chuTich = $hoiDong->giangViens()->wherePivot('chuc_vu', 'Chủ tịch')->first();
             $thuKy = $hoiDong->giangViens()->wherePivot('chuc_vu', 'Thư ký')->first();
             $uyViens = $hoiDong->giangViens()->wherePivot('chuc_vu', 'Ủy viên')->get();
